@@ -12,12 +12,12 @@ public class GameLoopControl : MonoBehaviour {
 
 	void Start () {
         // 設定起始scene
-        // sceneController.setScene( new MenuScene( sceneController ) );
+        sceneController.setScene(new StartScene(sceneController));
 	}
 	
 	// 所有更新的起點
 	void Update () {
-        // 由SceneControl負責場景下的更新
+        // 由SceneController負責場景下的更新
         sceneController.sceneUpdate();
 	}
 
