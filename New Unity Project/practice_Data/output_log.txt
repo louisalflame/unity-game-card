@@ -1,0 +1,104 @@
+Initialize engine version: 5.4.2f2 (b7e030c65c9b)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: AMD Radeon HD 6470M (ID=0x6760)
+    Vendor:   ATI
+    VRAM:     1012 MB
+Begin MonoManager ReloadAssembly
+Platform assembly: D:\Unity\Project\unity-game-card\New Unity Project\practice_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading D:\Unity\Project\unity-game-card\New Unity Project\practice_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: D:\Unity\Project\unity-game-card\New Unity Project\practice_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading D:\Unity\Project\unity-game-card\New Unity Project\practice_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: D:\Unity\Project\unity-game-card\New Unity Project\practice_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading D:\Unity\Project\unity-game-card\New Unity Project\practice_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: D:\Unity\Project\unity-game-card\New Unity Project\practice_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading D:\Unity\Project\unity-game-card\New Unity Project\practice_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+- Completed reload, in  0.340 seconds
+Platform assembly: D:\Unity\Project\unity-game-card\New Unity Project\practice_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: D:\Unity\Project\unity-game-card\New Unity Project\practice_Data\Managed\System.dll (this message is harmless)
+desktop: 1366x768 60Hz; virtual: 1366x768 at 0,0
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 1.893159 ms
+Start Mono
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 42)
+
+new StartScene
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 42)
+
+startScene begin: load menuscene
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 42)
+
+new menuScene
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 42)
+
+startScene end:
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 42)
+
+Loading progress: 0%
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 42)
+
+Loading progress: 46.15384%
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 42)
+
+Loading progress: 46.15384%
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 42)
+
+Loading progress: 100%
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 42)
+
+ready to load 100%
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 42)
+
+menuScene begin:
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 42)
+
+Unloading 4 Unused Serialized files (Serialized files now loaded: 0)
+Loading progress: 100%
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 42)
+
+ready to load 100%
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 42)
+
+menuScene begin:
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 42)
+
+Loading progress: 100%
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 42)
+
+ready to load 100%
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 42)
+
+UnloadTime: 0.540150 ms
+menuScene begin:
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 42)
+
+
+Unloading 8 unused Assets to reduce memory usage. Loaded Objects now: 171.
+Total: 0.371175 ms (FindLiveObjects: 0.025123 ms CreateObjectMapping: 0.025933 ms MarkObjects: 0.301479 ms  DeleteObjects: 0.018234 ms)
+
+ press escape
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 42)
+
+Setting up 1 worker threads for Enlighten.
+  Thread -> id: 1da4 -> priority: 1 

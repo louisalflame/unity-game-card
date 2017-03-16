@@ -1,17 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class GameLoopControl : MonoBehaviour {
 
-    SceneController sceneController = new SceneController();
+    SceneController sceneController = null;
 
     void awake(){
         // 切換場景不會被刪除
+        Debug.Log("awake Mono");
         GameObject.DontDestroyOnLoad( this.gameObject );
     }
 
 	void Start () {
         // 設定起始scene
+        Debug.Log("Start Mono");
+        GameObject.DontDestroyOnLoad(this.gameObject);
+
+        sceneController = new SceneController(this);
         sceneController.setScene(new StartScene(sceneController));
 	}
 	
@@ -21,5 +27,8 @@ public class GameLoopControl : MonoBehaviour {
         sceneController.sceneUpdate();
 	}
 
-
+    // 圖片的移動
+    public void FixedUpdate() {
+    }
+    
 }
