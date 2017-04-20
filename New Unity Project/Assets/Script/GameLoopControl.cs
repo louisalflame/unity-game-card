@@ -21,14 +21,12 @@ public class GameLoopControl : MonoBehaviour {
         sceneController.setScene(new StartScene(sceneController));
 	}
 	
-	// 所有更新的起點
-	void Update () {
+	// 所有更新的起點 => 由FixedUpdate取代
+	void Update () { }
+
+    void FixedUpdate() {
         // 由SceneController負責場景下的更新
         sceneController.sceneUpdate();
-	}
-
-    // 圖片的移動
-    public void FixedUpdate() {
     }
     
 }

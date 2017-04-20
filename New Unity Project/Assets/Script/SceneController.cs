@@ -54,10 +54,7 @@ public class SceneController {
             state.stateBegin();
             state.readyToBegin(false);
         }
-        state.stateUpdate();  
-    }
-
-    //玩家輸入
-    public void InputProcess() {
+        state.stateUpdate();
+        state.inputProcess();
     }
 }
