@@ -31,13 +31,15 @@ public class PrepareTurn : TurnState {
 public class MoveTurn : TurnState {
     public MoveTurn(BattleController battleController) : base(battleController) { Debug.Log("init move turn"); }
 
-    public override void newTurn() { battle.rotateDices(); }
-    public override void endTurn() { battle.stopDices(); }
+    public override void newTurn() { battle.createDice(); }
+    public override void endTurn() { battle.checkDices(); battle.collectDices(); }
 
     public override TurnState getNextTurn() { return new PlayerAttackTurn(battle); }
 }
 public class PlayerAttackTurn : TurnState {
     public PlayerAttackTurn(BattleController battleController) : base(battleController) { Debug.Log("init player atk turn"); }
+
+    public override void endTurn() { battle.removeDices(); }
 
     public override TurnState getNextTurn() { return new EnemyDefenseTurn(battle); }
 }

@@ -19,6 +19,9 @@ public class GameLoopControl : MonoBehaviour {
 
         sceneController = new SceneController(this);
         sceneController.setScene(new StartScene(sceneController));
+
+        //調整重力方向，讓骰子能斜斜地站在平面上
+        Physics.gravity = new Vector3(0, -30f, 10f);
 	}
 	
 	// 所有更新的起點 => 由FixedUpdate取代

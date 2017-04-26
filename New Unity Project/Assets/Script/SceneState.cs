@@ -108,6 +108,8 @@ public class BattleScene : SceneState {
             //按下next鈕=>下一個turn階段
             if (i == "next_turn") {
                 battleController.CountResultAndNextTurn();
+            } else if (i == "exit") {
+                sceneController.setScene(new MenuScene(sceneController)); 
             }
         }
     }
