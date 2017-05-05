@@ -96,7 +96,9 @@ public class BattleScene : SceneState {
         Debug.Log("battleScene begin:");
         battleController = new BattleController();
     }
-    public override void stateUpdate() { }
+    public override void stateUpdate() {
+        battleController.update();
+    }
     public override void stateEnd() { }
 
     public override void inputProcess() {
@@ -108,6 +110,8 @@ public class BattleScene : SceneState {
             //按下next鈕=>下一個turn階段
             if (i == "next_turn") {
                 battleController.CountResultAndNextTurn();
+            } else if ( i == "throw_dice" ){
+                battleController.throwDices();
             } else if (i == "exit") {
                 sceneController.setScene(new MenuScene(sceneController)); 
             }
