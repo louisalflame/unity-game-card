@@ -49,9 +49,7 @@ public class MenuScene : SceneState {
     public GameObject exit;
     public GameObject start;
 
-    public MenuScene(SceneController controller)
-        : base(controller)
-    {
+    public MenuScene(SceneController controller) : base(controller) {
         Debug.Log("new menuScene");
         stateName = "menu";
         loadScene = true;
@@ -84,9 +82,7 @@ public class BattleScene : SceneState {
     //戰鬥流程總管理 1.程式邏輯 2.UI圖面
     private BattleController battleController;
     
-    public BattleScene(SceneController controller)
-        : base(controller)
-    {
+    public BattleScene(SceneController controller) : base(controller) {
         Debug.Log("new battleScene");
         stateName = "battle";
         loadScene = true;
@@ -102,18 +98,24 @@ public class BattleScene : SceneState {
     public override void stateEnd() { }
 
     public override void inputProcess() {
+        //某階段(動畫中) 停止玩家指令
+        if (!battleController.isInputValid()) { return; }
         Queue<string> inputs = InputController.Inputs.getInputsQueue();
         InputController.Inputs.resetQueue();
-        foreach (string i in inputs)
-        {
+        foreach (string i in inputs) {
             Debug.Log("input process : " + i);
             //按下next鈕=>下一個turn階段
             if (i == "next_turn") {
                 battleController.CountResultAndNextTurn();
-            } else if ( i == "throw_dice" ){
+            }
+            else if (i == "exit") {
+                sceneController.setScene(new MenuScene(sceneController));
+            }
+            else if (i == "throw_dice") {
                 battleController.throwDices();
-            } else if (i == "exit") {
-                sceneController.setScene(new MenuScene(sceneController)); 
+            }
+            else if (i.StartsWith("decision-")) {
+                battleController.decideFace(i);
             }
         }
     }

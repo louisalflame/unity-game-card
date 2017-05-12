@@ -37,44 +37,21 @@ public abstract class TurnState{
 //準備階段 產生所有需要物件
 public class PrepareTurn : TurnState {
     public PrepareTurn(BattleController battle, TurnManager turn) : base(battle, turn) { Debug.Log("init prepare turn"); }
-    public override void newTurn() {
-        // 製作所有dicebox 的骰子
-        _battle.createDices();
-        _battle.showBasicInterface();
-    }
+    public override void newTurn() { _battle.newPrepareTurn(); }
     public override TurnState getNextTurn() { return new StartTurn(_battle, _turnManager); }
 }
 // 起始階段，開始擲骰
 public class StartTurn : TurnState {
     public StartTurn(BattleController battle, TurnManager turn) : base(battle, turn) { Debug.Log("init start turn"); }
-    public override void newTurn() {
-        _battle.hideNextButton();
-        _battle.showThrowButton();
-        _battle.showDiceBox();
-    }
-    public override TurnState getNextTurn() { return new WaitDiceStopTurn(_battle, _turnManager); }
-}
-// 等待骰子階段
-public class WaitDiceStopTurn : TurnState{
-    public WaitDiceStopTurn(BattleController battle, TurnManager turn) : base(battle, turn) { Debug.Log("init waitDiceStop turn"); }
-    public override void update() { if (_battle.isAllDicesStop()) { _turnManager.nextTurn(); } }
-    public override TurnState getNextTurn() { return new WaitDiceCollectTurn(_battle, _turnManager); }
-}
-// 骰子回收階段
-public class WaitDiceCollectTurn : TurnState {
-    public WaitDiceCollectTurn(BattleController battle,TurnManager turn) : base(battle, turn) { Debug.Log("init WaitDiceCollect turn"); }
-    public override void newTurn() { _battle.startCollectDices(); }
-    public override void update() {
-        if (!_battle.isAllDicesCollectReady()) { _battle.collectDices(); }
-        else { _battle.recycleDices(); _turnManager.nextTurn(); }
-    }
-    public override void endTurn() { _battle.showNextButton(); }
-    public override TurnState getNextTurn() { return new DecideTurn(_battle, _turnManager); }
+    public override void newTurn() { _battle.newStartTurn(); }
+    public override void endTurn() { _battle.endStartTurn(); }
+    public override TurnState getNextTurn() { return new DecisionTurn(_battle, _turnManager); }
 }
 // 決定階段
-public class DecideTurn : TurnState {
-    public DecideTurn(BattleController battle, TurnManager turn) : base(battle, turn) { Debug.Log("init decide turn"); }
-    public override void endTurn() { _battle.removeDices(); }
+public class DecisionTurn : TurnState {
+    public DecisionTurn(BattleController battle, TurnManager turn) : base(battle, turn) { Debug.Log("init decide turn"); }
+    public override void newTurn() { _battle.newDecisionTurn(); }
+    public override void endTurn() { _battle.endDecisionTurm(); }
     public override TurnState getNextTurn() { return new PlayerAttackTurn(_battle, _turnManager); }
 }
 // 玩家攻擊階段
