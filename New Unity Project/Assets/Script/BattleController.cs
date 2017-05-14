@@ -50,7 +50,8 @@ public class BattleController {
     public void nextTurn() { _turnManager.nextTurn();  }
     public void newPrepareTurn() {
         // 製作所有dicebox 的骰子
-        for (int i = 0; i < 10; i++) { _diceManager.addDicesUnused(DiceFactory.createDice()); }
+        for (int i = 0; i < 10; i++) { _diceManager.addDicesUnused( new NorDice() ); }
+        for (int i = 0; i < 10; i++) { _diceManager.addDicesUnused( new AtkDice() ); }
         // 顯示基本物件
         showBasicInterface();
     }
@@ -222,13 +223,13 @@ public class TowerManager {
             foreach (AttrBaseCounter counter in counters) { 
                 if (counter._base <= 0) continue;
                 //尋找此等級的塔是否有點數可升級的屬性
-                foreach (AttrTower t in levelTowers) { Debug.Log(t._positionID);  
+                foreach (AttrTower t in levelTowers) {  
                     if(t._attr == counter._attr && t.isValidUpgrade(counter) ) {
                         t.upgrade(counter); 
                         return; 
                     }
-                    else if (t._level == 0 && t.isValidBuild(counter)) {Debug.Log("build:"+counter._attr);
-                        t.build(counter); 
+                    else if (t._level == 0 && t.isValidBuild(counter)) {
+                        t.build(counter);
                         return;
                     }
                 }

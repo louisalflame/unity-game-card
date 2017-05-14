@@ -360,22 +360,22 @@ public class AttrPointsInterface {
         _interface = inter;
         _attrNums[0] = MonoBehaviour.Instantiate(Resources.Load("NumBase") as GameObject);
         _attrNums[0].transform.localPosition = new Vector3(3, -4, 1);
-        _attrNums[0].transform.FindChild("num").GetComponent<TextMesh>().text = 0.ToString();
+        _attrNums[0].transform.Find("num").GetComponent<TextMesh>().text = 0.ToString();
         _attrNums[1] = MonoBehaviour.Instantiate(Resources.Load("NumBase") as GameObject);
         _attrNums[1].transform.localPosition = new Vector3(4, -4, 1);
-        _attrNums[1].transform.FindChild("num").GetComponent<TextMesh>().text = 0.ToString();
+        _attrNums[1].transform.Find("num").GetComponent<TextMesh>().text = 0.ToString();
         _attrNums[2] = MonoBehaviour.Instantiate(Resources.Load("NumBase") as GameObject);
         _attrNums[2].transform.localPosition = new Vector3(5, -4, 1);
-        _attrNums[2].transform.FindChild("num").GetComponent<TextMesh>().text = 0.ToString();
+        _attrNums[2].transform.Find("num").GetComponent<TextMesh>().text = 0.ToString();
         _attrNums[3] = MonoBehaviour.Instantiate(Resources.Load("NumBase") as GameObject);
         _attrNums[3].transform.localPosition = new Vector3(6, -4, 1);
-        _attrNums[3].transform.FindChild("num").GetComponent<TextMesh>().text = 0.ToString();
+        _attrNums[3].transform.Find("num").GetComponent<TextMesh>().text = 0.ToString();
         _attrNums[4] = MonoBehaviour.Instantiate(Resources.Load("NumBase") as GameObject);
         _attrNums[4].transform.localPosition = new Vector3(7, -4, 1);
-        _attrNums[4].transform.FindChild("num").GetComponent<TextMesh>().text = 0.ToString();
+        _attrNums[4].transform.Find("num").GetComponent<TextMesh>().text = 0.ToString();
         _attrNums[5] = MonoBehaviour.Instantiate(Resources.Load("NumBase") as GameObject);
         _attrNums[5].transform.localPosition = new Vector3(8, -4, 1);
-        _attrNums[5].transform.FindChild("num").GetComponent<TextMesh>().text = 0.ToString();
+        _attrNums[5].transform.Find("num").GetComponent<TextMesh>().text = 0.ToString();
         _attrIcons[0] = MonoBehaviour.Instantiate(Resources.Load("AttrBase") as GameObject);
         _attrIcons[0].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprite/AttrIcon/AttrNor");
         _attrIcons[0].transform.localPosition = new Vector3(3, -3, 1);
@@ -398,11 +398,11 @@ public class AttrPointsInterface {
 
     public void setAttrNums(int[] attrNums) {
         for (int i = 0; i < attrNums.Length && i < _attrNums.Length; i++) {
-            _attrNums[i].transform.FindChild("num").GetComponent<TextMesh>().text = attrNums[i].ToString();
+            _attrNums[i].transform.Find("num").GetComponent<TextMesh>().text = attrNums[i].ToString();
         }
     }
     public void setAttrNum(int attr, int num) {
-        _attrNums[attr].transform.FindChild("num").GetComponent<TextMesh>().text = num.ToString();
+        _attrNums[attr].transform.Find("num").GetComponent<TextMesh>().text = num.ToString();
     }
 
     public void update() { }
