@@ -4,15 +4,23 @@ using System.Collections;
 public class Button : MonoBehaviour {
 
     public string ButtonID;
+    public Sprite[] buttonSprite;
+
     bool mouseIn = false;
     bool mouseDown = false;
 
-	void Start () { }	
+	void Start () {
+        if (buttonSprite.Length > 0) { 
+            gameObject.GetComponent<SpriteRenderer>().sprite = buttonSprite[0]; 
+        }
+    }	
 	void Update () { }
 
     void OnMouseDown() {
         mouseDown = true;
-        // gameObject.GetComponent<SpriteRenderer>().sprite = buttonSprite[2];
+        if (buttonSprite.Length > 0) { 
+            gameObject.GetComponent<SpriteRenderer>().sprite = buttonSprite[2]; 
+        }
     }
     void OnMouseUp() {
         if (mouseDown && mouseIn)
@@ -21,14 +29,20 @@ public class Button : MonoBehaviour {
             InputController.Inputs.addInput(ButtonID);
         }
         mouseDown = false;
-        // gameObject.GetComponent<SpriteRenderer>().sprite = buttonSprite[1];
+        if (buttonSprite.Length > 0) { 
+            gameObject.GetComponent<SpriteRenderer>().sprite = buttonSprite[1]; 
+        }
     }
     void OnMouseEnter() {
         mouseIn = true;
-        // gameObject.GetComponent<SpriteRenderer>().sprite = buttonSprite[1];
+        if (buttonSprite.Length > 0) { 
+            gameObject.GetComponent<SpriteRenderer>().sprite = buttonSprite[1]; 
+        }
     }
     void OnMouseExit() {
         mouseIn = false;
-        // gameObject.GetComponent<SpriteRenderer>().sprite = buttonSprite[0];
+        if (buttonSprite.Length > 0) { 
+            gameObject.GetComponent<SpriteRenderer>().sprite = buttonSprite[0]; 
+        }
     }
 }

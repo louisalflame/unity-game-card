@@ -47,6 +47,11 @@ public class InterfaceController {
     public void hideNextButton() { _actionButton.hideNextButton(); }
     public void showThrowButton() { _actionButton.showThrowButton(); }
     public void hideThrowButton() { _actionButton.hideThrowButton(); }
+    public void showMoveActionButton() { _actionButton.showMoveActionButton(); }
+    public void hideMoveActionButton() { _actionButton.hideMoveActionButton(); }
+
+    public void showTeamRearrangeButton() { _teamStatus.showTeamRearrangeButton(); }
+    public void hideTeamRearrangeButton() { _teamStatus.hideTeamRearrangeButton();  }
 
     public void showDiceBox(List<Dice> dicesUnused) { _diceBox.showDiceBox(dicesUnused); }
     public void showDicePlay(List<Dice> dicesUsing) { _dicePlay.showDicePlay(dicesUsing); }
@@ -68,34 +73,79 @@ public class MenuButtonInterface {
     public InterfaceController _interface;
     private GameObject _exit = null;
     public MenuButtonInterface(InterfaceController inter) {
-        _interface = inter;
-        _exit = MonoBehaviour.Instantiate(Resources.Load("ExitBtn")) as GameObject;
+        _interface = inter; 
+
+        _exit = MonoBehaviour.Instantiate(Resources.Load("SingleButton")) as GameObject;
         _exit.transform.localPosition = new Vector3(-4, 4, 1);
         _exit.transform.localScale = new Vector3(1, 1, 1);
+        _exit.transform.Find("text").GetComponent<TextMesh>().text = "EXIT";
+        _exit.GetComponent<Button>().ButtonID = "exit";
     }
     public void update() { }
 }
+
 // 行動選單按鈕
 public class ActionButtonInterface {
     public InterfaceController _interface;
-    GameObject _next = null;
-    GameObject _throw = null;
+    private GameObject _next = null;
+    private GameObject _throw = null;
+    private GameObject _getFirst = null;
+    private GameObject _exchange = null;
+    private GameObject _standby = null;
+
     public ActionButtonInterface(InterfaceController inter) {
         _interface = inter;
-        _next = MonoBehaviour.Instantiate(Resources.Load("NextBtn")) as GameObject;
-        _next.transform.position = new Vector3(-5.5f, -2, 1);
+
+        _next = MonoBehaviour.Instantiate(Resources.Load("SingleButton")) as GameObject;
+        _next.transform.position = new Vector3(-5.5f, -1, 1);
         _next.transform.localScale = new Vector3(1, 1, 1);
+        _next.transform.Find("text").GetComponent<TextMesh>().text = "Next";
+        _next.GetComponent<Button>().ButtonID = "next_turn";
         _next.SetActive(false);
-        _throw = MonoBehaviour.Instantiate(Resources.Load("ThrowBtn")) as GameObject;
-        _throw.transform.localPosition = new Vector3(-3.5f, -2, 1);
+
+        _throw = MonoBehaviour.Instantiate(Resources.Load("SingleButton")) as GameObject;
+        _throw.transform.localPosition = new Vector3(-3.5f, -1, 1);
         _throw.transform.localScale = new Vector3(1, 1, 1);
+        _throw.transform.Find("text").GetComponent<TextMesh>().text = "Throw";
+        _throw.GetComponent<Button>().ButtonID = "throw_dice";
         _throw.SetActive(false);
+
+        _getFirst = MonoBehaviour.Instantiate(Resources.Load("SingleButton")) as GameObject;
+        _getFirst.transform.localPosition = new Vector3(-5.5f, -2, 1);
+        _getFirst.transform.localScale = new Vector3(1, 1, 1);
+        _getFirst.transform.Find("text").GetComponent<TextMesh>().text = "Get First";
+        _getFirst.GetComponent<Button>().ButtonID = "get_first";
+        _getFirst.SetActive(false);
+
+        _exchange = MonoBehaviour.Instantiate(Resources.Load("SingleButton")) as GameObject;
+        _exchange.transform.localPosition = new Vector3(-3.5f, -2, 1);
+        _exchange.transform.localScale = new Vector3(1, 1, 1);
+        _exchange.transform.Find("text").GetComponent<TextMesh>().text = "Exchange";
+        _exchange.GetComponent<Button>().ButtonID = "exchange";
+        _exchange.SetActive(false);
+
+        _standby = MonoBehaviour.Instantiate(Resources.Load("SingleButton")) as GameObject;
+        _standby.transform.localPosition = new Vector3(-1.5f, -2, 1);
+        _standby.transform.localScale = new Vector3(1, 1, 1);
+        _standby.transform.Find("text").GetComponent<TextMesh>().text = "StandBy";
+        _standby.GetComponent<Button>().ButtonID = "standby";
+        _standby.SetActive(false);
     }
     public void update() { }
     public void showNextButton() { _next.SetActive(true); }
     public void hideNextButton() { _next.SetActive(false); }
     public void showThrowButton() { _throw.SetActive(true); }
     public void hideThrowButton() { _throw.SetActive(false); }
+    public void showMoveActionButton() {
+        _getFirst.SetActive(true);
+        _exchange.SetActive(true);
+        _standby.SetActive(true);
+    }
+    public void hideMoveActionButton() {
+        _getFirst.SetActive(false);
+        _exchange.SetActive(false);
+        _standby.SetActive(false);
+    }
 }
 
 // 隊伍狀態顯示
@@ -112,18 +162,32 @@ public class TeamStatusInterface {
         _char2 = MonoBehaviour.Instantiate(Resources.Load("Character") as GameObject);
         _char2.transform.position = new Vector3(-1, -4, -1);
         _char2.transform.localScale = new Vector3(1, 1, 1);
+        _char2.GetComponent<Button>().ButtonID = StringCoder.getChangeCharString(2);
+        _char2.GetComponent<BoxCollider2D>().enabled = false;
         _char3 = MonoBehaviour.Instantiate(Resources.Load("Character") as GameObject);
         _char3.transform.position = new Vector3(1.5f, -4, -1);
         _char3.transform.localScale = new Vector3(1, 1, 1);
+        _char3.GetComponent<Button>().ButtonID = StringCoder.getChangeCharString(3);
+        _char3.GetComponent<BoxCollider2D>().enabled = false;
     }
     public void update() { }
+
+    public void showTeamRearrangeButton() {
+        _char2.GetComponent<BoxCollider2D>().enabled = true;
+        _char3.GetComponent<BoxCollider2D>().enabled = true;
+    }
+    public void hideTeamRearrangeButton() {
+        _char2.GetComponent<BoxCollider2D>().enabled = false;
+        _char3.GetComponent<BoxCollider2D>().enabled = false;
+    }
 }
 // 角色狀態顯示
 public class CharStatusInterface {
     public InterfaceController _interface;
     GameObject character = null;
     public CharStatusInterface(InterfaceController inter) { 
-        _interface = inter;}
+        _interface = inter;
+    }
     public void update() { }
 }
 // 待使用骰子顯示
@@ -135,9 +199,14 @@ public class DiceBoxInterface {
         _dices = new List<GameObject>();
     }
 
-    public void update() { }
+    public void clear() {
+        foreach (GameObject d in _dices) {
+            MonoBehaviour.Destroy(d);
+        }
+    }
 
     public void showDiceBox(List<Dice> diceUnused) {
+        clear();
         for (int i = 0; i < diceUnused.Count; i++) {
             GameObject dice = DiceFactory.createDice2D();
             dice.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>( diceUnused[i].getIconImage() );
@@ -145,6 +214,7 @@ public class DiceBoxInterface {
             _dices.Add( dice );
         }
     }
+    public void update() { }
 }
 // 擲骰顯示
 public class DicePlayInterface {
@@ -161,7 +231,7 @@ public class DicePlayInterface {
         _plane = MonoBehaviour.Instantiate(Resources.Load("Plane")) as GameObject;
         _plane.transform.localPosition = new Vector3(0, 0, -10);
         _plane.transform.localRotation = Quaternion.Euler(new Vector3(-40, 0, 0));
-        _plane.transform.localScale = new Vector3(10, 10, 10);
+        _plane.transform.localScale = new Vector3(1000, 1000, 1000);
         _plane.SetActive(false);
     }
     // 擲骰和回收動畫
@@ -298,7 +368,7 @@ public class AttrDecisionInterface{
         for (int i = 0; i < toAttr.Count; i++) {
             GameObject sprite = MonoBehaviour.Instantiate(Resources.Load("FaceDecisionBtn") as GameObject);
             sprite.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>( toAttr[i].getImage() );
-            sprite.GetComponent<Button>().ButtonID = "decision-attr-" + i;
+            sprite.GetComponent<Button>().ButtonID = StringCoder.getAttrDecisionString(i);
             sprite.transform.localPosition = new Vector3(-5 + i * 1.2f, 0.5f, -2);
             _facesAttr.Add(sprite);
         }
@@ -306,7 +376,7 @@ public class AttrDecisionInterface{
         for (int i = 0; i < toBase.Count; i++) {
             GameObject sprite = MonoBehaviour.Instantiate(Resources.Load("FaceDecisionBtn") as GameObject);
             sprite.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>( toBase[i].getBaseImage() );
-            sprite.GetComponent<Button>().ButtonID = "decision-base-" + i;
+            sprite.GetComponent<Button>().ButtonID = StringCoder.getBaseDecisionString(i);
             sprite.transform.localPosition = new Vector3(-5 + i * 1.2f, -0.5f, -2);
             _facesBase.Add(sprite);
         }
@@ -418,16 +488,16 @@ public class SkillMenuInterface {
     public SkillMenuInterface(InterfaceController inter) {
         _interface = inter;
         _skillBtn1 = MonoBehaviour.Instantiate(Resources.Load("SkillBtn") as GameObject);
-        _skillBtn1.transform.localPosition = new Vector3(0, -1, 1);
+        _skillBtn1.transform.localPosition = new Vector3(7, 0, 1);
         _skillBtn1.transform.localScale = new Vector3(1, 1, 1);
         _skillBtn2 = MonoBehaviour.Instantiate(Resources.Load("SkillBtn") as GameObject);
-        _skillBtn2.transform.localPosition = new Vector3(0, -1.5f, 1);
+        _skillBtn2.transform.localPosition = new Vector3(7, -0.5f, 1);
         _skillBtn2.transform.localScale = new Vector3(1, 1, 1);
         _skillBtn3 = MonoBehaviour.Instantiate(Resources.Load("SkillBtn") as GameObject);
-        _skillBtn3.transform.localPosition = new Vector3(0, -2, 1);
+        _skillBtn3.transform.localPosition = new Vector3(7, -1, 1);
         _skillBtn3.transform.localScale = new Vector3(1, 1, 1);
         _skillBtn4 = MonoBehaviour.Instantiate(Resources.Load("SkillBtn") as GameObject);
-        _skillBtn4.transform.localPosition = new Vector3(0, -2.5f, 1);
+        _skillBtn4.transform.localPosition = new Vector3(7, -1.5f, 1);
         _skillBtn4.transform.localScale = new Vector3(1, 1, 1);
     }
     public void update() { }

@@ -21,25 +21,27 @@ public class SceneController {
         //如果場景需要實作loading 則以Async方式load新場景
         if( state.isNeedToLoad() ) {
             looper.StartCoroutine(sceneLoadAsync(state.getStateName()));
-        } else { state.readyToBegin(true); }
+        } else {
+            state.loadToComplete(true);
+            state.readyToBegin(true); 
+        }
     }
 
     //疊代器 : 不停地load微量新場景
-    IEnumerator sceneLoadAsync(string sceneName)
-    {
+    IEnumerator sceneLoadAsync(string sceneName) {
+
         AsyncOperation ao = SceneManager.LoadSceneAsync(sceneName);
 	    ao.allowSceneActivation = false;
  
-	    while (! ao.isDone)
-	    {
+	    while (! ao.isDone) {
             // allowSceneActivation是false時，只會從0跑到90%
 		    float progress = Mathf.Clamp01(ao.progress / 0.9f);
 		    Debug.Log("Loading progress: " + (progress * 100) + "%");
  
 		    // 當進度90%時表示load完成，可準備StateBegin()
-		    if (ao.progress >= 0.9f)
-		    {
+		    if (ao.progress >= 0.9f) {
 			    ao.allowSceneActivation = true;
+                state.loadToComplete(true);
                 state.readyToBegin(true);
                 Debug.Log("ready to load 100%" );
 		    }
@@ -50,10 +52,12 @@ public class SceneController {
 	
 	// 場景下所有的更新
     public void sceneUpdate() {
-        if ( state.isReadyBegin() ) {
+        if (  !state.isLoadComplete()) { return; }
+        if ( state.isReadyBegin() ) { 
             state.stateBegin();
             state.readyToBegin(false);
         }
+
         state.stateUpdate();
         state.inputProcess();
     }

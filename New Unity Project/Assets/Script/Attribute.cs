@@ -37,3 +37,34 @@ public class ImgPath {
     public const string HealBase        = "Sprite/DiceBase/HealTowerBase";
     public const string HealBaseDouble  = "Sprite/DiceBase/HealTower";
 }
+
+
+public class StringCoder {
+    public static bool isNumValid(string str, int pos) {
+        int id;
+        if (int.TryParse(str.Split('-')[pos], out id)) return true;
+        return false;
+    }
+    // 骰面之行動點數/建築點數選擇
+    public static string getAttrDecisionString(int num) { return "decision-attr-" + num.ToString(); }
+    public static string getBaseDecisionString(int num) { return "decision-base-" + num.ToString(); }
+    public static bool isBelongAttrDecision(string str) {
+        if (str.StartsWith("decision-attr-")) return isNumValid(str, 2); return false;
+    }
+    public static bool isBelongBaseDecision(string str) {
+        if (str.StartsWith("decision-base-")) return isNumValid(str, 2); return false;
+    }
+    public static int getDecisionNum(string str) {
+        return int.Parse(str.Split('-')[2]);
+    }
+
+    // 更換角色之選擇
+    public static string getChangeCharString(int num) { return "changeTo_char-" + num.ToString(); }
+    public static bool isBelongChangeChar(string str) {
+        if (str.StartsWith("changeTo_char")) return isNumValid(str, 1); return false;
+    }
+    public static int getChangeCharNum(string str) {
+        return int.Parse(str.Split('-')[1]);
+    }
+
+}

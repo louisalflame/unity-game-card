@@ -7,6 +7,7 @@ public class SceneState{
     protected string stateName = "AbstractSceneState";
     protected bool loadScene = false;
     protected bool readyBegin = false;
+    protected bool loadComplete = false;
 
     public SceneState(SceneController controller) {
         sceneController = controller;
@@ -15,6 +16,8 @@ public class SceneState{
     public bool isNeedToLoad() { return loadScene; }
     public bool isReadyBegin() { return readyBegin; }
     public void readyToBegin(bool ready) { readyBegin = ready; }
+    public bool isLoadComplete() { return loadComplete; }
+    public void loadToComplete(bool complete) { loadComplete = complete; }
 
     public virtual void stateBegin() { }
     public virtual void stateEnd() { }
@@ -25,9 +28,7 @@ public class SceneState{
 }
 
 public class StartScene : SceneState {
-    public StartScene(SceneController controller)
-        : base(controller)
-    {
+    public StartScene(SceneController controller) : base(controller) {
         Debug.Log("new StartScene");
         stateName = "start";
     }
@@ -38,7 +39,7 @@ public class StartScene : SceneState {
         sceneController.setScene(new MenuScene(sceneController));
     }
     public override void stateUpdate() { }
-    public override void stateEnd() { Debug.Log("startScene end:"); }
+    public override void stateEnd() { Debug.Log("startScene end"); }
 
     public override void inputProcess() {
         InputController.Inputs.resetQueue();
@@ -46,8 +47,6 @@ public class StartScene : SceneState {
 }
 
 public class MenuScene : SceneState {
-    public GameObject exit;
-    public GameObject start;
 
     public MenuScene(SceneController controller) : base(controller) {
         Debug.Log("new menuScene");
@@ -57,8 +56,18 @@ public class MenuScene : SceneState {
 
     public override void stateBegin() { 
         Debug.Log("menuScene begin:");
-        exit = MonoBehaviour.Instantiate(Resources.Load("ExitBtn")) as GameObject;
-        start = MonoBehaviour.Instantiate(Resources.Load("StartBtn")) as GameObject; 
+
+        GameObject start = MonoBehaviour.Instantiate(Resources.Load("SingleButton")) as GameObject;
+        start.transform.localPosition = new Vector3(0,2,1);
+        start.transform.localScale=new Vector3(3,3,1);
+        start.transform.Find("text").GetComponent<TextMesh>().text = "START";
+        start.GetComponent<Button>().ButtonID = "start_battle";
+
+        GameObject exit = MonoBehaviour.Instantiate(Resources.Load("SingleButton")) as GameObject; 
+        exit.transform.localPosition = new Vector3(0,-2,1);
+        exit.transform.localScale=new Vector3(3,3,1);
+        exit.transform.Find("text").GetComponent<TextMesh>().text = "EXIT";
+        
     }
     public override void stateUpdate() {  }
     public override void stateEnd() { }
@@ -114,8 +123,23 @@ public class BattleScene : SceneState {
             else if (i == "throw_dice") {
                 battleController.throwDices();
             }
-            else if (i.StartsWith("decision-")) {
-                battleController.decideFace(i);
+            else if (StringCoder.isBelongAttrDecision(i) ) {
+                battleController.decisionAttr(StringCoder.getDecisionNum(i));
+            }
+            else if (StringCoder.isBelongBaseDecision(i) ) {
+                battleController.decisionBase(StringCoder.getDecisionNum(i));
+            }
+            else if (i == "get_first") {
+                battleController.moveAction(1);
+            }
+            else if (i == "exchange") {
+                battleController.moveAction(2);
+            }
+            else if (i == "standby") {
+                battleController.moveAction(3);
+            }
+            else if (StringCoder.isBelongChangeChar(i)) {
+                battleController.changeActiveChar( StringCoder.getChangeCharNum(i) );
             }
         }
     }

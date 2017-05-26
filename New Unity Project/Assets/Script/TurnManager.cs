@@ -52,25 +52,86 @@ public class DecisionTurn : TurnState {
     public DecisionTurn(BattleController battle, TurnManager turn) : base(battle, turn) { Debug.Log("init decide turn"); }
     public override void newTurn() { _battle.newDecisionTurn(); }
     public override void endTurn() { _battle.endDecisionTurm(); }
-    public override TurnState getNextTurn() { return new PlayerAttackTurn(_battle, _turnManager); }
+    public override TurnState getNextTurn() {
+        if (_battle._playerManager.isPlayerSafe() && _battle._enemyManager.isPlayerSafe()) {
+            return new MoveCountTurn(_battle, _turnManager);
+        }
+        else return new RearrangeTurn(_battle, _turnManager);
+    }
 }
+
+// 移動結算階段 區分先後攻
+public class MoveCountTurn : TurnState {
+    public MoveCountTurn(BattleController battle, TurnManager turn) : base(battle, turn) { Debug.Log("init moveCount turn"); }
+    public override void newTurn() { _battle.newMoveCountTurn(); }
+    public override void endTurn() { _battle.endMoveCountTurn(); }
+    public override TurnState getNextTurn() { 
+        if (_battle._battleManager._playerFirst) return new PlayerAttackTurn(_battle, _turnManager);
+        else return new EnemyAttackTurn(_battle, _turnManager);
+    }
+}
+
 // 玩家攻擊階段
 public class PlayerAttackTurn : TurnState {
     public PlayerAttackTurn(BattleController battle, TurnManager turn) : base(battle, turn) { Debug.Log("init player atk turn"); }
+    public override void newTurn() { _battle.newPlayerAttackTurn(); }
+    public override void endTurn() { _battle.endPlayerAttackTurn(); }
     public override TurnState getNextTurn() { return new EnemyDefenseTurn(_battle, _turnManager); }
-}
-// 玩家防禦階段
-public class PlayerDefenseTurn : TurnState {
-    public PlayerDefenseTurn(BattleController battle, TurnManager turn) : base(battle, turn) { Debug.Log("init player def turn"); }
-    public override TurnState getNextTurn() { return new PrepareTurn(_battle, _turnManager); }
-}
-// 敵方攻擊階段
-public class EnemyAttackTurn : TurnState {
-    public EnemyAttackTurn(BattleController battle, TurnManager turn) : base(battle, turn) { Debug.Log("init enemy atk turn"); }
-    public override TurnState getNextTurn() { return new PlayerDefenseTurn(_battle, _turnManager); }
 }
 // 敵方防禦階段
 public class EnemyDefenseTurn : TurnState {
     public EnemyDefenseTurn(BattleController battle, TurnManager turn) : base(battle, turn) { Debug.Log("init enemy def turn"); }
-    public override TurnState getNextTurn() { return new EnemyAttackTurn(_battle, _turnManager); }
+    public override void newTurn() { _battle.newEnemyDefenseTurn(); }
+    public override void endTurn() { _battle.endEnemyDefenseTurn(); }
+    public override TurnState getNextTurn() { return new BattleCountTurn(_battle, _turnManager); }
+}
+// 敵方攻擊階段
+public class EnemyAttackTurn : TurnState {
+    public EnemyAttackTurn(BattleController battle, TurnManager turn) : base(battle, turn) { Debug.Log("init enemy atk turn"); }
+    public override void newTurn() { _battle.newEnemyAttackTurn(); }
+    public override void endTurn() { _battle.endEnemyAttackTurn(); }
+    public override TurnState getNextTurn() { return new PlayerDefenseTurn(_battle, _turnManager); }
+}
+// 玩家防禦階段
+public class PlayerDefenseTurn : TurnState {
+    public PlayerDefenseTurn(BattleController battle, TurnManager turn) : base(battle, turn) { Debug.Log("init player def turn"); }
+    public override void newTurn() { _battle.newPlayerDefenseTurn(); }
+    public override void endTurn() { _battle.endPlayerDefenseTurn(); }
+    public override TurnState getNextTurn() { return new BattleCountTurn(_battle, _turnManager); }
+}
+
+// 攻防計算階段
+public class BattleCountTurn : TurnState {
+    public BattleCountTurn(BattleController battle, TurnManager turn) : base(battle, turn) { Debug.Log("init battle count turn"); }
+    public override void newTurn() { _battle.newBattleCountTurn(); }
+    public override void endTurn() { _battle.endBattleCountTurn(); }
+    public override TurnState getNextTurn() {
+        if (_battle._battleManager._playerAttacked && _battle._battleManager._enemyAttacked) return new AnalysisTurn(_battle, _turnManager);
+        else if (_battle._battleManager._playerAttacked && !_battle._battleManager._enemyAttacked) return new EnemyAttackTurn(_battle, _turnManager);
+        else if (!_battle._battleManager._playerAttacked && _battle._battleManager._enemyAttacked) return new PlayerAttackTurn(_battle, _turnManager);
+        else return this;
+    }
+}
+
+// 結算階段
+public class AnalysisTurn : TurnState {
+    public AnalysisTurn(BattleController battle, TurnManager turn) : base(battle, turn) { Debug.Log("init ending turn"); }
+    public override void newTurn() { _battle.newAnalysisTurn(); }
+    public override void endTurn() { _battle.endAnalysisTurn(); }
+    public override TurnState getNextTurn() {
+        if (_battle._playerManager.isPlayerSafe() && _battle._enemyManager.isPlayerSafe()) {
+            return new StartTurn(_battle, _turnManager);
+        }
+        return new RearrangeTurn(_battle, _turnManager); 
+    }
+}
+
+// 重新選擇新戰鬥角色階段，然後直接開始新回合
+public class RearrangeTurn : TurnState {
+    public RearrangeTurn(BattleController battle, TurnManager turn) : base(battle, turn) { Debug.Log("init ending turn"); }
+    public override void newTurn() { _battle.newRearrangeTurn(); }
+    public override void endTurn() { _battle.endRearrangeTurn(); }
+    public override TurnState getNextTurn() {
+ 	    return new StartTurn(_battle, _turnManager);
+    }
 }
