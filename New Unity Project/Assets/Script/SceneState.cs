@@ -111,6 +111,7 @@ public class BattleScene : SceneState {
         if (!battleController.isInputValid()) { return; }
         Queue<string> inputs = InputController.Inputs.getInputsQueue();
         InputController.Inputs.resetQueue();
+
         foreach (string i in inputs) {
             Debug.Log("input process : " + i);
             //按下next鈕=>下一個turn階段
@@ -129,14 +130,14 @@ public class BattleScene : SceneState {
             else if (StringCoder.isBelongBaseDecision(i) ) {
                 battleController.decisionBase(StringCoder.getDecisionNum(i));
             }
-            else if (i == "get_first") {
-                battleController.moveAction(1);
+            else if (i == Move_GetFirst.label) {
+                battleController.moveAction(Move_GetFirst.moveAction);
             }
-            else if (i == "exchange") {
-                battleController.moveAction(2);
+            else if (i == Move_Exchange.label) {
+                battleController.moveAction(Move_Exchange.moveAction);
             }
-            else if (i == "standby") {
-                battleController.moveAction(3);
+            else if (i == Move_Standby.label) {
+                battleController.moveAction(Move_Standby.moveAction);
             }
             else if (StringCoder.isBelongChangeChar(i)) {
                 battleController.changeActiveChar( StringCoder.getChangeCharNum(i) );

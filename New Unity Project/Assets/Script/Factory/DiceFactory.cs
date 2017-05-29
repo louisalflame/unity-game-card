@@ -55,7 +55,7 @@ public class NorDice : Dice {
         _fFace = new AtkBaseAtk3(); _bFace = new MovBaseMov3();
         _rFace = new DefBaseDef3(); _lFace = new NorBaseNor3();
     }
-    public override string getIconImage() { return "Sprite/DiceIcon/DiceNor"; }
+    public override string getIconImage() { return ImgPath.NorDiceIcon; }
 }
 
 public class AtkDice : Dice {
@@ -65,7 +65,7 @@ public class AtkDice : Dice {
         _fFace = new AtkBaseAtk3(); _bFace = new NorBaseMov3();
         _rFace = new AtkBaseDef3(); _lFace = new NorBaseNor3();
     }
-    public override string getIconImage() { return "Sprite/DiceIcon/DiceAtk"; }
+    public override string getIconImage() { return ImgPath.AtkDiceIcon; }
 }
 
 

@@ -11,12 +11,7 @@ public class CharManager
     public int _atk { get; private set; }
     public int _def { get; private set; }
     public int _mov { get; private set; }
-
-    // 角色戰鬥中的行動，不同角色有不同種類的行動選擇
-    public int _moveAction { get; private set; }
-    public int _attackAction { get; private set; }
-    public int _defenseAction { get; private set; }
-
+    
     public CharManager() { }
 
     public void setCharacter(int id) {
@@ -26,20 +21,6 @@ public class CharManager
         _def = _character._def;
         _mov = _character._mov;
     }
-    public void setMoveAction(int action) { _moveAction = action; }
-    public int getMoveSpeed() {
-        switch (_moveAction) {
-            // get_first
-            case 1: return _mov;
-            // exchange
-            case 2: return 0;
-            // standby
-            default:
-            case 3: return 1;
-        }
-    }
-    public void setAttackAction(int action) { _attackAction = action; }
-    public void setDefenseAction(int action) { _defenseAction = action; }
 }
 
 // 角色生成

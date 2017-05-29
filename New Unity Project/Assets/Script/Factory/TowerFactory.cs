@@ -45,7 +45,7 @@ public class NullTower : TowerMode{
         _level = 0;
         _capacity = 5;
     }
-    public override string getImage() { return "Sprite/TowerIcon/TowerBase"; }
+    public override string getImage() { return ImgPath.TowerBase; }
     public override TowerMode upgrade() { Debug.Log("ERROR: cannot upgrade!"); return this; }
     public override bool isValidUpgrade(AttrBaseCounter counter) { return false; }
 }
@@ -55,7 +55,7 @@ public class NorTower1 : TowerMode {
         _level = 1;
         _capacity = 5;
     }
-    public override string getImage() { return "Sprite/TowerIcon/TowerNor1"; }
+    public override string getImage() { return ImgPath.TowerNor1; }
     public override TowerMode upgrade() { return new NorTower2(); }
     public override bool isValidUpgrade(AttrBaseCounter counter) { return counter._attr == _attr && counter._base >= 2; }
 }
@@ -65,31 +65,29 @@ public class NorTower2 : TowerMode {
         _level = 2;
         _capacity = 10;
     }
-    public override string getImage() { return "Sprite/TowerIcon/TowerNor2"; }
+    public override string getImage() { return ImgPath.TowerNor2; }
     public override TowerMode upgrade() { return new NorTower3(); }
     public override bool isValidUpgrade(AttrBaseCounter counter) { return counter._attr == _attr && counter._base >= 1 && counter._weight >=1; }
 }
 public class NorTower3 : TowerMode
 {
-    public NorTower3()
-    {
+    public NorTower3() {
         _attr = Attribute.Normal;
         _level = 3;
         _capacity = 15;
     }
-    public override string getImage() { return "Sprite/TowerIcon/TowerNor3"; }
+    public override string getImage() { return ImgPath.TowerNor3; }
     public override TowerMode upgrade() { return new NorTower4(); }
     public override bool isValidUpgrade(AttrBaseCounter counter) { return counter._attr == _attr && counter._base >= 2 && counter._weight >=1; }
 }
 public class NorTower4 : TowerMode
 {
-    public NorTower4()
-    {
+    public NorTower4() {
         _attr = Attribute.Normal;
         _level = 4;
         _capacity = 20;
     }
-    public override string getImage() { return "Sprite/TowerIcon/TowerNor4"; }
+    public override string getImage() { return ImgPath.TowerNor4; }
     public override TowerMode upgrade() { Debug.Log("ERROR: cannot upgrade!"); return this; }
     public override bool isValidUpgrade(AttrBaseCounter counter) { return false; }
 }
@@ -99,7 +97,7 @@ public class AtkTower1 : TowerMode {
         _level = 1;
         _capacity = 5;
     }
-    public override string getImage() { return "Sprite/TowerIcon/TowerAtk1"; }
+    public override string getImage() { return ImgPath.TowerAtk1; }
     public override TowerMode upgrade() { return new AtkTower2(); }
     public override bool isValidUpgrade(AttrBaseCounter counter) { return counter._attr == _attr && counter._base >= 2; }
 }
@@ -109,7 +107,7 @@ public class AtkTower2 : TowerMode {
         _level = 2;
         _capacity = 10;
     }
-    public override string getImage() { return "Sprite/TowerIcon/TowerAtk2"; }
+    public override string getImage() { return ImgPath.TowerAtk2; }
     public override TowerMode upgrade() { return new AtkTower3(); }
     public override bool isValidUpgrade(AttrBaseCounter counter) { return counter._attr == _attr && counter._base >= 1 && counter._weight >= 1; }
 }
@@ -119,7 +117,7 @@ public class AtkTower3 : TowerMode {
         _level = 3;
         _capacity = 15;
     }
-    public override string getImage() { return "Sprite/TowerIcon/TowerAtk3"; }
+    public override string getImage() { return ImgPath.TowerAtk3; }
     public override TowerMode upgrade() { return new AtkTower4(); }
     public override bool isValidUpgrade(AttrBaseCounter counter) { return counter._attr == _attr && counter._base >= 2 && counter._weight >= 1; }
 }
@@ -129,7 +127,7 @@ public class AtkTower4 : TowerMode {
         _level = 4;
         _capacity = 20;
     }
-    public override string getImage() { return "Sprite/TowerIcon/TowerAtk4"; }
+    public override string getImage() { return ImgPath.TowerAtk4; }
     public override TowerMode upgrade() { Debug.Log("ERROR: cannot upgrade!"); return this; }
     public override bool isValidUpgrade(AttrBaseCounter counter) { return false; }
 }
@@ -139,7 +137,7 @@ public class DefTower1 : TowerMode {
         _level = 1;
         _capacity = 5;
     }
-    public override string getImage() { return "Sprite/TowerIcon/TowerDef1"; }
+    public override string getImage() { return ImgPath.TowerDef1; }
     public override TowerMode upgrade() { return new DefTower2(); }
     public override bool isValidUpgrade(AttrBaseCounter counter) { return counter._attr == _attr && counter._base >= 2; }
 }
@@ -149,7 +147,7 @@ public class DefTower2 : TowerMode {
         _level = 2;
         _capacity = 10;
     }
-    public override string getImage() { return "Sprite/TowerIcon/TowerDef2"; }
+    public override string getImage() { return ImgPath.TowerDef2; }
     public override TowerMode upgrade() { return new DefTower3(); }
     public override bool isValidUpgrade(AttrBaseCounter counter) { return counter._attr == _attr && counter._base >= 1 && counter._weight >= 1; }
 }
@@ -159,7 +157,7 @@ public class DefTower3 : TowerMode {
         _level = 3;
         _capacity = 15;
     }
-    public override string getImage() { return "Sprite/TowerIcon/TowerDef3"; }
+    public override string getImage() { return ImgPath.TowerDef3; }
     public override TowerMode upgrade() { return new DefTower4(); }
     public override bool isValidUpgrade(AttrBaseCounter counter) { return counter._attr == _attr && counter._base >= 2 && counter._weight >= 1; }
 }
@@ -169,7 +167,7 @@ public class DefTower4 : TowerMode {
         _level = 4;
         _capacity = 20;
     }
-    public override string getImage() { return "Sprite/TowerIcon/TowerDef4"; }
+    public override string getImage() { return ImgPath.TowerDef4; }
     public override TowerMode upgrade() { Debug.Log("ERROR: cannot upgrade!"); return this; }
     public override bool isValidUpgrade(AttrBaseCounter counter) { return false; }
 }
@@ -179,7 +177,7 @@ public class MovTower1 : TowerMode {
         _level = 1;
         _capacity = 5;
     }
-    public override string getImage() { return "Sprite/TowerIcon/TowerMov1"; }
+    public override string getImage() { return ImgPath.TowerMov1; }
     public override TowerMode upgrade() { return new MovTower2(); }
     public override bool isValidUpgrade(AttrBaseCounter counter) { return counter._attr == _attr && counter._base >= 2; }
 }
@@ -189,7 +187,7 @@ public class MovTower2 : TowerMode {
         _level = 2;
         _capacity = 10;
     }
-    public override string getImage() { return "Sprite/TowerIcon/TowerMov2"; }
+    public override string getImage() { return ImgPath.TowerMov2; }
     public override TowerMode upgrade() { return new MovTower3(); }
     public override bool isValidUpgrade(AttrBaseCounter counter) { return counter._attr == _attr && counter._base >= 1 && counter._weight >= 1; }
 }
@@ -199,7 +197,7 @@ public class MovTower3 : TowerMode {
         _level = 3;
         _capacity = 15;
     }
-    public override string getImage() { return "Sprite/TowerIcon/TowerMov3"; }
+    public override string getImage() { return ImgPath.TowerMov3; }
     public override TowerMode upgrade() { return new MovTower4(); }
     public override bool isValidUpgrade(AttrBaseCounter counter) { return counter._attr == _attr && counter._base >= 2 && counter._weight >= 1; }
 }
@@ -209,7 +207,7 @@ public class MovTower4 : TowerMode {
         _level = 4;
         _capacity = 20;
     }
-    public override string getImage() { return "Sprite/TowerIcon/TowerMov4"; }
+    public override string getImage() { return ImgPath.TowerMov4; }
     public override TowerMode upgrade() { Debug.Log("ERROR: cannot upgrade!"); return this; }
     public override bool isValidUpgrade(AttrBaseCounter counter) { return false; }
 }
@@ -219,7 +217,7 @@ public class SpcTower1 : TowerMode {
         _level = 1;
         _capacity = 5;
     }
-    public override string getImage() { return "Sprite/TowerIcon/TowerSpc1"; }
+    public override string getImage() { return ImgPath.TowerSpc1; }
     public override TowerMode upgrade() { return new SpcTower2(); }
     public override bool isValidUpgrade(AttrBaseCounter counter) { return counter._attr == _attr && counter._base >= 2; }
 }
@@ -229,7 +227,7 @@ public class SpcTower2 : TowerMode {
         _level = 2;
         _capacity = 10;
     }
-    public override string getImage() { return "Sprite/TowerIcon/TowerSpc2"; }
+    public override string getImage() { return ImgPath.TowerSpc2; }
     public override TowerMode upgrade() { return new SpcTower3(); }
     public override bool isValidUpgrade(AttrBaseCounter counter) { return counter._attr == _attr && counter._base >= 1 && counter._weight >= 1; }
 }
@@ -239,7 +237,7 @@ public class SpcTower3 : TowerMode {
         _level = 3;
         _capacity = 15;
     }
-    public override string getImage() { return "Sprite/TowerIcon/TowerSpc3"; }
+    public override string getImage() { return ImgPath.TowerSpc3; }
     public override TowerMode upgrade() { return new SpcTower4(); }
     public override bool isValidUpgrade(AttrBaseCounter counter) { return counter._attr == _attr && counter._base >= 2 && counter._weight >= 1; }
 }
@@ -249,7 +247,7 @@ public class SpcTower4 : TowerMode {
         _level = 4;
         _capacity = 20;
     }
-    public override string getImage() { return "Sprite/TowerIcon/TowerSpc4"; }
+    public override string getImage() { return ImgPath.TowerSpc4; }
     public override TowerMode upgrade() { Debug.Log("ERROR: cannot upgrade!"); return this; }
     public override bool isValidUpgrade(AttrBaseCounter counter) { return false; }
 }
@@ -259,7 +257,7 @@ public class HealTower1 : TowerMode {
         _level = 1;
         _capacity = 5;
     }
-    public override string getImage() { return "Sprite/TowerIcon/TowerHeal1"; }
+    public override string getImage() { return ImgPath.TowerHeal1; }
     public override TowerMode upgrade() { return new HealTower2(); }
     public override bool isValidUpgrade(AttrBaseCounter counter) { return counter._attr == _attr && counter._base >= 2; }
 }
@@ -269,7 +267,7 @@ public class HealTower2 : TowerMode {
         _level = 2;
         _capacity = 10;
     }
-    public override string getImage() { return "Sprite/TowerIcon/TowerHeal2"; }
+    public override string getImage() { return ImgPath.TowerHeal2; }
     public override TowerMode upgrade() { return new HealTower3(); }
     public override bool isValidUpgrade(AttrBaseCounter counter) { return counter._attr == _attr && counter._base >= 1 && counter._weight >= 1; }
 }
@@ -279,7 +277,7 @@ public class HealTower3 : TowerMode {
         _level = 3;
         _capacity = 15;
     }
-    public override string getImage() { return "Sprite/TowerIcon/TowerHeal3"; }
+    public override string getImage() { return ImgPath.TowerHeal3; }
     public override TowerMode upgrade() { return new HealTower4(); }
     public override bool isValidUpgrade(AttrBaseCounter counter) { return counter._attr == _attr && counter._base >= 2 && counter._weight >= 1; }
 }
@@ -289,7 +287,7 @@ public class HealTower4 : TowerMode {
         _level = 4;
         _capacity = 20;
     }
-    public override string getImage() { return "Sprite/TowerIcon/TowerHeal4"; }
+    public override string getImage() { return ImgPath.TowerHeal4; }
     public override TowerMode upgrade() { Debug.Log("ERROR: cannot upgrade!"); return this; }
     public override bool isValidUpgrade(AttrBaseCounter counter) { return false; }
 }
