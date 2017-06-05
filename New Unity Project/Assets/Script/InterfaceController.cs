@@ -47,8 +47,14 @@ public class InterfaceController {
     public void hideNextButton() { _actionButton.hideNextButton(); }
     public void showThrowButton() { _actionButton.showThrowButton(); }
     public void hideThrowButton() { _actionButton.hideThrowButton(); }
+
+    public void resetActionButtons(CharManager character) { _actionButton.resetActionButtons(character); }
     public void showMoveActionButton() { _actionButton.showMoveActionButton(); }
     public void hideMoveActionButton() { _actionButton.hideMoveActionButton(); }
+    public void showAttackActionButton() { _actionButton.showAttackActionButton(); }
+    public void hideAttackActionButton() { _actionButton.hideAttackActionButton(); }
+    public void showDefenseActionButton() { _actionButton.showDefenseActionButton(); }
+    public void hideDefenseActionButton() { _actionButton.hideDefenseActionButton(); }
 
     public void showTeamRearrangeButton() { _teamStatus.showTeamRearrangeButton(); }
     public void hideTeamRearrangeButton() { _teamStatus.hideTeamRearrangeButton();  }
@@ -78,8 +84,8 @@ public class MenuButtonInterface {
         _exit = MonoBehaviour.Instantiate(Resources.Load("SingleButton")) as GameObject;
         _exit.transform.localPosition = new Vector3(-4, 4, 1);
         _exit.transform.localScale = new Vector3(1, 1, 1);
-        _exit.transform.Find("text").GetComponent<TextMesh>().text = "EXIT";
-        _exit.GetComponent<Button>().ButtonID = "exit";
+        _exit.transform.Find("text").GetComponent<TextMesh>().text = Name.ExitButton[1];
+        _exit.GetComponent<Button>().ButtonID = Name.ExitButton[0];
     }
     public void update() { }
 }

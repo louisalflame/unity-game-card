@@ -128,29 +128,60 @@ public class StringCoder {
         if (int.TryParse(str.Split('-')[pos], out id)) return true;
         return false;
     }
+
     // 骰面之行動點數/建築點數選擇
-    public static string getAttrDecisionString(int num) { return "decision-attr-" + num.ToString(); }
-    public static string getBaseDecisionString(int num) { return "decision-base-" + num.ToString(); }
+    public static string getAttrDecisionString(int num) { return Name.decisionAttrLabel + num.ToString(); }
+    public static string getBaseDecisionString(int num) { return Name.decisionBaseLabel + num.ToString(); }
     public static bool isBelongAttrDecision(string str) {
-        if (str.StartsWith("decision-attr-")) return isNumValid(str, 2);
+        if (str.StartsWith(Name.decisionAttrLabel)) return isNumValid(str, 1);
         else return false;
     }
     public static bool isBelongBaseDecision(string str) {
-        if (str.StartsWith("decision-base-")) return isNumValid(str, 2);
+        if (str.StartsWith(Name.decisionBaseLabel)) return isNumValid(str, 1);
         else return false;
     }
     public static int getDecisionNum(string str) {
-        return int.Parse(str.Split('-')[2]);
+        return int.Parse(str.Split('-')[1]);
     }
 
     // 更換角色之選擇
-    public static string getChangeCharString(int num) { return "changeTo_char-" + num.ToString(); }
+    public static string getChangeCharString(int num) { return Name.changeCharLabel + num.ToString(); }
     public static bool isBelongChangeChar(string str) {
-        if (str.StartsWith("changeTo_char")) return isNumValid(str, 1);
+        if (str.StartsWith(Name.changeCharLabel)) return isNumValid(str, 1);
         else return false;
     }
     public static int getChangeCharNum(string str) {
         return int.Parse(str.Split('-')[1]);
     }
 
+    public static bool isBelongMoveAction(string str) { return str.StartsWith(Name.moveActionLabel); }
+
+    public static bool isBelongAttackAction(string str) { return str.StartsWith(Name.attackActionLabel); }
+
+    public static bool isBelongDefenseAction(string str) { return str.StartsWith(Name.defenseActionLabel); }
+
+}
+
+public class Name{
+    public static string[] StartButton = new string[] { "start", "Start" };
+    public static string[] NextButton = new string[] { "next", "Next" };
+    public static string[] ExitButton = new string[] { "exit", "Exit" };
+    public static string[] ThrowButton = new string[] { "throw", "Throw" };
+
+    public static string decisionAttrLabel = "decisionAttr-";
+    public static string decisionBaseLabel = "decisionBase-";
+
+    public static string changeCharLabel = "changeChar-";
+
+    public static string moveActionLabel = "movAct-";
+    public static string[] Move_GetFirst = new string[] { moveActionLabel + "get_first", "Get First" };
+    public static string[] Move_Exchange = new string[] { moveActionLabel + "exchange", "Exchange" };
+    public static string[] Move_Standby = new string[] { moveActionLabel + "standby", "Standby" };
+
+    public static string attackActionLabel = "atkAct-";
+    public static string[] Simple_Attack = new string[] { attackActionLabel + "simple", "Attack" };
+    public static string[] Strike_Attack = new string[] { attackActionLabel + "strike", "Strike" };
+
+    public static string defenseActionLabel = "defAct-";
+    public static string[] Simple_Defense = new string[] { defenseActionLabel + "simple", "Defense" };
 }

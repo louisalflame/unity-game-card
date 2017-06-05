@@ -60,13 +60,14 @@ public class MenuScene : SceneState {
         GameObject start = MonoBehaviour.Instantiate(Resources.Load("SingleButton")) as GameObject;
         start.transform.localPosition = new Vector3(0,2,1);
         start.transform.localScale=new Vector3(3,3,1);
-        start.transform.Find("text").GetComponent<TextMesh>().text = "START";
-        start.GetComponent<Button>().ButtonID = "start_battle";
+        start.transform.Find("text").GetComponent<TextMesh>().text = Name.StartButton[1];
+        start.GetComponent<Button>().ButtonID = Name.StartButton[0];
 
         GameObject exit = MonoBehaviour.Instantiate(Resources.Load("SingleButton")) as GameObject; 
         exit.transform.localPosition = new Vector3(0,-2,1);
         exit.transform.localScale=new Vector3(3,3,1);
-        exit.transform.Find("text").GetComponent<TextMesh>().text = "EXIT";
+        exit.transform.Find("text").GetComponent<TextMesh>().text = Name.ExitButton[1];
+        exit.GetComponent<Button>().ButtonID = Name.ExitButton[0];
         
     }
     public override void stateUpdate() {  }
@@ -80,7 +81,7 @@ public class MenuScene : SceneState {
         {
             Debug.Log("input process : " + i);
             //按下start鈕=>開啟新scene
-            if (i == "start_battle") {
+            if (i == Name.StartButton[0]) {
                 sceneController.setScene(new BattleScene(sceneController));
             }
         }
@@ -112,36 +113,15 @@ public class BattleScene : SceneState {
         Queue<string> inputs = InputController.Inputs.getInputsQueue();
         InputController.Inputs.resetQueue();
 
-        foreach (string i in inputs) {
-            Debug.Log("input process : " + i);
-            //按下next鈕=>下一個turn階段
-            if (i == "next_turn") {
-                battleController.CountResultAndNextTurn();
-            }
-            else if (i == "exit") {
+        foreach (string input in inputs) {
+            Debug.Log("input process : " + input);
+            //按下start鈕=>開啟新scene
+            if (input == Name.ExitButton[0]) {
                 sceneController.setScene(new MenuScene(sceneController));
-            }
-            else if (i == "throw_dice") {
-                battleController.throwDices();
-            }
-            else if (StringCoder.isBelongAttrDecision(i) ) {
-                battleController.decisionAttr(StringCoder.getDecisionNum(i));
-            }
-            else if (StringCoder.isBelongBaseDecision(i) ) {
-                battleController.decisionBase(StringCoder.getDecisionNum(i));
-            }
-            else if (i == Move_GetFirst.label) {
-                battleController.moveAction(Move_GetFirst.moveAction);
-            }
-            else if (i == Move_Exchange.label) {
-                battleController.moveAction(Move_Exchange.moveAction);
-            }
-            else if (i == Move_Standby.label) {
-                battleController.moveAction(Move_Standby.moveAction);
-            }
-            else if (StringCoder.isBelongChangeChar(i)) {
-                battleController.changeActiveChar( StringCoder.getChangeCharNum(i) );
+            }else {
+                battleController.inputProcess(input);
             }
         }
+
     }
 }

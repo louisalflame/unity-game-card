@@ -11,6 +11,9 @@ public class CharManager
     public int _atk { get; private set; }
     public int _def { get; private set; }
     public int _mov { get; private set; }
+    public MoveAction[] _movActions { get; protected set; }
+    public AttackAction[] _atkActions { get; protected set; }
+    public DefenseAction[] _defActions { get; protected set; }
     
     public CharManager() { }
 
@@ -20,6 +23,9 @@ public class CharManager
         _atk = _character._atk;
         _def = _character._def;
         _mov = _character._mov;
+        _movActions = _character._movActions;
+        _atkActions = _character._atkActions;
+        _defActions = _character._defActions;
     }
 }
 
@@ -43,6 +49,9 @@ public class Character {
     public int _atk { get; protected set; }
     public int _def { get; protected set; }
     public int _mov { get; protected set; }
+    public MoveAction[] _movActions { get; protected set; }
+    public AttackAction[] _atkActions { get; protected set; }
+    public DefenseAction[] _defActions { get; protected set; }
     public Character() { }
     
 }
@@ -53,6 +62,9 @@ public class NullCharacter : Character {
         _atk = 0;
         _def = 0;
         _mov = 0;
+        _movActions = new MoveAction[] { };
+        _atkActions = new AttackAction[] { };
+        _defActions = new DefenseAction[] { };
     }
 }
 
@@ -62,6 +74,9 @@ public class Enemy_0 : Character {
         _atk = 7;
         _def = 2;
         _mov = 3;
+        _movActions = new MoveAction[3] { Move_GetFirst.action, Move_Exchange.action, Move_Standby.action };
+        _atkActions = new AttackAction[2] { Simple_Attack.action, Strike_Attack.action };
+        _defActions = new DefenseAction[1] { Simple_Defense.action };
     }
 }
 public class Enemy_1 : Character {
@@ -70,6 +85,9 @@ public class Enemy_1 : Character {
         _atk = 11;
         _def = 5;
         _mov = 6;
+        _movActions = new MoveAction[3] { Move_GetFirst.action, Move_Exchange.action, Move_Standby.action };
+        _atkActions = new AttackAction[2] { Simple_Attack.action, Strike_Attack.action };
+        _defActions = new DefenseAction[1] { Simple_Defense.action };
     }
 }
 public class Enemy_2 : Character {
@@ -78,6 +96,9 @@ public class Enemy_2 : Character {
         _atk = 17;
         _def = 6;
         _mov = 7;
+        _movActions = new MoveAction[3] { Move_GetFirst.action, Move_Exchange.action, Move_Standby.action };
+        _atkActions = new AttackAction[2] { Simple_Attack.action, Strike_Attack.action };
+        _defActions = new DefenseAction[1] { Simple_Defense.action };
     }
 }
 
@@ -87,6 +108,9 @@ public class Player_0 : Character {
         _atk = 12;
         _def = 5;
         _mov = 6;
+        _movActions = new MoveAction[3] { Move_GetFirst.action, Move_Exchange.action, Move_Standby.action };
+        _atkActions = new AttackAction[2] { Simple_Attack.action, Strike_Attack.action };
+        _defActions = new DefenseAction[1] { Simple_Defense.action };
     }
 }
 public class Player_1 : Character {
@@ -95,6 +119,9 @@ public class Player_1 : Character {
         _atk = 9;
         _def = 8;
         _mov = 2;
+        _movActions = new MoveAction[3] { Move_GetFirst.action, Move_Exchange.action, Move_Standby.action };
+        _atkActions = new AttackAction[2] { Simple_Attack.action, Strike_Attack.action };
+        _defActions = new DefenseAction[1] { Simple_Defense.action };
     }
 }
 public class Player_2 : Character {
@@ -103,5 +130,8 @@ public class Player_2 : Character {
         _atk = 14;
         _def = 3;
         _mov = 7;
+        _movActions = new MoveAction[3] { Move_GetFirst.action, Move_Exchange.action, Move_Standby.action };
+        _atkActions = new AttackAction[2] { Simple_Attack.action, Strike_Attack.action };
+        _defActions = new DefenseAction[1] { Simple_Defense.action };
     }
 }

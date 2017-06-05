@@ -4,34 +4,41 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class AttackAction {
-    public abstract int getAttackAtk(TeamManager team);
+    public string label { get; protected set; }
+    public string text { get; protected set; }
+    public void setLabelAndText(string[] label_text) { label = label_text[0]; text = label_text[1]; }
+
+    public abstract int getAttack(TeamManager team);
+    public static Dictionary<string, AttackAction> dictionary = new Dictionary<string, AttackAction>() {
+        { Simple_Attack.action.label, Simple_Attack.action },
+        { Strike_Attack.action.label, Strike_Attack.action }
+    };
 }
 
 public class Simple_Attack : AttackAction { 
     // Singleton 設計
-    protected static AttackAction _attackAction;
-    public static AttackAction attackAction {
-        get { if (_attackAction == null) { _attackAction = new Simple_Attack(); } return _attackAction; }
+    protected static AttackAction _action;
+    public static AttackAction action {
+        get { if (_action == null) { _action = new Simple_Attack(); } return _action; }
     }
 
-    public static string label = "simple_attack";
-    public static string text = "Simple Attack";
-    private Simple_Attack() { }
+    private Simple_Attack() { setLabelAndText(Name.Simple_Attack); }
 
-    public override int getAttackAtk(TeamManager team) { return team.ActiveChar._atk; }
+    public override int getAttack(TeamManager team) { 
+        return team.ActiveChar._atk;
+    }
 }
 
-public class Strike_Attack : AttackAction
-{
+public class Strike_Attack : AttackAction {
     // Singleton 設計
-    protected static AttackAction _attackAction;
-    public static AttackAction attackAction {
-        get { if (_attackAction == null) { _attackAction = new Strike_Attack(); } return _attackAction; }
+    protected static AttackAction _action;
+    public static AttackAction action {
+        get { if (_action == null) { _action = new Strike_Attack(); } return _action; }
     }
 
-    public static string label = "strike_attack";
-    public static string text = "Strike";
-    private Strike_Attack() { }
+    private Strike_Attack() { setLabelAndText(Name.Strike_Attack); }
 
-    public override int getAttackAtk(TeamManager team) { return team.ActiveChar._atk; }
+    public override int getAttack(TeamManager team) { 
+        return team.ActiveChar._atk * 2; 
+    }
 }
