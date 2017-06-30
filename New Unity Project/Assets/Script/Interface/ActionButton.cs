@@ -5,50 +5,36 @@ using UnityEngine;
 // 行動選單按鈕
 public class ActionButtonInterface { 
     public InterfaceController _interface;
-    private GameObject _next = null;
-    private GameObject _throw = null;
 
-    private GameObject[] _movActions = new GameObject[] { };
-    private GameObject[] _atkActions = new GameObject[] { };
-    private GameObject[] _defActions = new GameObject[] { };
+    public GameObject[] _movActions { get; private set; }
+    public GameObject[] _atkActions { get; private set; }
+    public GameObject[] _defActions { get; private set; }
 
     public ActionButtonInterface(InterfaceController inter) {
         _interface = inter;
 
-        _next = MonoBehaviour.Instantiate(Resources.Load("SingleButton")) as GameObject;
-        _next.transform.position = new Vector3(-5.5f, -1, 1);
-        _next.transform.localScale = new Vector3(1, 1, 1);
-        _next.transform.Find("text").GetComponent<TextMesh>().text = Name.NextButton[1];
-        _next.GetComponent<Button>().ButtonID = Name.NextButton[0];
-        _next.SetActive(false);
-
-        _throw = MonoBehaviour.Instantiate(Resources.Load("SingleButton")) as GameObject;
-        _throw.transform.localPosition = new Vector3(-3.5f, -1, 1);
-        _throw.transform.localScale = new Vector3(1, 1, 1);
-        _throw.transform.Find("text").GetComponent<TextMesh>().text = Name.ThrowButton[1];
-        _throw.GetComponent<Button>().ButtonID = Name.ThrowButton[0];
-        _throw.SetActive(false);
-         
+        _movActions = new GameObject[] { };
+        _atkActions = new GameObject[] { };
+        _defActions = new GameObject[] { };
     }
 
     public void update() { }
-    
-    public void showNextButton() { _next.SetActive(true); }
-    public void hideNextButton() { _next.SetActive(false); }
-    public void showThrowButton() { _throw.SetActive(true); }
-    public void hideThrowButton() { _throw.SetActive(false); }
+
+    public void setActionButtonLabel_ID(GameObject btn, string[] Label_ID) {
+        btn.transform.Find("actUp/text").GetComponent<TextMesh>().text = Label_ID[1];
+        btn.GetComponent<Button>().ButtonID = Label_ID[0];
+    }
 
     public void setMoveActionButton(CharManager character) {
         _movActions = new GameObject[ character._movActions.Length ];
-        for (int i = 0; i < _movActions.Length; i++) { 
-            GameObject btn = MonoBehaviour.Instantiate(Resources.Load("SingleButton")) as GameObject;
-            btn.transform.localScale = new Vector3(1, 1, 1);
-            btn.transform.Find("text").GetComponent<TextMesh>().text = character._movActions[i].text;
-            btn.GetComponent<Button>().ButtonID = character._movActions[i].label;
-            btn.SetActive(false);
-            _movActions[i] = btn;
+        for (int i = 0; i < _movActions.Length; i++) {
+            GameObject actBtn = MonoBehaviour.Instantiate(Resources.Load("ActionMov")) as GameObject;
+            actBtn.transform.parent = _interface._menuButton._mainButtonBack.transform.Find("mainBack").transform;
+            setActionButtonLabel_ID(actBtn, character._movActions[i].getLabel_ID());
+            actBtn.SetActive(false);
 
-            _movActions[i].transform.localPosition = new Vector3(-5.5f+2*i,-2,-1);
+            _movActions[i] = actBtn;
+            _movActions[i].transform.localPosition = Position.getActionButtonPosition(i);
         } 
     }
     public void showMoveActionButton() {
@@ -61,14 +47,13 @@ public class ActionButtonInterface {
     public void setAttackActionButton(CharManager character) { 
         _atkActions = new GameObject[ character._atkActions.Length ];
         for (int i = 0; i < _atkActions.Length; i++) {
-            GameObject btn = MonoBehaviour.Instantiate(Resources.Load("SingleButton")) as GameObject;
-            btn.transform.localScale = new Vector3(1, 1, 1);
-            btn.transform.Find("text").GetComponent<TextMesh>().text = character._atkActions[i].text;
-            btn.GetComponent<Button>().ButtonID = character._atkActions[i].label;
-            btn.SetActive(false);
-            _atkActions[i] = btn;
+            GameObject actBtn = MonoBehaviour.Instantiate(Resources.Load("ActionAtk")) as GameObject;
+            actBtn.transform.parent = _interface._menuButton._mainButtonBack.transform.Find("mainBack").transform;
+            setActionButtonLabel_ID(actBtn, character._atkActions[i].getLabel_ID());
+            actBtn.SetActive(false);
 
-            _atkActions[i].transform.localPosition = new Vector3(-5.5f + 2 * i, -2, -1);
+            _atkActions[i] = actBtn;
+            _atkActions[i].transform.localPosition = Position.getActionButtonPosition(i);
         }
     }
     public void showAttackActionButton() {
@@ -81,14 +66,13 @@ public class ActionButtonInterface {
     public void setDefenseActionButton(CharManager character) { 
         _defActions = new GameObject[ character._defActions.Length ];
         for (int i = 0; i < _defActions.Length; i++) {
-            GameObject btn = MonoBehaviour.Instantiate(Resources.Load("SingleButton")) as GameObject;
-            btn.transform.localScale = new Vector3(1, 1, 1);
-            btn.transform.Find("text").GetComponent<TextMesh>().text = character._defActions[i].text;
-            btn.GetComponent<Button>().ButtonID = character._defActions[i].label;
-            btn.SetActive(false);
-            _defActions[i] = btn;
+            GameObject actBtn = MonoBehaviour.Instantiate(Resources.Load("ActionDef")) as GameObject;
+            actBtn.transform.parent = _interface._menuButton._mainButtonBack.transform.Find("mainBack").transform;
+            setActionButtonLabel_ID(actBtn, character._defActions[i].getLabel_ID());
+            actBtn.SetActive(false);
 
-            _defActions[i].transform.localPosition = new Vector3(-5.5f + 2 * i, -2, -1);
+            _defActions[i] = actBtn;
+            _defActions[i].transform.localPosition = Position.getActionButtonPosition(i);
         }
     }
     public void showDefenseActionButton() { 

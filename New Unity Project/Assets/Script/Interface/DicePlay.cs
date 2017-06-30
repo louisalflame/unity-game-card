@@ -23,27 +23,33 @@ public class DicePlayInterface {
 
     // 擲骰和回收動畫
     public enum UpdateMode { none=1, waitStop, waitCollect };
-    private int _mode = (int)UpdateMode.none;
+    private UpdateMode _mode = UpdateMode.none;
     public void update() { 
         switch(_mode){
-            case (int)UpdateMode.none: 
+            case UpdateMode.none: 
                 break;
-            case (int)UpdateMode.waitStop:
+            case UpdateMode.waitStop:
                 if (isAllDicesStop()) {
-                    _mode = (int)UpdateMode.waitCollect;
+                    _mode = UpdateMode.waitCollect;
                     startCollectDices();
                 }
                 break;
-            case (int)UpdateMode.waitCollect:
+            case UpdateMode.waitCollect:
                 if (isAllDicesCollectReady()) {
-                    _mode = (int)UpdateMode.none;
+                    _mode = UpdateMode.none;
                     _interface._battle.nextTurn();
                 }
                 else collectDices();
                 break;
         }
     }
-    public void setUpdateMode(int mode) { _mode = mode; }
+    public void setUpdateMode(int mode) {
+        switch(mode){
+            case (int)UpdateMode.none        : _mode = UpdateMode.none; break;
+            case (int)UpdateMode.waitStop    : _mode = UpdateMode.waitStop; break;
+            case (int)UpdateMode.waitCollect : _mode = UpdateMode.waitCollect; break;
+        }
+    }
 
     // 顯示地板,依順序產生骰子
     public void showDicePlay(List<Dice> diceUsing) {

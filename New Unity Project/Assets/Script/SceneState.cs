@@ -57,17 +57,13 @@ public class MenuScene : SceneState {
     public override void stateBegin() { 
         Debug.Log("menuScene begin:");
 
-        GameObject start = MonoBehaviour.Instantiate(Resources.Load("SingleButton")) as GameObject;
+        GameObject start = MonoBehaviour.Instantiate(Resources.Load("SystemButton")) as GameObject;
         start.transform.localPosition = new Vector3(0,2,1);
-        start.transform.localScale=new Vector3(3,3,1);
-        start.transform.Find("text").GetComponent<TextMesh>().text = Name.StartButton[1];
-        start.GetComponent<Button>().ButtonID = Name.StartButton[0];
+        NameCoder.setButtonLabel_ID(start, NameCoder.StartButton);
 
-        GameObject exit = MonoBehaviour.Instantiate(Resources.Load("SingleButton")) as GameObject; 
+        GameObject exit = MonoBehaviour.Instantiate(Resources.Load("SystemButton")) as GameObject; 
         exit.transform.localPosition = new Vector3(0,-2,1);
-        exit.transform.localScale=new Vector3(3,3,1);
-        exit.transform.Find("text").GetComponent<TextMesh>().text = Name.ExitButton[1];
-        exit.GetComponent<Button>().ButtonID = Name.ExitButton[0];
+        NameCoder.setButtonLabel_ID(exit, NameCoder.ExitButton);
         
     }
     public override void stateUpdate() {  }
@@ -81,7 +77,7 @@ public class MenuScene : SceneState {
         {
             Debug.Log("input process : " + i);
             //按下start鈕=>開啟新scene
-            if (i == Name.StartButton[0]) {
+            if (i == NameCoder.getLabel(NameCoder.StartButton)) {
                 sceneController.setScene(new BattleScene(sceneController));
             }
         }
@@ -116,7 +112,7 @@ public class BattleScene : SceneState {
         foreach (string input in inputs) {
             Debug.Log("input process : " + input);
             //按下start鈕=>開啟新scene
-            if (input == Name.ExitButton[0]) {
+            if (input == NameCoder.getLabel(NameCoder.ExitButton)) {
                 sceneController.setScene(new MenuScene(sceneController));
             }else {
                 battleController.inputProcess(input);

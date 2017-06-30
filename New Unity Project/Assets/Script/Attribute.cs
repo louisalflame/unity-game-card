@@ -129,59 +129,82 @@ public class StringCoder {
         return false;
     }
 
+    // 預備骰查看
+    public static string getDiceBoxString(int type) { return NameCoder.diceBoxLabel + type.ToString(); }
+    public static bool isBelongDiceBox(string str) {
+        if (str.StartsWith(NameCoder.diceBoxLabel)) return isNumValid(str, 1);
+        else return false;
+    }
+    public static int getDiceBoxNum(string str) { return int.Parse(str.Split('-')[1]); }
+
     // 骰面之行動點數/建築點數選擇
-    public static string getAttrDecisionString(int num) { return Name.decisionAttrLabel + num.ToString(); }
-    public static string getBaseDecisionString(int num) { return Name.decisionBaseLabel + num.ToString(); }
+    public static string getAttrDecisionString(int num) { return NameCoder.decisionAttrLabel + num.ToString(); }
+    public static string getBaseDecisionString(int num) { return NameCoder.decisionBaseLabel + num.ToString(); }
     public static bool isBelongAttrDecision(string str) {
-        if (str.StartsWith(Name.decisionAttrLabel)) return isNumValid(str, 1);
+        if (str.StartsWith(NameCoder.decisionAttrLabel)) return isNumValid(str, 1);
         else return false;
     }
     public static bool isBelongBaseDecision(string str) {
-        if (str.StartsWith(Name.decisionBaseLabel)) return isNumValid(str, 1);
+        if (str.StartsWith(NameCoder.decisionBaseLabel)) return isNumValid(str, 1);
         else return false;
     }
-    public static int getDecisionNum(string str) {
-        return int.Parse(str.Split('-')[1]);
-    }
+    public static int getDecisionNum(string str) { return int.Parse(str.Split('-')[1]); }
 
     // 更換角色之選擇
-    public static string getChangeCharString(int num) { return Name.changeCharLabel + num.ToString(); }
+    public static string getChangeCharString(int num) { return NameCoder.changeCharLabel + num.ToString(); }
     public static bool isBelongChangeChar(string str) {
-        if (str.StartsWith(Name.changeCharLabel)) return isNumValid(str, 1);
+        if (str.StartsWith(NameCoder.changeCharLabel)) return isNumValid(str, 1);
         else return false;
     }
-    public static int getChangeCharNum(string str) {
-        return int.Parse(str.Split('-')[1]);
-    }
+    public static int getChangeCharNum(string str) { return int.Parse(str.Split('-')[1]); }
 
-    public static bool isBelongMoveAction(string str) { return str.StartsWith(Name.moveActionLabel); }
-
-    public static bool isBelongAttackAction(string str) { return str.StartsWith(Name.attackActionLabel); }
-
-    public static bool isBelongDefenseAction(string str) { return str.StartsWith(Name.defenseActionLabel); }
+    // 移動指令
+    public static bool isBelongMoveAction(string str) { return str.StartsWith(NameCoder.moveActionLabel); }
+    // 攻擊指令
+    public static bool isBelongAttackAction(string str) { return str.StartsWith(NameCoder.attackActionLabel); }
+    // 防禦指令
+    public static bool isBelongDefenseAction(string str) { return str.StartsWith(NameCoder.defenseActionLabel); }
 
 }
 
-public class Name{
-    public static string[] StartButton = new string[] { "start", "Start" };
-    public static string[] NextButton = new string[] { "next", "Next" };
-    public static string[] ExitButton = new string[] { "exit", "Exit" };
-    public static string[] ThrowButton = new string[] { "throw", "Throw" };
+public class NameCoder{
+    public static void setButtonLabel_ID(GameObject o, string[] Label_ID) {
+        o.transform.Find("text").GetComponent<TextMesh>().text = Label_ID[1];
+        o.GetComponent<Button>().ButtonID = Label_ID[0];
+    }
+    public static string getLabel(string[] namePair) { return namePair[0]; }
+    public static string getText(string[] namePair) { return namePair[1]; }
 
-    public static string decisionAttrLabel = "decisionAttr-";
-    public static string decisionBaseLabel = "decisionBase-";
+    // 基本按鈕
+    public static readonly string[] StartButton = new string[] { "start", "Start" };
+    public static readonly string[] NextButton = new string[] { "next", "Next" };
+    public static readonly string[] ExitButton = new string[] { "exit", "Exit" };
+    public static readonly string[] ThrowButton = new string[] { "throw", "Throw" };
 
-    public static string changeCharLabel = "changeChar-";
+    // 預備骰
+    public const string diceBoxLabel = "diceBox-";
 
-    public static string moveActionLabel = "movAct-";
-    public static string[] Move_GetFirst = new string[] { moveActionLabel + "get_first", "Get First" };
-    public static string[] Move_Exchange = new string[] { moveActionLabel + "exchange", "Exchange" };
-    public static string[] Move_Standby = new string[] { moveActionLabel + "standby", "Standby" };
+    // 骰面選擇 點數/建築
+    public const string decisionAttrLabel = "decisionAttr-";
+    public const string decisionBaseLabel = "decisionBase-";
 
-    public static string attackActionLabel = "atkAct-";
-    public static string[] Simple_Attack = new string[] { attackActionLabel + "simple", "Attack" };
-    public static string[] Strike_Attack = new string[] { attackActionLabel + "strike", "Strike" };
+    // 更換角色
+    public const string changeCharLabel = "changeChar-";
 
-    public static string defenseActionLabel = "defAct-";
-    public static string[] Simple_Defense = new string[] { defenseActionLabel + "simple", "Defense" };
+    // 移動指令
+    public const string moveActionLabel = "movAct-";
+    public static readonly string[] Move_GetFirst = new string[] { moveActionLabel + "get_first", "Get First" };
+    public static readonly string[] Move_Exchange = new string[] { moveActionLabel + "exchange", "Exchange" };
+    public static readonly string[] Move_Standby = new string[] { moveActionLabel + "standby", "Standby" };
+
+    // 攻擊指令
+    public const string attackActionLabel = "atkAct-";
+    public static readonly string[] Simple_Attack = new string[] { attackActionLabel + "simple", "Attack" };
+    public static readonly string[] Strike_Attack = new string[] { attackActionLabel + "strike", "Strike" };
+
+    // 防禦指令
+    public const string defenseActionLabel = "defAct-";
+    public static readonly string[] Simple_Defense = new string[] { defenseActionLabel + "simple", "Defense" };
+
+
 }
