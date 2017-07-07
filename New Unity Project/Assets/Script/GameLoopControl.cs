@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class GameLoopControl : MonoBehaviour {
 
+    // 場景設定
     SceneController sceneController = null;
 
     void awake(){
@@ -16,6 +17,7 @@ public class GameLoopControl : MonoBehaviour {
         // 設定起始scene
         Debug.Log("Start Mono");
         GameObject.DontDestroyOnLoad(this.gameObject);
+        this.gameObject.transform.name = "GameLoop";
 
         sceneController = new SceneController(this);
         sceneController.setScene(new StartScene(sceneController));
@@ -26,7 +28,6 @@ public class GameLoopControl : MonoBehaviour {
 	
 	// 所有更新的起點 => 由FixedUpdate取代
 	void Update () { }
-
     void FixedUpdate() {
         // 由SceneController負責場景下的更新
         sceneController.sceneUpdate();

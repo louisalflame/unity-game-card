@@ -4,7 +4,12 @@ using System.Collections;
 public class TurnManager {
     private TurnState _turn;
     private BattleController _battle;
-    public TurnManager() {}
+
+    public int _turnNum { get; private set; }
+
+    public TurnManager() {
+        _turnNum = 0;
+    }
 
     // 初始設定,由第一個state開始
     public void initSetting(BattleController battleController, TurnState initTurn) {
@@ -20,6 +25,7 @@ public class TurnManager {
     }
 
     public void update() { _turn.update(); }
+    public void addNewTurn() { _turnNum += 1; }
 }
 
 public abstract class TurnState{
@@ -43,7 +49,10 @@ public class PrepareTurn : TurnState {
 // 起始階段，開始擲骰
 public class StartTurn : TurnState {
     public StartTurn(BattleController battle, TurnManager turn) : base(battle, turn) { Debug.Log("init start turn"); }
-    public override void newTurn() { _battle.newStartTurn(); }
+    public override void newTurn() { 
+        _turnManager.addNewTurn(); 
+        _battle.newStartTurn();
+    }
     public override void endTurn() { _battle.endStartTurn(); }
     public override TurnState getNextTurn() { return new DecisionTurn(_battle, _turnManager); }
 }

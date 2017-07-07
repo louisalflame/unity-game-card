@@ -5,27 +5,34 @@ using System.Collections.Generic;
 public class InterfaceController {
     public BattleController _battle;
     public MenuButtonInterface _menuButton { get; private set; }
-    public TeamStatusInterface _teamStatus { get; private set; }
-    public CharStatusInterface _charStatus { get; private set; }
+    public TurnStatus _turnStatus { get; private set; }
+
     public ActionButtonInterface _actionButton { get; private set; }
+    public TowerStatusInterface _towerStatus { get; private set; }
+    public AttrPointsInterface _attrPoints { get; private set; }
+
+    public SkillMenuInterface _skillMenu { get; private set; }
+    public TeamStatusInterface _teamStatus { get; private set; }
+
     public DiceBoxInterface _diceBox { get; private set; }
     public DicePlayInterface _dicePlay { get; private set; }
     public AttrDecisionInterface _attrDecision { get; private set; }
-    public TowerStatusInterface _towerStatus { get; private set; }
-    public AttrPointsInterface _attrPoints { get; private set; }
-    public SkillMenuInterface _skillMenu { get; private set; }
 
     public InterfaceController(BattleController battle) {
         _battle = battle;
         _menuButton = new MenuButtonInterface(this);
-        _teamStatus = new TeamStatusInterface(this);
+        _turnStatus = new TurnStatus(this);
+
         _actionButton = new ActionButtonInterface(this);
+        _towerStatus = new TowerStatusInterface(this);
+        _attrPoints = new AttrPointsInterface(this);
+
+        _skillMenu = new SkillMenuInterface(this);
+        _teamStatus = new TeamStatusInterface(this);
+
         _diceBox = new DiceBoxInterface(this);
         _dicePlay = new DicePlayInterface(this);
         _attrDecision = new AttrDecisionInterface(this);
-        _towerStatus = new TowerStatusInterface(this);
-        _attrPoints = new AttrPointsInterface(this);
-        _skillMenu = new SkillMenuInterface(this);
     }
 
     public void update() {
@@ -46,8 +53,12 @@ public class InterfaceController {
     public void showThrowButton() { _menuButton.showThrowButton(); }
     public void hideThrowButton() { _menuButton.hideThrowButton(); } 
 
-    public void setTeamPlayer(TeamManager player) { _teamStatus.setPlayerCharacters(player._characters); }
-    public void setTeamEnemy(TeamManager enemy) { _teamStatus.setEnemyCharacters(enemy._characters);  }
+    public void setTeamPlayer() { _teamStatus.setPlayerCharacters(); }
+    public void setTeamEnemy() { _teamStatus.setEnemyCharacters();  }
+
+    public void showMoveTurn() { _turnStatus.showMoveTurn(); }
+    public void showPlayerAtkTurn() { _turnStatus.showPlayerAtkTurn(); }
+    public void showPlayerDefTurn() { _turnStatus.showPlayerDefTurn(); }
 
     public void resetActionButtons(CharManager character) { _actionButton.resetActionButtons(character); }
     public void showMoveActionButton() { _actionButton.showMoveActionButton(); }
@@ -57,20 +68,18 @@ public class InterfaceController {
     public void showDefenseActionButton() { _actionButton.showDefenseActionButton(); }
     public void hideDefenseActionButton() { _actionButton.hideDefenseActionButton(); }
 
+    public void changeActiveCharTo(int n) { _teamStatus.changeActiveCharStatus(n); }
     public void showTeamRearrangeButton() { _teamStatus.showTeamRearrangeButton(); }
-    public void hideTeamRearrangeButton() { _teamStatus.hideTeamRearrangeButton();  }
+    public void hideTeamRearrangeButton() { _teamStatus.hideTeamRearrangeButton(); }
     
     public void checkDiceBox(int type) { _diceBox.checkDiceBox(type); }
-    public void showDiceBox(List<Dice> dicesUnused) { _diceBox.showDiceBox(dicesUnused); }
-    public void showDicePlay(List<Dice> dicesUsing) { _dicePlay.showDicePlay(dicesUsing); }
+    public void showDicePlay() { _dicePlay.showDicePlay(); }
 
-    public void setAttrDecision(AttrDecisionManager attrDecisionManager) { _attrDecision.setAttrDecision(attrDecisionManager); }
     public void showAttrDecision() { _attrDecision.showFaces(); }
 
     public void startWaitDicesAnimate() { _dicePlay.setUpdateMode((int)DicePlayInterface.UpdateMode.waitStop); }
-    public List<int> getDicesResult() { return _dicePlay.getDicesResult(); }
     public void removeDices3D() { _dicePlay.removeDices(); }
-    public void removeFaceDecision() { _attrDecision.clear(); }
+    public void hideFaceDecision() { _attrDecision.hideFaceDecision(); }
 
     public void setTowerStatus(AttrTower[] towers) { _towerStatus.setTowerStatus(towers); }
     public void setAttrNums(int[] attrNums) { _attrPoints.setAttrNums(attrNums); }

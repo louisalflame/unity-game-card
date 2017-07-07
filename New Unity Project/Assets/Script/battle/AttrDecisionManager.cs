@@ -11,13 +11,11 @@ public class AttrDecisionManager{
         _battle = battle;
     }
 
-    public void setDicesResult(List<int> result, List<Dice> diceUsing) {
+    public void setDicesResult() {
         _toAttr = new List<DiceFace>();
         _toBase = new List<DiceFace>();
-        for (int i = 0; i < diceUsing.Count; i++) {
-            int f = result[i];
-            DiceFace face = diceUsing[i].getFace(f);
-            Debug.Log( f+face.ToString() );
+        foreach(DiceFace face in _battle._interface._dicePlay._result) {            
+            Debug.Log( face.ToString() );
             _toAttr.Add(face);
         }
     }

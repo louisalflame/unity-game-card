@@ -19,18 +19,28 @@ public class TeamManager {
 
     // 場地骰子/隊伍骰子/角色骰子
     public DiceManager _groundDices { get; private set; }
+    public DiceManager _teamDices { get; private set; }
+    public DiceManager _personDices { get; private set; }
 
     // 行動點數和儲存塔
     public TowerManager _towerManager { get; private set; }
 
     public TeamManager(BattleController battle) {
         _battle = battle;
-        _groundDices = new DiceManager(battle);
-        _towerManager = new TowerManager(battle);
 
         // 製作所有dicebox 的骰子
-        for (int i = 0; i < 10; i++) { _groundDices.addDicesUnused(new NorDice()); }
-        for (int i = 0; i < 10; i++) { _groundDices.addDicesUnused(new AtkDice()); }
+        _groundDices = new DiceManager(_battle, 5);
+        _groundDices.importDices( GameObject.Find("GameLoop").GetComponent<TeamRecord>()._groundDices );
+        _teamDices = new DiceManager(_battle, 2);
+        _teamDices.importDices(GameObject.Find("GameLoop").GetComponent<TeamRecord>()._teamDices);
+        _personDices = new DiceManager(_battle, 1);
+
+        // 管理點數和儲存塔
+        _towerManager = new TowerManager(_battle);
+    }
+    // 主戰角色更換時，重置角色骰
+    public void resetPersonDice() { 
+        _personDices.importDices(ActiveChar._personDice);
     }
     
     // 初始設定隊伍腳色
@@ -41,25 +51,36 @@ public class TeamManager {
             _characters[i] = new CharManager();
             _characters[i].setCharacter(characters[i]);
         }
+        resetPersonDice();
+    }
+
+    // 開始擲骰 和 結束回收骰
+    public void startDiceUsing() {
+        _groundDices.addDicesUsing();
+        _teamDices.addDicesUsing();
+        _personDices.addDicesUsing();
+    }
+    public void recycleDices() {
+        _groundDices.recycleDices();
+        _teamDices.recycleDices();
+        _personDices.recycleDices();
     }
     
     public bool isPlayerSafe() { return ActiveChar._hp > 0; }
+    public bool isCharSafe(CharManager charM) { return charM._hp > 0; }
+    public bool isCharActive(CharManager charM) { return ActiveChar == charM; }
 
     public bool isChangeActiveChar() {
         return _moveAction == Move_Exchange.action;
     }
 
-    public bool changeActiveCharTo(int selected) {
-        if (_characters[selected]._hp > 0) {
-            _active = selected;
-            return true;
-        }
-        else return false;
+    public void changeActiveCharTo(int selected) {
+        _active = selected;
     }
      
-    public void setMoveAction(MoveAction action)     { _moveAction = action; }
-    public void setAttackAction(AttackAction action) { _attackAction = action; }
-    public void setDefenseAction(DefenseAction action)         { _defenseAction = action; }
+    public void setMoveAction(MoveAction action)        { _moveAction = action; }
+    public void setAttackAction(AttackAction action)    { _attackAction = action; }
+    public void setDefenseAction(DefenseAction action)  { _defenseAction = action; }
     
     public int getMoveSpeed() {
         return _moveAction.getMoveSpeed(this);
