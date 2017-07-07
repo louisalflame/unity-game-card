@@ -33,6 +33,10 @@ public class CharManager {
         _defActions = _character._defActions;
         _personDice = _character._personDice;
     }
+
+    public void getDamage(int damage) {
+        _hp = Mathf.Max( 0, _hp - damage );
+    }
 }
 
 // 角色生成
@@ -103,7 +107,7 @@ public class Enemy_0 : Character {
         _id = "Enemy_0";
         _name = "敵人0";
         _hp = 20;
-        _atk = 7;
+        _atk = 27;
         _def = 2;
         _mov = 3;
         _movActions = new MoveAction[3] { Move_GetFirst.action, Move_Exchange.action, Move_Standby.action };
@@ -161,7 +165,7 @@ public class Player_0 : Character {
         _id = "Player_0";
         _name = "我方0";
         _hp = 30;
-        _atk = 12;
+        _atk = 2;
         _def = 5;
         _mov = 6;
         _movActions = new MoveAction[3] { Move_GetFirst.action, Move_Exchange.action, Move_Standby.action };

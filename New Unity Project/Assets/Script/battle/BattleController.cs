@@ -78,7 +78,8 @@ public class BattleController {
         // 回收已使用骰子
         _playerManager.recycleDices();
 
-        // TODO 敵方隊伍AI選擇移動階段動作
+        // TODO: 敵方隊伍擲骰獲得隨機點數
+        // TODO:[AI] 敵方隊伍選擇移動階段動作
         _enemyManager.setMoveAction(Move_GetFirst.action);
     }
     public void endDecisionTurm() {
@@ -122,8 +123,8 @@ public class BattleController {
         _interface.hideNextButton();
         _interface.hideAttackActionButton();
     }
-    public void newEnemyDefenseTurn() { 
-        // 敵方隊伍AI選擇防禦動作
+    public void newEnemyDefenseTurn() {
+        // TODO:[AI] 敵方隊伍選擇防禦動作
         _enemyManager.setDefenseAction(Simple_Defense.action);
         nextTurn();
     }
@@ -135,7 +136,7 @@ public class BattleController {
         _battleManager.resetBattleUnit();
         _battleManager.setEnemyAttacking();
 
-        // 敵方隊伍AI選擇攻擊動作
+        // TODO:[AI] 敵方隊伍選擇攻擊動作
         _enemyManager.setAttackAction(Simple_Attack.action);
         nextTurn();
     }
@@ -164,7 +165,17 @@ public class BattleController {
         _playerManager._towerManager.filterAttrPoints();
         _interface.setAttrNums(_playerManager._towerManager._attrNums);
     }
-    public void newRearrangeTurn() { }
+    public void newRearrangeTurn() {
+        // 戰鬥角色死亡 我方隊伍選擇換人
+        if (!_playerManager.isPlayerSafe()) {
+        _interface.showTeamRearrangeButton();
+        }
+        // TODO:[AI] 敵方隊伍選擇換人
+        if (!_enemyManager.isPlayerSafe()) {
+
+        }
+
+    }
     public void endRearrangeTurn() { }
 
     // player指令動作 ========================================================================
@@ -254,7 +265,7 @@ public class BattleController {
 }
 
 public class BattleManager {
-    private BattleController _battle;
+    public BattleController _battle { get; private set; }
     public BattleUnit _unit { get; private set; }
     public bool _playerFirst { get; private set; }
     public bool _playerAttacked { get; private set; }
@@ -294,10 +305,10 @@ public class BattleManager {
 }
 
 public class BattleUnit{
-    private BattleManager _battle;
+    public BattleManager _battleManager { get; private set; }
     public TeamManager _attacker { get; private set; }
     public TeamManager _defenser { get; private set; }
-    public BattleUnit(BattleManager battle) { _battle = battle; }
+    public BattleUnit(BattleManager battle) { _battleManager = battle; }
 
     public void setAttacker(TeamManager attacker) { _attacker = attacker; }
     public void setDefenser(TeamManager defenser) { _defenser = defenser; }
@@ -306,6 +317,17 @@ public class BattleUnit{
         int atk = _attacker.getAttack();
         int def = _defenser.getDefense();
         Debug.Log("Run Battle Atk:"+ atk + ", Def:"+ def);
+
+        int damage = atk - def;
+        getDamage(damage);
+
+        _battleManager._battle._interface._teamStatus.updateCharStatusInfo();
+    }
+
+    public void getDamage(int damage) {
+        if (damage > 0) {
+            _defenser.getDamage(damage);
+        }
     }
 }
 

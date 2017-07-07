@@ -30,6 +30,7 @@ public class TeamStatusInterface {
 
     public void update() { }
 
+    // 更換我方角色
     public void changeActiveCharStatus(int select) {
         CharPlayerStatusInterface tmp = _playerChars[0];
         for (int i = 0; i < _playerChars.Length; i++) {
@@ -61,6 +62,16 @@ public class TeamStatusInterface {
             } else {
                 status.hideStatus();
             }
+        }
+    }
+
+    // 更新角色狀態
+    public void updateCharStatusInfo() {
+        for (int i = 0; i < _playerChars.Length; i++) {
+            _playerChars[i].setCharInfo();
+        }
+        for (int i = 0; i < _enemyChars.Length; i++) {
+            _enemyChars[i].setCharInfo();
         }
     }
 }

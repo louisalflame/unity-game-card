@@ -72,4 +72,5 @@ public class Position {
     public static readonly float[] turnPlayerStatusPosition = new float[] { -2.2f, 0, 0 };
     public static readonly float[] turnEnemyStatusPosition  = new float[] {  2.2f, 0, 0 };
     public static readonly float[] turnStatusLabelCenterPosition = new float[] { 0, 1.5f, 0 };
+
 }

@@ -70,14 +70,15 @@ public class TeamManager {
     public bool isCharSafe(CharManager charM) { return charM._hp > 0; }
     public bool isCharActive(CharManager charM) { return ActiveChar == charM; }
 
+    // 更換角色
     public bool isChangeActiveChar() {
         return _moveAction == Move_Exchange.action;
     }
-
     public void changeActiveCharTo(int selected) {
         _active = selected;
     }
-     
+    
+    // 決定行動
     public void setMoveAction(MoveAction action)        { _moveAction = action; }
     public void setAttackAction(AttackAction action)    { _attackAction = action; }
     public void setDefenseAction(DefenseAction action)  { _defenseAction = action; }
@@ -87,4 +88,9 @@ public class TeamManager {
     }
     public int getAttack() { return _attackAction.getAttack(this); }
     public int getDefense() { return _defenseAction.getDefense(this); }
+
+    // 造成傷害
+    public void getDamage(int damage) {
+        ActiveChar.getDamage( damage );
+    }
 }

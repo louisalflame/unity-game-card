@@ -115,10 +115,15 @@ public class BattleCountTurn : TurnState {
     public override void newTurn() { _battle.newBattleCountTurn(); }
     public override void endTurn() { _battle.endBattleCountTurn(); }
     public override TurnState getNextTurn() {
-        if (_battle._battleManager._playerAttacked && _battle._battleManager._enemyAttacked) return new AnalysisTurn(_battle, _turnManager);
-        else if (_battle._battleManager._playerAttacked && !_battle._battleManager._enemyAttacked) return new EnemyAttackTurn(_battle, _turnManager);
-        else if (!_battle._battleManager._playerAttacked && _battle._battleManager._enemyAttacked) return new PlayerAttackTurn(_battle, _turnManager);
-        else return this;
+        if ( _battle._playerManager.isPlayerSafe() && _battle._enemyManager.isPlayerSafe() ) {
+            if (_battle._battleManager._playerAttacked && _battle._battleManager._enemyAttacked) {
+                return new AnalysisTurn(_battle, _turnManager);
+            } else if (_battle._battleManager._playerAttacked && !_battle._battleManager._enemyAttacked) {
+                return new EnemyAttackTurn(_battle, _turnManager);
+            } else if (!_battle._battleManager._playerAttacked && _battle._battleManager._enemyAttacked) {
+                return new PlayerAttackTurn(_battle, _turnManager);
+            } else return this;
+        } else return new AnalysisTurn(_battle, _turnManager); 
     }
 }
 
@@ -130,8 +135,9 @@ public class AnalysisTurn : TurnState {
     public override TurnState getNextTurn() {
         if (_battle._playerManager.isPlayerSafe() && _battle._enemyManager.isPlayerSafe()) {
             return new StartTurn(_battle, _turnManager);
-        }
-        return new RearrangeTurn(_battle, _turnManager); 
+        } 
+        // 如果有一方全員陣亡 則判斷勝負
+        else return new RearrangeTurn(_battle, _turnManager); 
     }
 }
 
