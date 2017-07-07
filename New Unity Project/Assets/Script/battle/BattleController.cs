@@ -22,8 +22,6 @@ public class BattleController {
     // 玩家可輸入開關
     public bool _inputValid { get; private set; }
 
-    List<GameObject> dices;
-
     public BattleController() {
         _playerManager = new TeamManager(this);
         _enemyManager = new TeamManager(this);
@@ -50,14 +48,16 @@ public class BattleController {
         _enemyManager.setCharacters(new int[] { 0, 1, 2, 2 });
 
         // 隊伍狀態,骰子組成 由角色決定後在更新
-        _interface.setTeamPlayer(_playerManager);
-        _interface.setTeamEnemy(_enemyManager);
+        _interface.setTeamPlayer();
+        _interface.setTeamEnemy();
 
         nextTurn();
     }
     public void newStartTurn() {
         // 建立新的一回合攻防戰鬥
         _battleManager = new BattleManager(this);
+        // 顯示為移動階段
+        _interface.showMoveTurn();
         // 顯示執骰按鈕
         _interface.hideNextButton();
         _interface.showThrowButton();
@@ -70,28 +70,28 @@ public class BattleController {
     }
     public void newDecisionTurn() {
         // 顯示骰面 玩家可選擇行動點數或建築點數
-        _attrDecisionManager.setDicesResult(_interface.getDicesResult(), _playerManager._groundDices.getDicesUsing());
-        _interface.setAttrDecision(_attrDecisionManager);
+        _attrDecisionManager.setDicesResult();
         _interface.showAttrDecision();
         _interface.removeDices3D();
         // 顯示移動階段動作選擇按鈕
         _interface.showMoveActionButton();
+        // 回收已使用骰子
+        _playerManager.recycleDices();
 
-        // TODO 敵方隊伍AI選擇移動階段動作
+        // TODO: 敵方隊伍擲骰獲得隨機點數
+        // TODO:[AI] 敵方隊伍選擇移動階段動作
         _enemyManager.setMoveAction(Move_GetFirst.action);
     }
     public void endDecisionTurm() {
         // 收集已選擇之行動和建築點數
         _playerManager._towerManager.collectBasePoint(_attrDecisionManager.getFacesBase());
         _playerManager._towerManager.collectAttrPoint(_attrDecisionManager.getFacesAttr());
-        // 回收已使用骰子
-        _playerManager._groundDices.recycleDices();
 
         // 更新容量塔和儲存點數
         _interface.setTowerStatus(_playerManager._towerManager._towers);
         _interface.setAttrNums(_playerManager._towerManager._attrNums);
         // 隱藏移動階段行動選擇按鈕
-        _interface.removeFaceDecision();
+        _interface.hideFaceDecision();
         _interface.hideMoveActionButton();
         _interface.hideNextButton();
 
@@ -111,28 +111,32 @@ public class BattleController {
     public void endMoveCountTurn() { }
 
     public void newPlayerAttackTurn() {
-        //以先攻者開始設定攻防參數
+        // 顯示為玩家攻擊階段
+        _interface.showPlayerAtkTurn();
+        // 以先攻者開始設定攻防參數
         _battleManager.resetBattleUnit();
         _battleManager.setPlayerAttacking();
-        //顯示攻擊選擇
+        // 顯示攻擊選擇
         _interface.showAttackActionButton();
     }
     public void endPlayerAttackTurn() {
         _interface.hideNextButton();
         _interface.hideAttackActionButton();
     }
-    public void newEnemyDefenseTurn() { 
-        // 敵方隊伍AI選擇防禦動作
+    public void newEnemyDefenseTurn() {
+        // TODO:[AI] 敵方隊伍選擇防禦動作
         _enemyManager.setDefenseAction(Simple_Defense.action);
         nextTurn();
     }
     public void endEnemyDefenseTurn() { }
     public void newEnemyAttackTurn() {
+        // 顯示為玩家防禦階段
+        _interface.showPlayerDefTurn();
         //以先攻者開始設定攻防參數
         _battleManager.resetBattleUnit();
         _battleManager.setEnemyAttacking();
 
-        // 敵方隊伍AI選擇攻擊動作
+        // TODO:[AI] 敵方隊伍選擇攻擊動作
         _enemyManager.setAttackAction(Simple_Attack.action);
         nextTurn();
     }
@@ -161,7 +165,17 @@ public class BattleController {
         _playerManager._towerManager.filterAttrPoints();
         _interface.setAttrNums(_playerManager._towerManager._attrNums);
     }
-    public void newRearrangeTurn() { }
+    public void newRearrangeTurn() {
+        // 戰鬥角色死亡 我方隊伍選擇換人
+        if (!_playerManager.isPlayerSafe()) {
+        _interface.showTeamRearrangeButton();
+        }
+        // TODO:[AI] 敵方隊伍選擇換人
+        if (!_enemyManager.isPlayerSafe()) {
+
+        }
+
+    }
     public void endRearrangeTurn() { }
 
     // player指令動作 ========================================================================
@@ -172,17 +186,15 @@ public class BattleController {
     public void throwDices() {
         _inputValid = false;
         _interface.hideThrowButton();
-        //抓出box前5個dices
-        _playerManager._groundDices.addDicesUsing(5);
+        //抓出box前n個dices
+        _playerManager.startDiceUsing();
         //製作dice 3D模型
-        _interface.showDicePlay(_playerManager._groundDices.getDicesUsing());
+        _interface.showDicePlay();
         //下一階段 等待骰子 隨機擲出 記錄骰值 
         _interface.startWaitDicesAnimate(); 
     }
     public void checkDiceBox(int type) {
         _interface.checkDiceBox(type);
-        // 顯示基本物件(可用骰)
-        //_interface.showDiceBox(_playerManager._groundDices.getDicesUnused());
     }
     public void decisionAttr(int id) {
         _attrDecisionManager.decisionAttr(id);
@@ -210,6 +222,7 @@ public class BattleController {
         //點選欲交換的角色
         Debug.Log("change active char to :" + charNum);
         _playerManager.changeActiveCharTo(charNum);
+        _interface.changeActiveCharTo(charNum);
         _interface.hideTeamRearrangeButton();
 
         //更換角色 重製行動攻防按鈕
@@ -252,7 +265,7 @@ public class BattleController {
 }
 
 public class BattleManager {
-    private BattleController _battle;
+    public BattleController _battle { get; private set; }
     public BattleUnit _unit { get; private set; }
     public bool _playerFirst { get; private set; }
     public bool _playerAttacked { get; private set; }
@@ -292,10 +305,10 @@ public class BattleManager {
 }
 
 public class BattleUnit{
-    private BattleManager _battle;
+    public BattleManager _battleManager { get; private set; }
     public TeamManager _attacker { get; private set; }
     public TeamManager _defenser { get; private set; }
-    public BattleUnit(BattleManager battle) { _battle = battle; }
+    public BattleUnit(BattleManager battle) { _battleManager = battle; }
 
     public void setAttacker(TeamManager attacker) { _attacker = attacker; }
     public void setDefenser(TeamManager defenser) { _defenser = defenser; }
@@ -304,6 +317,17 @@ public class BattleUnit{
         int atk = _attacker.getAttack();
         int def = _defenser.getDefense();
         Debug.Log("Run Battle Atk:"+ atk + ", Def:"+ def);
+
+        int damage = atk - def;
+        getDamage(damage);
+
+        _battleManager._battle._interface._teamStatus.updateCharStatusInfo();
+    }
+
+    public void getDamage(int damage) {
+        if (damage > 0) {
+            _defenser.getDamage(damage);
+        }
     }
 }
 

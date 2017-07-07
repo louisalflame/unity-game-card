@@ -119,6 +119,7 @@ public class ImgPath {
     public const string TowerHeal2 = "Sprite/TowerIcon/TowerHeal2";
     public const string TowerHeal3 = "Sprite/TowerIcon/TowerHeal3";
     public const string TowerHeal4 = "Sprite/TowerIcon/TowerHeal4";
+
 }
 
 
@@ -206,5 +207,6 @@ public class NameCoder{
     public const string defenseActionLabel = "defAct-";
     public static readonly string[] Simple_Defense = new string[] { defenseActionLabel + "simple", "Defense" };
 
-
+    // 回合數顯示
+    public static string getTurnString(int num) { return "第 "+num+" 回合"; }
 }

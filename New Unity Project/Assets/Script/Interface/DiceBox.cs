@@ -47,21 +47,19 @@ public class DiceBoxInterface {
         }
     }
 
-    public void showDiceBox(List<Dice> diceUnused) {
-        clear();
-        /*
-        for (int i = 0; i < diceUnused.Count; i++) {
+    public void showDiceBox(GameObject parent, List<Dice> dices) {
+        for (int i = 0; i < dices.Count; i++)  {
             GameObject dice = DiceFactory.createDice2D();
-            dice.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>( diceUnused[i].getIconImage() );
-            dice.transform.localPosition = new Vector3(-8,-4+i*1.5f,-10);
-            _dices.Add( dice );
+            dice.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>( dices[i].getIconImage() );
+            dice.transform.parent = parent.transform.Find("dices");
+            dice.transform.localPosition = new Vector3(i * 1.5f, 0, 0);
+            _dices.Add(dice);
         }
-        */
     }
 
     public void checkDiceBox(int type) {
+        clear();
         switch (type) {
-            default: break;
             case (int)DiceBoxMode.ground :
                 _mode = (_mode == DiceBoxMode.ground) ? DiceBoxMode.normal : DiceBoxMode.ground;
                 break;
@@ -72,6 +70,7 @@ public class DiceBoxInterface {
                 _mode = (_mode == DiceBoxMode.person) ? DiceBoxMode.normal : DiceBoxMode.person;
                 break;
         }
+        
         _dicesGround.transform.localPosition = Position.getVector3(Position.diceBoxModePosition[(int)_mode][0]);
         _dicesGround.transform.Find("text").localPosition =
             (_mode == DiceBoxMode.normal) ? Position.getVector3(Position.diceBoxLabelOriginPosition) : Position.getVector3(Position.diceBoxLabelCheckPosition);
@@ -81,5 +80,16 @@ public class DiceBoxInterface {
         _dicesPerson.transform.localPosition = Position.getVector3(Position.diceBoxModePosition[(int)_mode][2]);
         _dicesPerson.transform.Find("text").localPosition =
             (_mode == DiceBoxMode.normal) ? Position.getVector3(Position.diceBoxLabelOriginPosition) : Position.getVector3(Position.diceBoxLabelCheckPosition);
+
+        if(_mode == DiceBoxMode.ground){
+            showDiceBox(_dicesGround,
+                _interface._battle._playerManager._groundDices._dicesUnused.GetRange(0, _interface._battle._playerManager._groundDices._useStack) );
+        }else if(_mode == DiceBoxMode.team){
+            showDiceBox(_dicesTeam,
+                _interface._battle._playerManager._teamDices._dicesUnused.GetRange(0, _interface._battle._playerManager._teamDices._useStack));
+        }else if(_mode == DiceBoxMode.person){
+            showDiceBox(_dicesPerson,
+                _interface._battle._playerManager._personDices._dicesUnused.GetRange(0, _interface._battle._playerManager._personDices._useStack));
+        }
     }
 }

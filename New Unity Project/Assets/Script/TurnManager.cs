@@ -4,7 +4,12 @@ using System.Collections;
 public class TurnManager {
     private TurnState _turn;
     private BattleController _battle;
-    public TurnManager() {}
+
+    public int _turnNum { get; private set; }
+
+    public TurnManager() {
+        _turnNum = 0;
+    }
 
     // 初始設定,由第一個state開始
     public void initSetting(BattleController battleController, TurnState initTurn) {
@@ -20,6 +25,7 @@ public class TurnManager {
     }
 
     public void update() { _turn.update(); }
+    public void addNewTurn() { _turnNum += 1; }
 }
 
 public abstract class TurnState{
@@ -43,7 +49,10 @@ public class PrepareTurn : TurnState {
 // 起始階段，開始擲骰
 public class StartTurn : TurnState {
     public StartTurn(BattleController battle, TurnManager turn) : base(battle, turn) { Debug.Log("init start turn"); }
-    public override void newTurn() { _battle.newStartTurn(); }
+    public override void newTurn() { 
+        _turnManager.addNewTurn(); 
+        _battle.newStartTurn();
+    }
     public override void endTurn() { _battle.endStartTurn(); }
     public override TurnState getNextTurn() { return new DecisionTurn(_battle, _turnManager); }
 }
@@ -106,10 +115,15 @@ public class BattleCountTurn : TurnState {
     public override void newTurn() { _battle.newBattleCountTurn(); }
     public override void endTurn() { _battle.endBattleCountTurn(); }
     public override TurnState getNextTurn() {
-        if (_battle._battleManager._playerAttacked && _battle._battleManager._enemyAttacked) return new AnalysisTurn(_battle, _turnManager);
-        else if (_battle._battleManager._playerAttacked && !_battle._battleManager._enemyAttacked) return new EnemyAttackTurn(_battle, _turnManager);
-        else if (!_battle._battleManager._playerAttacked && _battle._battleManager._enemyAttacked) return new PlayerAttackTurn(_battle, _turnManager);
-        else return this;
+        if ( _battle._playerManager.isPlayerSafe() && _battle._enemyManager.isPlayerSafe() ) {
+            if (_battle._battleManager._playerAttacked && _battle._battleManager._enemyAttacked) {
+                return new AnalysisTurn(_battle, _turnManager);
+            } else if (_battle._battleManager._playerAttacked && !_battle._battleManager._enemyAttacked) {
+                return new EnemyAttackTurn(_battle, _turnManager);
+            } else if (!_battle._battleManager._playerAttacked && _battle._battleManager._enemyAttacked) {
+                return new PlayerAttackTurn(_battle, _turnManager);
+            } else return this;
+        } else return new AnalysisTurn(_battle, _turnManager); 
     }
 }
 
@@ -121,8 +135,9 @@ public class AnalysisTurn : TurnState {
     public override TurnState getNextTurn() {
         if (_battle._playerManager.isPlayerSafe() && _battle._enemyManager.isPlayerSafe()) {
             return new StartTurn(_battle, _turnManager);
-        }
-        return new RearrangeTurn(_battle, _turnManager); 
+        } 
+        // 如果有一方全員陣亡 則判斷勝負
+        else return new RearrangeTurn(_battle, _turnManager); 
     }
 }
 

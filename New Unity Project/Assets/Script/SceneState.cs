@@ -57,6 +57,7 @@ public class MenuScene : SceneState {
     public override void stateBegin() { 
         Debug.Log("menuScene begin:");
 
+        // 基本按鈕
         GameObject start = MonoBehaviour.Instantiate(Resources.Load("SystemButton")) as GameObject;
         start.transform.localPosition = new Vector3(0,2,1);
         NameCoder.setButtonLabel_ID(start, NameCoder.StartButton);
@@ -64,6 +65,8 @@ public class MenuScene : SceneState {
         GameObject exit = MonoBehaviour.Instantiate(Resources.Load("SystemButton")) as GameObject; 
         exit.transform.localPosition = new Vector3(0,-2,1);
         NameCoder.setButtonLabel_ID(exit, NameCoder.ExitButton);
+
+        // 隊伍設定
         
     }
     public override void stateUpdate() {  }
