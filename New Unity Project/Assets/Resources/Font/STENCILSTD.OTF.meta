@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 5623aebab7aa600498dfc78a36121ef3
+timeCreated: 1499928991
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Stencil Std
+  fontNames:
+  - Stencil Std
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

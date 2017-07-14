@@ -41,7 +41,7 @@ public class AttrDecisionInterface{
             attrFace.transform.localPosition = Position.getDiceFaceDecisionPosition(i, toAttr.Count);
             attrFace.transform.localScale = Position.getVector3(Position.diceScale);
             attrFace.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(toAttr[i].getImage());
-            attrFace.GetComponent<Button>().ButtonID = StringCoder.getAttrDecisionString(i);
+            attrFace.GetComponent<ButtonEvent>().ButtonID = StringCoder.getAttrDecisionString(i);
             _facesAttr.Add(attrFace);
         }
 
@@ -53,7 +53,7 @@ public class AttrDecisionInterface{
             baseFace.transform.localPosition = Position.getDiceBaseDesicionPosition(i, toBase.Count);
             baseFace.transform.localScale = Position.getVector3(Position.diceScale);
             baseFace.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(toBase[i].getBaseImage());
-            baseFace.GetComponent<Button>().ButtonID = StringCoder.getBaseDecisionString(i);
+            baseFace.GetComponent<ButtonEvent>().ButtonID = StringCoder.getBaseDecisionString(i);
             _facesBase.Add(baseFace);
         }
     }

@@ -171,7 +171,7 @@ public class StringCoder {
 public class NameCoder{
     public static void setButtonLabel_ID(GameObject o, string[] Label_ID) {
         o.transform.Find("text").GetComponent<TextMesh>().text = Label_ID[1];
-        o.GetComponent<Button>().ButtonID = Label_ID[0];
+        o.GetComponent<ButtonEvent>().ButtonID = Label_ID[0];
     }
     public static string getLabel(string[] namePair) { return namePair[0]; }
     public static string getText(string[] namePair) { return namePair[1]; }

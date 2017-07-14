@@ -24,17 +24,17 @@ public class DiceBoxInterface {
         _diceBox.transform.localPosition = Position.getVector3(Position.diceBoxPosition);
 
         _dicesGround = _diceBox.transform.Find("dicesGround").gameObject;
-        _dicesGround.GetComponent<Button>().ButtonID = StringCoder.getDiceBoxString(1);
+        _dicesGround.GetComponent<ButtonEvent>().ButtonID = StringCoder.getDiceBoxString(1);
         _dicesGround.transform.Find("text").GetComponent<MeshRenderer>().sortingLayerID = _dicesGround.GetComponent<SpriteRenderer>().sortingLayerID;
         _dicesGround.transform.Find("text").GetComponent<MeshRenderer>().sortingOrder = _dicesGround.GetComponent<SpriteRenderer>().sortingOrder + 1;
 
         _dicesTeam = _diceBox.transform.Find("dicesTeam").gameObject;
-        _dicesTeam.GetComponent<Button>().ButtonID = StringCoder.getDiceBoxString(2);
+        _dicesTeam.GetComponent<ButtonEvent>().ButtonID = StringCoder.getDiceBoxString(2);
         _dicesTeam.transform.Find("text").GetComponent<MeshRenderer>().sortingLayerID = _dicesTeam.GetComponent<SpriteRenderer>().sortingLayerID;
         _dicesTeam.transform.Find("text").GetComponent<MeshRenderer>().sortingOrder = _dicesTeam.GetComponent<SpriteRenderer>().sortingOrder + 1;
 
         _dicesPerson = _diceBox.transform.Find("dicesPerson").gameObject;
-        _dicesPerson.GetComponent<Button>().ButtonID = StringCoder.getDiceBoxString(3);
+        _dicesPerson.GetComponent<ButtonEvent>().ButtonID = StringCoder.getDiceBoxString(3);
         _dicesPerson.transform.Find("text").GetComponent<MeshRenderer>().sortingLayerID = _dicesPerson.GetComponent<SpriteRenderer>().sortingLayerID;
         _dicesPerson.transform.Find("text").GetComponent<MeshRenderer>().sortingOrder = _dicesPerson.GetComponent<SpriteRenderer>().sortingOrder + 1;
 

@@ -129,7 +129,7 @@ public class BattleCountTurn : TurnState {
 
 // 結算階段
 public class AnalysisTurn : TurnState {
-    public AnalysisTurn(BattleController battle, TurnManager turn) : base(battle, turn) { Debug.Log("init ending turn"); }
+    public AnalysisTurn(BattleController battle, TurnManager turn) : base(battle, turn) { Debug.Log("init analysis turn"); }
     public override void newTurn() { _battle.newAnalysisTurn(); }
     public override void endTurn() { _battle.endAnalysisTurn(); }
     public override TurnState getNextTurn() {
@@ -137,16 +137,35 @@ public class AnalysisTurn : TurnState {
             return new StartTurn(_battle, _turnManager);
         } 
         // 如果有一方全員陣亡 則判斷勝負
+        else if (!_battle._playerManager.isTeamSafe()) {
+            return new LoseTurn(_battle, _turnManager);
+        }
+        else if (!_battle._enemyManager.isTeamSafe()) {
+            return new VictoryTurn(_battle, _turnManager);
+        }
         else return new RearrangeTurn(_battle, _turnManager); 
     }
 }
 
 // 重新選擇新戰鬥角色階段，然後直接開始新回合
 public class RearrangeTurn : TurnState {
-    public RearrangeTurn(BattleController battle, TurnManager turn) : base(battle, turn) { Debug.Log("init ending turn"); }
+    public RearrangeTurn(BattleController battle, TurnManager turn) : base(battle, turn) { Debug.Log("init rearrange turn"); }
     public override void newTurn() { _battle.newRearrangeTurn(); }
     public override void endTurn() { _battle.endRearrangeTurn(); }
     public override TurnState getNextTurn() {
  	    return new StartTurn(_battle, _turnManager);
     }
+}
+
+// 勝利階段
+public class VictoryTurn : TurnState {
+    public VictoryTurn(BattleController battle, TurnManager turn) : base(battle, turn) { Debug.Log("init victory turn"); }
+    public override void newTurn() { _battle.newVictoryTurn(); }
+    public override TurnState getNextTurn() { return this; }
+}
+// 失敗階段
+public class LoseTurn : TurnState {
+    public LoseTurn(BattleController battle, TurnManager turn) : base(battle, turn) { Debug.Log("init lose turn"); }
+    public override void newTurn() { _battle.newLoseTurn(); }
+    public override TurnState getNextTurn() { return this; }
 }

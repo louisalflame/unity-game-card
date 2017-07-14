@@ -20,8 +20,8 @@ public class CharManager {
     
     public CharManager() { }
 
-    public void setCharacter(int id) {
-        _character = CharacterFactory.createChracter(id);
+    public void setCharacter(string id) {
+        _character = CharacterFactory.dictionary[id];
         _id = _character._id;
         _name = _character._name;
         _hp = _character._hp;
@@ -50,18 +50,6 @@ public class CharacterFactory {
         { Enemy_1.Char._id, Enemy_1.Char },
         { Enemy_2.Char._id, Enemy_2.Char },
     };
-
-    public static Character createChracter(int id)  {
-        switch(id){
-            case 0: return new Enemy_0();
-            case 1: return new Enemy_1();
-            case 2: return new Enemy_2();
-            case 10: return new Player_0();
-            case 11: return new Player_1();
-            case 12: return new Player_2();
-            default: return new NullCharacter();
-        }
-    }
 }
 
 public abstract class Character {
@@ -107,7 +95,7 @@ public class Enemy_0 : Character {
         _id = "Enemy_0";
         _name = "敵人0";
         _hp = 20;
-        _atk = 27;
+        _atk = 7;
         _def = 2;
         _mov = 3;
         _movActions = new MoveAction[3] { Move_GetFirst.action, Move_Exchange.action, Move_Standby.action };

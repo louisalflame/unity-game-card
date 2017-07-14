@@ -46,46 +46,7 @@ public class StartScene : SceneState {
     }
 }
 
-public class MenuScene : SceneState {
 
-    public MenuScene(SceneController controller) : base(controller) {
-        Debug.Log("new menuScene");
-        stateName = "menu";
-        loadScene = true;
-    }
-
-    public override void stateBegin() { 
-        Debug.Log("menuScene begin:");
-
-        // 基本按鈕
-        GameObject start = MonoBehaviour.Instantiate(Resources.Load("SystemButton")) as GameObject;
-        start.transform.localPosition = new Vector3(0,2,1);
-        NameCoder.setButtonLabel_ID(start, NameCoder.StartButton);
-
-        GameObject exit = MonoBehaviour.Instantiate(Resources.Load("SystemButton")) as GameObject; 
-        exit.transform.localPosition = new Vector3(0,-2,1);
-        NameCoder.setButtonLabel_ID(exit, NameCoder.ExitButton);
-
-        // 隊伍設定
-        
-    }
-    public override void stateUpdate() {  }
-    public override void stateEnd() { }
-
-    //玩家輸入
-    public override void inputProcess() {
-        Queue<string> inputs = InputController.Inputs.getInputsQueue();
-        InputController.Inputs.resetQueue();
-        foreach (string i in inputs)
-        {
-            Debug.Log("input process : " + i);
-            //按下start鈕=>開啟新scene
-            if (i == NameCoder.getLabel(NameCoder.StartButton)) {
-                sceneController.setScene(new BattleScene(sceneController));
-            }
-        }
-    }
-}
 
 public class BattleScene : SceneState {
     //戰鬥流程總管理 1.程式邏輯 2.UI圖面
@@ -99,7 +60,7 @@ public class BattleScene : SceneState {
 
     public override void stateBegin() {
         Debug.Log("battleScene begin:");
-        battleController = new BattleController();
+        battleController = new BattleController(sceneController);
     }
     public override void stateUpdate() {
         battleController.update();

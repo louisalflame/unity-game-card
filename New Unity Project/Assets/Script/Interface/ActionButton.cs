@@ -22,19 +22,16 @@ public class ActionButtonInterface {
 
     public void setActionButtonLabel_ID(GameObject btn, string[] Label_ID) {
         btn.transform.Find("actUp/text").GetComponent<TextMesh>().text = Label_ID[1];
-        btn.GetComponent<Button>().ButtonID = Label_ID[0];
+        btn.GetComponent<ButtonEvent>().ButtonID = Label_ID[0];
     }
 
     public void setMoveActionButton(CharManager character) {
         _movActions = new GameObject[ character._movActions.Length ];
         for (int i = 0; i < _movActions.Length; i++) {
-            GameObject actBtn = MonoBehaviour.Instantiate(Resources.Load("ActionMov")) as GameObject;
-            actBtn.transform.parent = _interface._menuButton._mainButtonBack.transform.Find("mainBack").transform;
-            setActionButtonLabel_ID(actBtn, character._movActions[i].getLabel_ID());
+            GameObject actBtn = CanvasFactory.create_BattleScene_MoveActionBtn(
+                _interface._menuButton._actionBase, character._movActions[i].getLabel_ID() );
             actBtn.SetActive(false);
-
             _movActions[i] = actBtn;
-            _movActions[i].transform.localPosition = Position.getActionButtonPosition(i);
         } 
     }
     public void showMoveActionButton() {
@@ -47,13 +44,10 @@ public class ActionButtonInterface {
     public void setAttackActionButton(CharManager character) { 
         _atkActions = new GameObject[ character._atkActions.Length ];
         for (int i = 0; i < _atkActions.Length; i++) {
-            GameObject actBtn = MonoBehaviour.Instantiate(Resources.Load("ActionAtk")) as GameObject;
-            actBtn.transform.parent = _interface._menuButton._mainButtonBack.transform.Find("mainBack").transform;
-            setActionButtonLabel_ID(actBtn, character._atkActions[i].getLabel_ID());
+            GameObject actBtn = CanvasFactory.create_BattleScene_AttackActionBtn(
+                _interface._menuButton._actionBase, character._atkActions[i].getLabel_ID());
             actBtn.SetActive(false);
-
             _atkActions[i] = actBtn;
-            _atkActions[i].transform.localPosition = Position.getActionButtonPosition(i);
         }
     }
     public void showAttackActionButton() {
@@ -66,13 +60,10 @@ public class ActionButtonInterface {
     public void setDefenseActionButton(CharManager character) { 
         _defActions = new GameObject[ character._defActions.Length ];
         for (int i = 0; i < _defActions.Length; i++) {
-            GameObject actBtn = MonoBehaviour.Instantiate(Resources.Load("ActionDef")) as GameObject;
-            actBtn.transform.parent = _interface._menuButton._mainButtonBack.transform.Find("mainBack").transform;
-            setActionButtonLabel_ID(actBtn, character._defActions[i].getLabel_ID());
+            GameObject actBtn = CanvasFactory.create_BattleScene_DefenseActionBtn(
+                _interface._menuButton._actionBase, character._defActions[i].getLabel_ID());
             actBtn.SetActive(false);
-
             _defActions[i] = actBtn;
-            _defActions[i].transform.localPosition = Position.getActionButtonPosition(i);
         }
     }
     public void showDefenseActionButton() { 

@@ -1,104 +1,129 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-// 隊伍狀態顯示
-public class TeamStatusInterface {
+ 
+public class TeamPlayerStatusInterface {
     public InterfaceController _interface;
-    public CharPlayerStatusInterface[] _playerChars { get; private set; }
-    public CharEnemyStatusInterface[] _enemyChars { get; private set; }
+    public CharPlayerStatusInterface[] _charStatuses { get; private set; }
 
-    public TeamStatusInterface(InterfaceController inter) {
+    public TeamPlayerStatusInterface(InterfaceController inter) {
         _interface = inter;
     }
 
-    public void setPlayerCharacters() {
-        _playerChars = new CharPlayerStatusInterface[ _interface._battle._playerManager._characters.Length ];
-        for (int i = 0; i < _interface._battle._playerManager._characters.Length; i++) {
-            _playerChars[i] = new CharPlayerStatusInterface(_interface, i, _interface._battle._playerManager._characters[i]);
-            _playerChars[i].setCharInfo();
+    public void setCharacters( CharManager[] charMs ) {
+        _charStatuses = new CharPlayerStatusInterface[ charMs.Length ];
+        for (int i = 0; i < charMs.Length; i++) {
+            _charStatuses[i] = new CharPlayerStatusInterface(_interface, i, charMs[i]);
+            _charStatuses[i].setCharInfo();
         }
+        placeCharStatusPos();
     }
-
-    public void setEnemyCharacters() {
-        _enemyChars = new CharEnemyStatusInterface[ _interface._battle._enemyManager._characters.Length];
-        for (int i = 0; i < _interface._battle._enemyManager._characters.Length; i++) {
-            _enemyChars[i] = new CharEnemyStatusInterface(_interface, i, _interface._battle._enemyManager._characters[i]);
-            _enemyChars[i].setCharInfo();
-        }
-    }
-
     public void update() { }
 
-    // 更換我方角色
+    // 更換角色
     public void changeActiveCharStatus(int select) {
-        CharPlayerStatusInterface tmp = _playerChars[0];
-        for (int i = 0; i < _playerChars.Length; i++) {
-            if (_playerChars[i]._id == select) {
-                _playerChars[0] = _playerChars[i];
-                _playerChars[0].setPos(0);
-                _playerChars[i] = tmp;
-                _playerChars[i].setPos(i);
-                Debug.Log(_playerChars[0]._charM._name + " <=> " + _playerChars[i]._charM._name);
+        CharPlayerStatusInterface tmp = _charStatuses[0];
+        for (int i = 0; i < _charStatuses.Length; i++) {
+            if (_charStatuses[i]._id == select) {
+                _charStatuses[0] = _charStatuses[i];
+                _charStatuses[0].setPos(0);
+                _charStatuses[i] = tmp;
+                _charStatuses[i].setPos(i);
+                Debug.Log(_charStatuses[0]._charM._name + " <=> " + _charStatuses[i]._charM._name);
                 break;
             }
         }
     }
+
+    // 顯示更換角色按鈕
     public void showTeamRearrangeButton() {
-        foreach (CharPlayerStatusInterface status in _playerChars) {
-            if (_interface._battle._playerManager.isCharActive(status._charM)) {
-                status.hideStatus();
-            } else {
-                if (_interface._battle._playerManager.isCharSafe(status._charM)) {
-                    status.showChangeButton();
-                }
-            }
+        foreach (CharPlayerStatusInterface status in _charStatuses) {
+            if (_interface._battle._playerManager.isCharActive(status._charM)) { status.hideStatus(); } 
+            else if (_interface._battle._playerManager.isCharSafe(status._charM)) { status.showChangeButton(); }
+            else { status.hideStatus();  }
         }
     }
+    // 隱藏更換角色按鈕
     public void hideTeamRearrangeButton() {
-        foreach (CharPlayerStatusInterface status in _playerChars) {
-            if (_interface._battle._playerManager.isCharActive(status._charM)) {
-                status.showStatus();
-            } else {
-                status.hideStatus();
-            }
+        foreach (CharPlayerStatusInterface status in _charStatuses) {
+            if (_interface._battle._playerManager.isCharActive(status._charM)) { status.showStatus(); } 
+            else { status.hideStatus(); }
+        }
+    }
+    // 基本角色狀態位置
+    public void placeCharStatusPos() {
+        foreach (CharPlayerStatusInterface status in _charStatuses) {
+            if (_interface._battle._playerManager.isCharActive(status._charM)) { status.showStatus(); } 
+            else { status.hideStatus(); }
         }
     }
 
     // 更新角色狀態
     public void updateCharStatusInfo() {
-        for (int i = 0; i < _playerChars.Length; i++) {
-            _playerChars[i].setCharInfo();
-        }
-        for (int i = 0; i < _enemyChars.Length; i++) {
-            _enemyChars[i].setCharInfo();
+        for (int i = 0; i < _charStatuses.Length; i++) {
+            _charStatuses[i].setCharInfo();
         }
     }
 }
 
-// 角色狀態顯示
-public class CharPlayerStatusInterface {
+
+public class TeamEnemyStatusInterface {
     public InterfaceController _interface;
-    public int _pos { get; private set; }
-    public int _id { get; private set; }
-    public CharManager _charM { get; private set; }
-    public GameObject _char { get; private set; }
+    public CharEnemyStatusInterface[] _charStatuses { get; private set; }
 
-    public CharPlayerStatusInterface(InterfaceController inter, int i, CharManager charM) { 
+    public TeamEnemyStatusInterface(InterfaceController inter) {
         _interface = inter;
-        _pos = i; _id = i;
-        _charM = charM;
-
-        _char = MonoBehaviour.Instantiate(Resources.Load("CharPlayerBar") as GameObject);
-        if (_interface._battle._playerManager.isCharActive(_charM)) {
-            _char.transform.localPosition = Position.getCharPlayerShowStatusPosition(_pos);
-        } else {
-            _char.transform.localPosition = Position.getCharPlayerHideStatusPosition(_pos);
-        }
-        _char.GetComponent<Button>().ButtonID = StringCoder.getChangeCharString(_id);
-        _char.GetComponent<BoxCollider2D>().enabled = false;
-
     }
+
+    public void setCharacters( CharManager[] charMs ) {
+        _charStatuses = new CharEnemyStatusInterface[charMs.Length];
+        for (int i = 0; i < _interface._battle._enemyManager._characters.Length; i++) {
+            _charStatuses[i] = new CharEnemyStatusInterface(_interface, i, charMs[i]);
+            _charStatuses[i].setCharInfo();
+        }
+        placeCharStatusPos();
+    }
+    public void update() { }
+
+    // 更換角色
+    public void changeActiveCharStatus(int select) {
+        CharEnemyStatusInterface tmp = _charStatuses[0];
+        for (int i = 0; i < _charStatuses.Length; i++) {
+            if (_charStatuses[i]._id == select) {
+                _charStatuses[0] = _charStatuses[i];
+                _charStatuses[0].setPos(0);
+                _charStatuses[i] = tmp;
+                _charStatuses[i].setPos(i);
+                Debug.Log(_charStatuses[0]._charM._name + " <=> " + _charStatuses[i]._charM._name);
+                break;
+            }
+        }
+    }
+    
+    public void placeCharStatusPos() {
+        foreach (CharEnemyStatusInterface status in _charStatuses) {
+            if (_interface._battle._enemyManager.isCharActive(status._charM)) { status.showStatus(); } 
+            else { status.hideStatus(); }
+        }
+    }
+    
+    // 更新角色狀態
+    public void updateCharStatusInfo() {
+        for (int i = 0; i < _charStatuses.Length; i++) {
+            _charStatuses[i].setCharInfo();
+        }
+    }
+}
+
+
+
+// 角色狀態顯示
+public class CharStatusInterface{
+    public InterfaceController _interface;
+    public int _pos { get; protected set; }
+    public int _id { get; protected set; }
+    public CharManager _charM { get; protected set; }
+    public GameObject _char { get; protected set; }
 
     public void setCharInfo() {
         _char.transform.Find("charName").GetComponent<TextMesh>().text = _charM._name;
@@ -107,7 +132,22 @@ public class CharPlayerStatusInterface {
         _char.transform.Find("charBarInfo").transform.Find("numDEF").GetComponent<TextMesh>().text = _charM._def.ToString();
     }
     public void setPos(int pos) { _pos = pos; }
+}
 
+// 我方角色狀態顯示
+public class CharPlayerStatusInterface : CharStatusInterface {
+    public CharPlayerStatusInterface(InterfaceController inter, int i, CharManager charM) { 
+        _interface = inter;
+        _pos = i; _id = i;
+        _charM = charM;
+
+        _char = MonoBehaviour.Instantiate(Resources.Load("CharPlayerBar") as GameObject);
+        _char.GetComponent<ButtonEvent>().ButtonID = StringCoder.getChangeCharString(_id);
+        _char.GetComponent<BoxCollider2D>().enabled = false;
+
+    }
+    
+    // 顯示戰鬥中/待機/可更換
     public void showStatus() {
         _char.transform.localPosition = Position.getCharPlayerShowStatusPosition(_pos);
         _char.GetComponent<BoxCollider2D>().enabled = false;
@@ -125,12 +165,7 @@ public class CharPlayerStatusInterface {
 }
 
 // 敵方角色狀態顯示
-public class CharEnemyStatusInterface {
-    public InterfaceController _interface;
-    public int _pos { get; private set; }
-    public int _id { get; private set; }
-    public CharManager _charM { get; private set; }
-    public GameObject _char { get; private set; }
+public class CharEnemyStatusInterface : CharStatusInterface {
 
     public CharEnemyStatusInterface(InterfaceController inter, int i, CharManager charM) {
         _interface = inter;
@@ -138,18 +173,14 @@ public class CharEnemyStatusInterface {
         _charM = charM;
 
         _char = MonoBehaviour.Instantiate(Resources.Load("CharEnemyBar") as GameObject);
-        if (_interface._battle._enemyManager.isCharActive(_charM)) {
-            _char.transform.localPosition = Position.getCharEnemyShowStatusPosition(_pos);
-        } else {
-            _char.transform.localPosition = Position.getCharEnemyHideStatusPosition(_pos);
-        }
     }
-
-    public void setCharInfo() {
-        _char.transform.Find("charName").GetComponent<TextMesh>().text = _charM._name;
-        _char.transform.Find("charBarInfo").transform.Find("numHP").GetComponent<TextMesh>().text = _charM._hp.ToString();
-        _char.transform.Find("charBarInfo").transform.Find("numATK").GetComponent<TextMesh>().text = _charM._atk.ToString();
-        _char.transform.Find("charBarInfo").transform.Find("numDEF").GetComponent<TextMesh>().text = _charM._def.ToString();
+    
+    // 顯示戰鬥中/待機/可更換
+    public void showStatus() {
+        _char.transform.localPosition = Position.getCharEnemyShowStatusPosition(_pos);
+    }
+    public void hideStatus() {
+        _char.transform.localPosition = Position.getCharEnemyHideStatusPosition(_pos);
     }
 
     public void update() { }

@@ -9,15 +9,18 @@ public class Position {
     public static readonly float[] systemBtn = new float[] { -13f, 0, 0};
     // 主要確認按鈕
     public static readonly float[] mainBtn = new float[] { 3f, -1f, 0 };
+    // 主要欄位
+    public static readonly float[] mainBtnBase = new float[] { 0, -6f, 0 };
 
     // 技能按鈕
     public static readonly List<float[]> skillBtn = new List<float[]> { 
-        new float[]{-13f, 2.3f, 0}, new float[]{-9f, 2.3f, 0}, new float[]{-5f, 2.3f, 0}, new float[]{-1f, 2.3f, 0},
+        new float[]{-13f, 2.2f, 0}, new float[]{-9f, 2.2f, 0}, new float[]{-5f, 2.2f, 0}, new float[]{-1f, 2.2f, 0},
     };
 
     // 儲存塔表 & 點數表
     public static readonly float[] towerTable = new float[] { 10f, 2f, 0 };
     public static readonly float[] pointTable = new float[] { 10f, -0.5f, 0 };
+    public static readonly float[] towerTableEnemy = new float[] { 10f, -1f, 0 };
 
     // 我方(敵方)角色隊伍欄位
     public static Vector3 getCharPlayerShowStatusPosition(int i) { return new Vector3(-12.2f, 4.5f - (i * 1.7f), 0); }
