@@ -78,8 +78,9 @@ public class CanvasFactory {
         return buttonObj; 
     }
 
-    public static GameObject createText(GameObject parent, string str) {
+    public static GameObject createText(GameObject parent, string name, string str) {
         GameObject textObj = MonoBehaviour.Instantiate(Resources.Load("Font/ArialText")) as GameObject;
+        textObj.transform.name = name;
         textObj.transform.SetParent(parent.transform);
 
         RectTransform rect = textObj.GetComponent<RectTransform>();
@@ -148,7 +149,7 @@ public class CanvasFactory {
     // MenuScene ===================
     public static GameObject create_MenuScene_StartBtn(GameObject parent) {
         GameObject startBtn = CanvasFactory.createButton(parent, "start", NameCoder.getLabel(NameCoder.StartButton));
-        GameObject txt = CanvasFactory.createText(startBtn, NameCoder.getText(NameCoder.StartButton));
+        GameObject txt = CanvasFactory.createText(startBtn, "txt", NameCoder.getText(NameCoder.StartButton));
 
         startBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/Button/buttonNor");
         setRectTransform(startBtn, new Vector2(0.4f, 0.5f), new Vector2(0.6f, 0.6f), Vector2.zero, Vector2.zero);
@@ -188,7 +189,7 @@ public class CanvasFactory {
     }
     public static GameObject create_BattleScene_ExitBtn(GameObject parent) {
         GameObject exitBtn = CanvasFactory.createButton(parent, "ExitBtn", NameCoder.getLabel(NameCoder.ExitButton));
-        GameObject txt = CanvasFactory.createText(exitBtn, NameCoder.getText(NameCoder.ExitButton));
+        GameObject txt = CanvasFactory.createText(exitBtn, "txt", NameCoder.getText(NameCoder.ExitButton));
 
         exitBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/Button/buttonNor");
         setRectTransform(exitBtn, new Vector2(0.1f, 0.1f), new Vector2(0.2f, 0.9f), Vector2.zero, Vector2.zero);
@@ -207,7 +208,7 @@ public class CanvasFactory {
     }
     public static GameObject create_BattleScene_NextBtn(GameObject parent) {
         GameObject nextBtn = CanvasFactory.createButton(parent, "NextBtn", NameCoder.getLabel(NameCoder.NextButton));
-        GameObject txt = CanvasFactory.createText(nextBtn, NameCoder.getText(NameCoder.NextButton));
+        GameObject txt = CanvasFactory.createText(nextBtn, "txt", NameCoder.getText(NameCoder.NextButton));
 
         nextBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/Button/okNor");
         setRectTransform(nextBtn, new Vector2(0.55f, 0.15f), new Vector2(0.635f, 0.6f), Vector2.zero, Vector2.zero);
@@ -226,7 +227,7 @@ public class CanvasFactory {
     }
     public static GameObject create_BattleScene_ThrowBtn(GameObject parent) {
         GameObject nextBtn = CanvasFactory.createButton(parent, "ThrowBtn", NameCoder.getLabel(NameCoder.ThrowButton));
-        GameObject txt = CanvasFactory.createText(nextBtn, NameCoder.getText(NameCoder.ThrowButton));
+        GameObject txt = CanvasFactory.createText(nextBtn, "txt", NameCoder.getText(NameCoder.ThrowButton));
 
         nextBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/Button/okNor");
         setRectTransform(nextBtn, new Vector2(0.55f, 0.15f), new Vector2(0.635f, 0.6f), Vector2.zero, Vector2.zero);
@@ -267,7 +268,10 @@ public class CanvasFactory {
         GameObject actionBtn = createButton(parent, "actionBtn", NameCoder.getLabel(label_ID));
         actionBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/ActionButton/movActBack");
         RectTransform rect = actionBtn.GetComponent<RectTransform>();
-        rect.sizeDelta = new Vector2(rect.rect.height * 0.66f, rect.rect.height);
+
+        AspectRatioFitter fitter = actionBtn.AddComponent<AspectRatioFitter>();
+        fitter.aspectMode = AspectRatioFitter.AspectMode.HeightControlsWidth;
+        fitter.aspectRatio = 2f / 3f;
 
         GameObject top = createImage(actionBtn, "top");
         top.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/ActionButton/movActUp");
@@ -279,7 +283,7 @@ public class CanvasFactory {
         frame.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/ActionButton/movActFrame");
         setWholeRect(frame);
 
-        GameObject txt = CanvasFactory.createText(actionBtn, NameCoder.getText(label_ID));
+        GameObject txt = CanvasFactory.createText(actionBtn, "txt", NameCoder.getText(label_ID));
         setRectTransform(txt, Vector2.zero, new Vector2(1f, 0.5f), Vector2.zero, Vector2.zero);
         txt.GetComponent<RectTransform>().localScale = new Vector3(0.1f, 0.1f, 0.1f);
         txt.GetComponent<Text>().fontSize = 100;
@@ -291,7 +295,10 @@ public class CanvasFactory {
         GameObject actionBtn = createButton(parent, "actionBtn", NameCoder.getLabel(label_ID));
         actionBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/ActionButton/atkActBack");
         RectTransform rect = actionBtn.GetComponent<RectTransform>();
-        rect.sizeDelta = new Vector2(rect.rect.height * 0.66f, rect.rect.height);
+
+        AspectRatioFitter fitter = actionBtn.AddComponent<AspectRatioFitter>();
+        fitter.aspectMode = AspectRatioFitter.AspectMode.HeightControlsWidth;
+        fitter.aspectRatio = 2f / 3f;
 
         GameObject top = createImage(actionBtn, "top");
         top.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/ActionButton/atkActUp");
@@ -303,7 +310,7 @@ public class CanvasFactory {
         frame.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/ActionButton/atkActFrame");
         setWholeRect(frame);
 
-        GameObject txt = CanvasFactory.createText(actionBtn, NameCoder.getText(label_ID));
+        GameObject txt = CanvasFactory.createText(actionBtn, "txt", NameCoder.getText(label_ID));
         setRectTransform(txt, Vector2.zero, new Vector2(1f, 0.5f), Vector2.zero, Vector2.zero);
         txt.GetComponent<RectTransform>().localScale = new Vector3(0.1f, 0.1f, 0.1f);
         txt.GetComponent<Text>().fontSize = 100;
@@ -315,7 +322,10 @@ public class CanvasFactory {
         GameObject actionBtn = createButton(parent, "actionBtn", NameCoder.getLabel(label_ID));
         actionBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/ActionButton/defActBack");
         RectTransform rect = actionBtn.GetComponent<RectTransform>();
-        rect.sizeDelta = new Vector2(rect.rect.height * 0.66f, rect.rect.height);
+
+        AspectRatioFitter fitter = actionBtn.AddComponent<AspectRatioFitter>();
+        fitter.aspectMode = AspectRatioFitter.AspectMode.HeightControlsWidth;
+        fitter.aspectRatio = 2f / 3f;
 
         GameObject top = createImage(actionBtn, "top");
         top.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/ActionButton/defActUp");
@@ -327,7 +337,7 @@ public class CanvasFactory {
         frame.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/ActionButton/defActFrame");
         setWholeRect(frame);
 
-        GameObject txt = CanvasFactory.createText(actionBtn, NameCoder.getText(label_ID));
+        GameObject txt = CanvasFactory.createText(actionBtn, "txt", NameCoder.getText(label_ID));
         setRectTransform(txt, Vector2.zero, new Vector2(1f, 0.5f), Vector2.zero, Vector2.zero);
         txt.GetComponent<RectTransform>().localScale = new Vector3(0.1f, 0.1f, 0.1f);
         txt.GetComponent<Text>().fontSize = 100;
@@ -335,4 +345,95 @@ public class CanvasFactory {
 
         return actionBtn;
     }
+    public static Dictionary<string, GameObject[]> create_BattleScene_PlayerPointStatus(GameObject parent) {
+        GameObject rectObj = createEmptyRect(parent, "PlayerPointStatus");
+        setRectTransform(rectObj, new Vector2(0.65f, 0.15f), new Vector2(0.95f, 0.6f), Vector2.zero, Vector2.zero);
+
+        GameObject norObj = create_PointStatus_Unit(rectObj, "attrNor", "Sprite/PointTable/pointTableNor", "Sprite/AttrIcon/AttrNor");
+        setRectTransform(norObj, new Vector2(0f, 0f), new Vector2(1f/6, 1f), Vector2.zero, Vector2.zero);
+        GameObject atkObj = create_PointStatus_Unit(rectObj, "attrAtk", "Sprite/PointTable/pointTableAtk", "Sprite/AttrIcon/AttrAtk");
+        setRectTransform(atkObj, new Vector2(1f/6, 0f), new Vector2(2f/6, 1f), Vector2.zero, Vector2.zero);
+        GameObject defObj = create_PointStatus_Unit(rectObj, "attrDef", "Sprite/PointTable/pointTableDef", "Sprite/AttrIcon/AttrDef");
+        setRectTransform(defObj, new Vector2(2f/6, 0f), new Vector2(3f/6, 1f), Vector2.zero, Vector2.zero);
+        GameObject movObj = create_PointStatus_Unit(rectObj, "attrMov", "Sprite/PointTable/pointTableMov", "Sprite/AttrIcon/AttrMov");
+        setRectTransform(movObj, new Vector2(3f/6, 0f), new Vector2(4f/6, 1f), Vector2.zero, Vector2.zero);
+        GameObject spcObj = create_PointStatus_Unit(rectObj, "attrSpc", "Sprite/PointTable/pointTableSpc", "Sprite/AttrIcon/AttrSpc");
+        setRectTransform(spcObj, new Vector2(4f/6, 0f), new Vector2(5f/6, 1f), Vector2.zero, Vector2.zero);
+        GameObject healObj = create_PointStatus_Unit(rectObj, "attrHeal", "Sprite/PointTable/pointTableHeal", "Sprite/AttrIcon/AttrHeal");
+        setRectTransform(healObj, new Vector2(5f/6, 0f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero);
+
+        Dictionary<string, GameObject[]> dict = new Dictionary<string, GameObject[]>();
+        dict["PointTable"] = new GameObject[] { rectObj };
+        dict["PointAttrs"] = new GameObject[] { norObj, atkObj, defObj, movObj, spcObj, healObj };
+        dict["PointTexts"] = new GameObject[] {
+            norObj.transform.Find("num/txt").gameObject,
+            atkObj.transform.Find("num/txt").gameObject,
+            defObj.transform.Find("num/txt").gameObject,
+            movObj.transform.Find("num/txt").gameObject,
+            spcObj.transform.Find("num/txt").gameObject,
+            healObj.transform.Find("num/txt").gameObject,
+        };
+
+        return dict;
+    }
+    public static GameObject create_PointStatus_Unit(GameObject parent, string name, string spritePath, string iconPath) {
+        GameObject imageObj = createImage(parent, name);
+        imageObj.GetComponent<Image>().sprite = Resources.Load<Sprite>(spritePath);
+
+        GameObject iconObj = createImage(imageObj, "attrIcon");
+        iconObj.GetComponent<Image>().sprite = Resources.Load<Sprite>(iconPath);
+        setRectTransform(iconObj, new Vector2(0.1f, 0.05f), new Vector2(0.9f, 0.45f), Vector2.zero, Vector2.zero);
+
+        GameObject numObj = createImage(imageObj, "num");
+        numObj.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/PointTable/numBase");
+        setRectTransform(numObj, new Vector2(0.1f, 0.55f), new Vector2(0.9f, 0.95f), Vector2.zero, Vector2.zero);
+
+        GameObject txt = createText(numObj, "txt", "0");
+        txt.GetComponent<RectTransform>().localScale = new Vector3(0.1f, 0.1f, 0.1f);
+        txt.GetComponent<Text>().fontSize = 300;
+        txt.GetComponent<Text>().color = Color.white;
+
+        return imageObj;
+    }
+
+    public static Dictionary<string, GameObject[]> create_BattleScene_PlayerTowerStatus(GameObject parent) {
+        GameObject rectObj = createEmptyRect(parent, "PlayerTowerStatus");
+        setRectTransform(rectObj, new Vector2(0.65f, 0.7f), new Vector2(0.95f, 0.9f), Vector2.zero, Vector2.zero);
+
+        GameObject t1Obj = create_TowerStatus_Unit(rectObj);
+        setRectTransform(t1Obj, new Vector2(0f, 0f), new Vector2(1f/6, 1f), Vector2.zero, Vector2.zero);
+        GameObject t2Obj = create_TowerStatus_Unit(rectObj);
+        setRectTransform(t2Obj, new Vector2(1f/6, 0f), new Vector2(2f/6, 1f), Vector2.zero, Vector2.zero);
+        GameObject t3Obj = create_TowerStatus_Unit(rectObj);
+        setRectTransform(t3Obj, new Vector2(2f/6, 0f), new Vector2(3f/6, 1f), Vector2.zero, Vector2.zero);
+        GameObject t4Obj = create_TowerStatus_Unit(rectObj);
+        setRectTransform(t4Obj, new Vector2(3f/6, 0f), new Vector2(4f/6, 1f), Vector2.zero, Vector2.zero);
+        GameObject t5Obj = create_TowerStatus_Unit(rectObj);
+        setRectTransform(t5Obj, new Vector2(4f/6, 0f), new Vector2(5f/6, 1f), Vector2.zero, Vector2.zero);
+        GameObject t6Obj = create_TowerStatus_Unit(rectObj);
+        setRectTransform(t6Obj, new Vector2(5f/6, 0f), new Vector2(6f/6, 1f), Vector2.zero, Vector2.zero);
+
+        Dictionary<string, GameObject[]> dict = new Dictionary<string, GameObject[]>();
+        dict["TowerTable"] = new GameObject[] { rectObj };
+        dict["TowerIcons"] = new GameObject[] {
+            t1Obj.transform.Find("TowerIcon").gameObject,
+            t2Obj.transform.Find("TowerIcon").gameObject,
+            t3Obj.transform.Find("TowerIcon").gameObject,
+            t4Obj.transform.Find("TowerIcon").gameObject,
+            t5Obj.transform.Find("TowerIcon").gameObject,
+            t6Obj.transform.Find("TowerIcon").gameObject,
+        };
+        return dict;
+    }
+    public static GameObject create_TowerStatus_Unit(GameObject parent) {
+        GameObject imageObj = createImage(parent, "TowerImage");
+        imageObj.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/PointTable/numBase");
+
+        GameObject iconObj = createImage(imageObj, "TowerIcon");
+        iconObj.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/TowerIcon/TowerBase");
+        setRectTransform(iconObj, new Vector2(0.1f, 0.1f), new Vector2(0.9f, 0.9f), Vector2.zero, Vector2.zero);
+
+        return imageObj;
+    }
+
 }

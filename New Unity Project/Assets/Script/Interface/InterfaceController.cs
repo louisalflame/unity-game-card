@@ -122,9 +122,9 @@ public class MenuButtonInterface {
         _interface = inter;
 
         _topBar = CanvasFactory.create_BattleScene_TopBar(_interface._panel);
-        _bottomBar = CanvasFactory.create_BattleScene_BottomBar(_interface._panel);
         _mainBase = CanvasFactory.create_BattleScene_MainButtonBase(_interface._panel);
         _actionBase = CanvasFactory.create_BattleScene_ActionButtonBase(_mainBase);
+        _bottomBar = CanvasFactory.create_BattleScene_BottomBar(_interface._panel);
 
         _exit = CanvasFactory.create_BattleScene_ExitBtn(_topBar);
         _next = CanvasFactory.create_BattleScene_NextBtn(_mainBase);
