@@ -14,7 +14,7 @@ public class CameraSize : MonoBehaviour {
         float newOrthographicSize = (float)Screen.height / (float)Screen.width * BaseWidth / BaseHeight * BaseOrthographicSize;
 
         Camera _camera = this.gameObject.GetComponent<Camera>();
-        _camera.orthographicSize = Mathf.Max( newOrthographicSize, BaseOrthographicSize );
+        // _camera.orthographicSize = Mathf.Max( newOrthographicSize, BaseOrthographicSize );
 
     }
 }

@@ -62,6 +62,12 @@ public class TeamManager {
         _personDices = new DiceManager(_battle, 1);
         _personDices.importDices(ActiveChar._personDice);
     }
+    public int findCharIndex(CharManager charM) {
+        for (int i = 0; i < _characters.Length; i++) {
+            if (_characters[i] == charM) return i;
+        }
+        return -1;
+    }
 
     // 開始擲骰 和 結束回收骰
     public void startDiceUsing() {

@@ -218,7 +218,6 @@ public class BattleController {
         //抓出box前n個dices
         _playerManager.startDiceUsing();
         _enemyManager.startDiceUsing();
-        Debug.Log(_enemyAI._team._groundDices._dicesUsing.Count);
         //製作dice 3D模型
         _interface.showDicePlay();
         //下一階段 等待骰子 隨機擲出 記錄骰值 
