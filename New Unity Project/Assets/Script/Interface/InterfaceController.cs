@@ -5,10 +5,10 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class InterfaceController {
-    public GameObject _canvas { get; private set; }
-    //public GameObject _panel { get; private set; }
 
     public BattleController _battle;
+
+    public GameObject _canvas { get; private set; }
     public MenuButtonInterface _menuButton { get; private set; }
     public MainLayoutInterface _mainMenu { get; private set; }
 
@@ -35,12 +35,8 @@ public class InterfaceController {
 
         createCanvasLayout();
 
-        _mainMenu = new MainLayoutInterface(this); 
+        _mainMenu = new MainLayoutInterface(this);
         _menuButton = new MenuButtonInterface(this);
-
-        _charPlayerPlace = new PlayerPlaceInterface(this);
-        _charEnemyPlace = new EnemyPlaceInterface(this);
-        _turnStatus = new TurnStatus(this);
 
         _actionButton = new ActionButtonInterface(this);
         _towerStatus = new TowerStatusInterface(this);
@@ -48,13 +44,44 @@ public class InterfaceController {
         _attrPoints = new AttrPointsInterface(this);
         _attrPointsEnemy = new AttrPointsEnemyInterface(this);
         _skillMenu = new SkillMenuInterface(this);
-
+        
         _teamPlayerStatus = new TeamPlayerStatusInterface(this, _battle._playerManager);
         _teamEnemyStatus = new TeamEnemyStatusInterface(this, battle._enemyManager);
 
         _diceBox = new DiceBoxInterface(this);
         _dicePlay = new DicePlayInterface(this);
         _attrDecision = new AttrDecisionInterface(this);
+
+        _charPlayerPlace = new PlayerPlaceInterface(this);
+        _charEnemyPlace = new EnemyPlaceInterface(this);
+        _turnStatus = new TurnStatus(this);
+    }
+    public void create() {
+        _mainMenu.create();
+        _menuButton.create();
+
+        _charPlayerPlace.create();
+        _charEnemyPlace.create();
+
+        _diceBox.create();
+
+        _teamPlayerStatus.create();
+        _teamEnemyStatus.create();
+    }
+
+    public void initial() {
+        _mainMenu.initial();
+        _menuButton.initial();
+
+        _charPlayerPlace.initial();
+        _charEnemyPlace.initial();
+
+        _diceBox.initial();
+        
+        setTeamPlayer();
+        setTeamEnemy();
+        _teamPlayerStatus.initial();
+        _teamEnemyStatus.initial();
     }
 
     public void update() {
@@ -113,8 +140,8 @@ public class InterfaceController {
 
     // 基本Layout物件
     public void createCanvasLayout() {
-        _canvas = CanvasFactory.createCanvas();
-        //_panel = CanvasFactory.createBasicRatioPanel(_canvas);
+        _canvas = GameObject.Find("Canvas");
+        if (_canvas == null) { _canvas = CanvasFactory.createCanvas(); }
     }
     public GameObject getImageMainBattleField() { return _mainMenu._mainBattleField; }
     public GameObject getImageLeftBattleField() { return _mainMenu._leftBattleField; }
@@ -132,75 +159,6 @@ public class InterfaceController {
     public GameObject getImageRightStatus() { return _mainMenu._rightStatus; }
     
 }
-
-// 基本指令選單按鈕
-public class MenuButtonInterface {
-    public InterfaceController _interface;
-
-    public GameObject _exit { get; private set; }
-    public GameObject _next { get; private set; }
-    public GameObject _throw { get; private set; }
-
-    public MenuButtonInterface(InterfaceController inter) {
-        _interface = inter;
-
-        createExitButton();
-        createNextButton();
-        createThrowButton();
-
-        hideNextButton();
-        hideThrowButton();
-    }
-    public void update() { }
-
-    public void showNextButton() { _next.SetActive(true); }
-    public void hideNextButton() { _next.SetActive(false); }
-    public void showThrowButton() { _throw.SetActive(true); }
-    public void hideThrowButton() { _throw.SetActive(false); }
-
-    private void createExitButton() {
-        _exit = CanvasFactory.createButton(_interface.getImageTopBar(), "ExitBtn", NameCoder.getLabel(NameCoder.ExitButton));
-        GameObject txt = CanvasFactory.createText(_exit, "txt", NameCoder.getText(NameCoder.ExitButton));
-
-        CanvasFactory.setRectTransformPosition(_exit, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(150f, 0f), new Vector2(120f, 40f));
-        CanvasFactory.setPointerImageNORMAL_DOWN_UP_ENTER_EXIT(
-            _exit, "Sprite/Button/buttonNor", 
-            "Sprite/Button/buttonPressed", "Sprite/Button/buttonNor", "Sprite/Button/buttonOver", "Sprite/Button/buttonNor"
-        );
-
-        CanvasFactory.setTextScaleSize(txt, 0.1f, 300);
-        CanvasFactory.setTextColor(txt, Color.black);
-    }
-    private void createNextButton() {
-        _next = CanvasFactory.createButton(_interface.getImageMiddleMenu(), "NextBtn", NameCoder.getLabel(NameCoder.NextButton));
-        GameObject txt = CanvasFactory.createText(_next, "txt", NameCoder.getText(NameCoder.NextButton));
-
-        float width = Mathf.Min(_interface.getImageMiddleMenu().GetComponent<RectTransform>().rect.width, 100f);
-        CanvasFactory.setRectTransformPosition(_next, new Vector2(0.5f, 0.4f), new Vector2(0.5f, 0.4f), Vector2.zero, new Vector2(width, width));
-        CanvasFactory.setPointerImageNORMAL_DOWN_UP_ENTER_EXIT(
-            _next, "Sprite/Button/okNor",
-            "Sprite/Button/okPressed", "Sprite/Button/okNor", "Sprite/Button/okOver", "Sprite/Button/okNor"
-        );
-
-        CanvasFactory.setTextScaleSize(txt, 0.1f, 300);
-        CanvasFactory.setTextColor(txt, Color.black);
-    }
-    private void createThrowButton() {
-        _throw = CanvasFactory.createButton(_interface.getImageMiddleMenu(), "ThrowBtn", NameCoder.getLabel(NameCoder.ThrowButton));
-        GameObject txt = CanvasFactory.createText(_throw, "txt", NameCoder.getText(NameCoder.ThrowButton));
-
-        float width = Mathf.Min(_interface.getImageMiddleMenu().GetComponent<RectTransform>().rect.width, 100f);
-        CanvasFactory.setRectTransformPosition(_throw, new Vector2(0.5f, 0.4f), new Vector2(0.5f, 0.4f), Vector2.zero, new Vector2(width, width));
-        CanvasFactory.setPointerImageNORMAL_DOWN_UP_ENTER_EXIT(
-            _throw, "Sprite/Button/okNor",
-            "Sprite/Button/okPressed", "Sprite/Button/okNor", "Sprite/Button/okOver", "Sprite/Button/okNor"
-        );
-
-        CanvasFactory.setTextScaleSize(txt, 0.1f, 300);
-        CanvasFactory.setTextColor(txt, Color.black);
-    }
-}
-
  
 
 // 技能選單顯示
@@ -209,12 +167,42 @@ public class SkillMenuInterface {
     public GameObject _skillTable { get; private set; }
     public GameObject[] _skillButtons { get; private set; }
 
-    public SkillMenuInterface(InterfaceController inter) {
-        _interface = inter;
+    public SkillMenuInterface(InterfaceController inter) { _interface = inter; }
 
-        Dictionary<string, GameObject[]> dict = CanvasFactory.create_BattleScene_PlayerSkillTable(_interface.getImageLeftMenu());
-        if (dict.ContainsKey("SkillTable")) _skillTable = dict["SkillTable"][0];
-        if (dict.ContainsKey("SkillButtons")) _skillButtons = dict["SkillButtons"]; 
+    public void create() {
+        create_BattleScene_PlayerSkillTable( _interface.getImageLeftMenu() );
     }
+
     public void update() { }
+
+    // Menu Skill Table *************
+    public void create_BattleScene_PlayerSkillTable(GameObject parent) {
+        _skillTable = CanvasFactory.createEmptyRect(parent, "PlayerSkill");
+        CanvasFactory.setRectTransformAnchor(_skillTable, new Vector2(0.1f, 0.75f), new Vector2(0.95f, 0.95f), Vector2.zero, Vector2.zero);
+
+        GameObject skill1 = create_SkillBtn_Unit(_skillTable);
+        CanvasFactory.setRectTransformAnchor(skill1, new Vector2(0.01f, 0f), new Vector2(0.24f, 1f), Vector2.zero, Vector2.zero);
+        GameObject skill2 = create_SkillBtn_Unit(_skillTable);
+        CanvasFactory.setRectTransformAnchor(skill2, new Vector2(0.26f, 0f), new Vector2(0.49f, 1f), Vector2.zero, Vector2.zero);
+        GameObject skill3 = create_SkillBtn_Unit(_skillTable);
+        CanvasFactory.setRectTransformAnchor(skill3, new Vector2(0.51f, 0f), new Vector2(0.74f, 1f), Vector2.zero, Vector2.zero);
+        GameObject skill4 = create_SkillBtn_Unit(_skillTable);
+        CanvasFactory.setRectTransformAnchor(skill4, new Vector2(0.76f, 0f), new Vector2(0.99f, 1f), Vector2.zero, Vector2.zero);
+
+        _skillButtons = new GameObject[] { skill1, skill2, skill3, skill4 };
+    }
+    public GameObject create_SkillBtn_Unit(GameObject parent) {
+        GameObject skillBtn = CanvasFactory.createButton(parent, "SkillBtn", "skill_LABEL");
+        GameObject txt = CanvasFactory.createText(skillBtn, "txt", "skill_ID");
+
+        CanvasFactory.setPointerImageNORMAL_DOWN_UP_ENTER_EXIT(
+            skillBtn, "Sprite/Button/skillNor",
+            "Sprite/Button/skillPressed", "Sprite/Button/skillNor", "Sprite/Button/skillOver", "Sprite/Button/skillNor"
+        );
+
+        CanvasFactory.setTextScaleSize(txt, 0.1f, 200);
+        CanvasFactory.setTextColor(txt, Color.black);
+
+        return skillBtn;
+    }
 }

@@ -20,7 +20,7 @@ public class EnemyAI {
 
         List<DiceFace> diceFaces = new List<DiceFace>();
         foreach (Dice d in dices) {
-            int rand = Random.Range(0, 5); Debug.Log(rand);
+            int rand = Random.Range(0, 5); 
             diceFaces.Add( d.getFace(rand) );
         }
         return diceFaces;

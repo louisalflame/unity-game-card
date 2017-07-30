@@ -24,6 +24,7 @@ public class BattleController {
 
     // 介面總管理
     public InterfaceController _interface { get; private set; }
+    public InterfaceAnimator _animator { get; private set; }
     // 玩家可輸入開關
     public bool _inputValid { get; private set; }
 
@@ -35,6 +36,7 @@ public class BattleController {
         _attrDecisionManager = new AttrDecisionManager(this);
         _enemyAI = new EnemyAI(this, _enemyManager);
         _interface = new InterfaceController(this);
+        _animator = new InterfaceAnimator(this, _interface);
         _inputValid = true;
         
         // 回合從起始階段開始，最後執行
@@ -45,6 +47,7 @@ public class BattleController {
     // update管理 ============================================================================
     public void update() {
         _interface.update();
+        _animator.update();
         _turnManager.update();
     }
     //========================================================================================
@@ -56,18 +59,16 @@ public class BattleController {
         _enemyManager.setTeamMember( new EnemyTeam01() );
 
         // 隊伍狀態,骰子組成 由角色決定後在更新
-        _interface.setTeamPlayer();
-        _interface.setTeamEnemy();
+        _interface.create();
+        _interface.initial();
 
-        nextTurn();
+        _animator.prepareShiftIn();
     }
     public void newStartTurn() {
         // 建立新的一回合攻防戰鬥
         _battleManager = new BattleManager(this);
-        // 顯示為移動階段
-        _interface.showMoveTurn();
-        // 顯示執骰按鈕
-        _interface.hideNextButton();
+
+        // 顯示擲骰按鈕
         _interface.showThrowButton();
 
         // 重製行動攻防按鈕
@@ -224,7 +225,7 @@ public class BattleController {
         _interface.startWaitDicesAnimate(); 
     }
     public void checkDiceBox(int type) {
-        _interface.checkDiceBox(type);
+        _animator.checkDiceBox(type);
     }
     public void decisionAttr(int id) {
         _attrDecisionManager.decisionAttr(id);

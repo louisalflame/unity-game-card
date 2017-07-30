@@ -11,13 +11,9 @@ public class TowerStatusInterface {
     public GameObject _towerTable { get; private set; }
     public GameObject[] _towers { get; private set; }
 
-    public TowerStatusInterface(InterfaceController inter) { 
-        _interface = inter;
-
-        Dictionary<string, GameObject[]> dict = CanvasFactory.create_BattleScene_PlayerTowerStatus(_interface.getImageRightMenu());
-
-        _towerTable = dict["TowerTable"][0];
-        _towers = dict["TowerIcons"];
+    public TowerStatusInterface(InterfaceController inter) { _interface = inter; }
+    public void create() { 
+         create_BattleScene_PlayerTowerStatus(_interface.getImageRightMenu()); 
     }
 
     public void setTowerStatus(AttrTower[] towers) {
@@ -27,6 +23,33 @@ public class TowerStatusInterface {
     }
 
     public void update() { }
+
+    // Menu Tower Status *************
+    public void create_BattleScene_PlayerTowerStatus(GameObject parent) {
+        _towerTable = CanvasFactory.createEmptyRect(parent, "PlayerTowerStatus");
+        float width = Mathf.Min(parent.transform.GetComponent<RectTransform>().rect.width - 20, 280f);
+        CanvasFactory.setRectTransformPosition(_towerTable, new Vector2(0.05f, 0.65f), new Vector2(0.05f, 0.65f), Vector2.zero, new Vector2(width, width / 6));
+        CanvasFactory.setRectPivot(_towerTable, new Vector2(0f, 0f));
+
+        AspectRatioFitter fitter = _towerTable.AddComponent<AspectRatioFitter>();
+        fitter.aspectMode = AspectRatioFitter.AspectMode.WidthControlsHeight;
+        fitter.aspectRatio = 6f;
+
+        GameObject t1Obj = CanvasFactory.create_TowerStatus_Unit(_towerTable);
+        CanvasFactory.setRectTransformAnchor(t1Obj, new Vector2(0f, 0f), new Vector2(1f / 6, 1f), Vector2.zero, Vector2.zero);
+        GameObject t2Obj = CanvasFactory.create_TowerStatus_Unit(_towerTable);
+        CanvasFactory.setRectTransformAnchor(t2Obj, new Vector2(1f / 6, 0f), new Vector2(2f / 6, 1f), Vector2.zero, Vector2.zero);
+        GameObject t3Obj = CanvasFactory.create_TowerStatus_Unit(_towerTable);
+        CanvasFactory.setRectTransformAnchor(t3Obj, new Vector2(2f / 6, 0f), new Vector2(3f / 6, 1f), Vector2.zero, Vector2.zero);
+        GameObject t4Obj = CanvasFactory.create_TowerStatus_Unit(_towerTable);
+        CanvasFactory.setRectTransformAnchor(t4Obj, new Vector2(3f / 6, 0f), new Vector2(4f / 6, 1f), Vector2.zero, Vector2.zero);
+        GameObject t5Obj = CanvasFactory.create_TowerStatus_Unit(_towerTable);
+        CanvasFactory.setRectTransformAnchor(t5Obj, new Vector2(4f / 6, 0f), new Vector2(5f / 6, 1f), Vector2.zero, Vector2.zero);
+        GameObject t6Obj = CanvasFactory.create_TowerStatus_Unit(_towerTable);
+        CanvasFactory.setRectTransformAnchor(t6Obj, new Vector2(5f / 6, 0f), new Vector2(6f / 6, 1f), Vector2.zero, Vector2.zero);
+
+        _towers = new GameObject[] { t1Obj, t2Obj, t3Obj, t4Obj, t5Obj, t6Obj };
+    }
 }
 
 //屬性點數存量顯示
@@ -36,15 +59,9 @@ public class AttrPointsInterface {
     public GameObject[] _attrIcons { get; private set; }
     public GameObject[] _attrNums { get; private set; }
 
-    public AttrPointsInterface(InterfaceController inter) {
-        _interface = inter;
-
-        Dictionary<string, GameObject[]> dict = CanvasFactory.create_BattleScene_PlayerPointStatus(_interface.getImageRightMenu());
-
-        _pointTable = dict["PointTable"][0];
-        _attrIcons = dict["PointAttrs"];
-        _attrNums = dict["PointTexts"];
-
+    public AttrPointsInterface(InterfaceController inter) { _interface = inter; }
+    public void create(){
+        create_BattleScene_PlayerPointStatus(_interface.getImageRightMenu()); 
     }
 
     public void setAttrNums(int[] attrNums) {
@@ -57,6 +74,47 @@ public class AttrPointsInterface {
     }
 
     public void update() { }
+      
+    // Menu Point Status *************
+    public void create_BattleScene_PlayerPointStatus(GameObject parent) {
+        _pointTable = CanvasFactory.createEmptyRect(parent, "PlayerPointStatus");
+        float width = Mathf.Min(parent.transform.GetComponent<RectTransform>().rect.width - 20, 280f);
+        CanvasFactory.setRectTransformPosition(_pointTable, new Vector2(0.05f, 0.6f), new Vector2(0.05f, 0.6f), Vector2.zero, new Vector2(width, width / 3));
+        CanvasFactory.setRectPivot(_pointTable, new Vector2(0f, 1f));
+
+        AspectRatioFitter fitter = _pointTable.AddComponent<AspectRatioFitter>();
+        fitter.aspectMode = AspectRatioFitter.AspectMode.WidthControlsHeight;
+        fitter.aspectRatio = 3f;
+
+        GameObject norObj = CanvasFactory.create_PointStatus_Unit(
+            _pointTable, "attrNor", "Sprite/PointTable/pointTableNor", "Sprite/AttrIcon/AttrNor");
+        CanvasFactory.setRectTransformAnchor(norObj, new Vector2(0f, 0f), new Vector2(1f / 6, 1f), Vector2.zero, Vector2.zero);
+        GameObject atkObj = CanvasFactory.create_PointStatus_Unit(
+            _pointTable, "attrAtk", "Sprite/PointTable/pointTableAtk", "Sprite/AttrIcon/AttrAtk");
+        CanvasFactory.setRectTransformAnchor(atkObj, new Vector2(1f / 6, 0f), new Vector2(2f / 6, 1f), Vector2.zero, Vector2.zero);
+        GameObject defObj = CanvasFactory.create_PointStatus_Unit(
+            _pointTable, "attrDef", "Sprite/PointTable/pointTableDef", "Sprite/AttrIcon/AttrDef");
+        CanvasFactory.setRectTransformAnchor(defObj, new Vector2(2f / 6, 0f), new Vector2(3f / 6, 1f), Vector2.zero, Vector2.zero);
+        GameObject movObj = CanvasFactory.create_PointStatus_Unit(
+            _pointTable, "attrMov", "Sprite/PointTable/pointTableMov", "Sprite/AttrIcon/AttrMov");
+        CanvasFactory.setRectTransformAnchor(movObj, new Vector2(3f / 6, 0f), new Vector2(4f / 6, 1f), Vector2.zero, Vector2.zero);
+        GameObject spcObj = CanvasFactory.create_PointStatus_Unit(
+            _pointTable, "attrSpc", "Sprite/PointTable/pointTableSpc", "Sprite/AttrIcon/AttrSpc");
+        CanvasFactory.setRectTransformAnchor(spcObj, new Vector2(4f / 6, 0f), new Vector2(5f / 6, 1f), Vector2.zero, Vector2.zero);
+        GameObject healObj = CanvasFactory.create_PointStatus_Unit(
+            _pointTable, "attrHeal", "Sprite/PointTable/pointTableHeal", "Sprite/AttrIcon/AttrHeal");
+        CanvasFactory.setRectTransformAnchor(healObj, new Vector2(5f / 6, 0f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero);
+
+        _attrIcons = new GameObject[] { norObj, atkObj, defObj, movObj, spcObj, healObj };
+        _attrNums = new GameObject[] {
+                norObj.transform.Find("num/txt").gameObject,
+                atkObj.transform.Find("num/txt").gameObject,
+                defObj.transform.Find("num/txt").gameObject,
+                movObj.transform.Find("num/txt").gameObject,
+                spcObj.transform.Find("num/txt").gameObject,
+                healObj.transform.Find("num/txt").gameObject,
+            }; 
+    }
 }
 
 
@@ -66,19 +124,42 @@ public class TowerStatusEnemyInterface {
     public GameObject _towerTable { get; private set; }
     public GameObject[] _towers { get; private set; }
 
-    public TowerStatusEnemyInterface(InterfaceController inter) { 
-        _interface = inter;
-
-        CanvasFactory.create_BattleScene_EnemyTowerStatus(_interface.getImageEnemyTableMask());
-
-
-        _towers = new GameObject[6] { null, null, null, null, null, null };
+    public TowerStatusEnemyInterface(InterfaceController inter) { _interface = inter; }
+    public void create() {
+        create_BattleScene_EnemyTowerStatus(_interface.getImageEnemyTableMask()); 
     }
 
     public void setTowerStatus(AttrTower[] towers) {
-      //  for (int i = 0; i < _towers.Length && i < towers.Length; i++) {
-      //      _towers[i].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>( towers[i].getImage() );
-       // }
+        for (int i = 0; i < _towers.Length && i < towers.Length; i++) {
+            _towers[i].GetComponent<Image>().sprite = Resources.Load<Sprite>( towers[i].getImage() );
+        }
+    }
+
+    // Enemy Tower Status *************
+    public void create_BattleScene_EnemyTowerStatus(GameObject parent) {
+        _towerTable = CanvasFactory.createEmptyRect(parent, "EnemyTowerStatus");
+        float width = Mathf.Min(parent.transform.GetComponent<RectTransform>().rect.width - 20, 280f);
+        CanvasFactory.setRectTransformPosition(_towerTable, new Vector2(0.05f, 1f), new Vector2(0.05f, 1f), Vector2.zero, new Vector2(width, width / 6));
+        CanvasFactory.setRectPivot(_towerTable, new Vector2(0f, 1f));
+
+        AspectRatioFitter fitter = _towerTable.AddComponent<AspectRatioFitter>();
+        fitter.aspectMode = AspectRatioFitter.AspectMode.WidthControlsHeight;
+        fitter.aspectRatio = 6f;
+
+        GameObject t1Obj = CanvasFactory.create_TowerStatus_Unit(_towerTable);
+        CanvasFactory.setRectTransformAnchor(t1Obj, new Vector2(0f, 0f), new Vector2(1f / 6, 1f), Vector2.zero, Vector2.zero);
+        GameObject t2Obj = CanvasFactory.create_TowerStatus_Unit(_towerTable);
+        CanvasFactory.setRectTransformAnchor(t2Obj, new Vector2(1f / 6, 0f), new Vector2(2f / 6, 1f), Vector2.zero, Vector2.zero);
+        GameObject t3Obj = CanvasFactory.create_TowerStatus_Unit(_towerTable);
+        CanvasFactory.setRectTransformAnchor(t3Obj, new Vector2(2f / 6, 0f), new Vector2(3f / 6, 1f), Vector2.zero, Vector2.zero);
+        GameObject t4Obj = CanvasFactory.create_TowerStatus_Unit(_towerTable);
+        CanvasFactory.setRectTransformAnchor(t4Obj, new Vector2(3f / 6, 0f), new Vector2(4f / 6, 1f), Vector2.zero, Vector2.zero);
+        GameObject t5Obj = CanvasFactory.create_TowerStatus_Unit(_towerTable);
+        CanvasFactory.setRectTransformAnchor(t5Obj, new Vector2(4f / 6, 0f), new Vector2(5f / 6, 1f), Vector2.zero, Vector2.zero);
+        GameObject t6Obj = CanvasFactory.create_TowerStatus_Unit(_towerTable);
+        CanvasFactory.setRectTransformAnchor(t6Obj, new Vector2(5f / 6, 0f), new Vector2(6f / 6, 1f), Vector2.zero, Vector2.zero);
+
+        _towers =  new GameObject[] { t1Obj, t2Obj, t3Obj, t4Obj, t5Obj, t6Obj }; 
     }
 }
 // 敵方屬性點狀態顯示
@@ -88,22 +169,58 @@ public class AttrPointsEnemyInterface {
     public GameObject[] _attrIcons { get; private set; }
     public GameObject[] _attrNums { get; private set; }
 
-    public AttrPointsEnemyInterface(InterfaceController inter) {
-        _interface = inter;
-
-        CanvasFactory.create_BattleScene_EnemyPointStatus(_interface.getImageEnemyTableMask());
-        
-        _attrIcons = new GameObject[6] { null, null, null, null, null, null };
-
-        _attrNums = new GameObject[6] { null, null, null, null, null, null };
+    public AttrPointsEnemyInterface(InterfaceController inter) { _interface = inter; }
+    public void create() {
+        create_BattleScene_EnemyPointStatus(_interface.getImageEnemyTableMask()); 
     }
 
     public void setAttrNums(int[] attrNums) {
-       // for (int i = 0; i < attrNums.Length && i < _attrNums.Length; i++) {
-       //     _attrNums[i].GetComponent<TextMesh>().text = attrNums[i].ToString();
-       // }
+        for (int i = 0; i < attrNums.Length && i < _attrNums.Length; i++) {
+            _attrNums[i].GetComponent<Text>().text = attrNums[i].ToString();
+        }
     }
     public void setAttrNum(int attr, int num) {
-       // _attrNums[attr].transform.Find("num").GetComponent<TextMesh>().text = num.ToString();
+        _attrNums[attr].GetComponent<Text>().text = num.ToString();
+    }
+
+    // Enemy Point Status *************
+    public void create_BattleScene_EnemyPointStatus(GameObject parent) {
+        _pointTable = CanvasFactory.createEmptyRect(parent, "EnemyPointStatus");
+        float width = Mathf.Min(parent.transform.GetComponent<RectTransform>().rect.width - 20, 280f);
+        CanvasFactory.setRectTransformPosition(_pointTable, new Vector2(0.05f, 1f), new Vector2(0.05f, 1f), Vector2.zero, new Vector2(width, width / 3));
+        CanvasFactory.setRectPivot(_pointTable, new Vector2(0f, 0f));
+
+        AspectRatioFitter fitter = _pointTable.AddComponent<AspectRatioFitter>();
+        fitter.aspectMode = AspectRatioFitter.AspectMode.WidthControlsHeight;
+        fitter.aspectRatio = 3f;
+
+        GameObject norObj = CanvasFactory.create_PointStatus_Unit(
+            _pointTable, "attrNor", "Sprite/PointTable/pointTableNor", "Sprite/AttrIcon/AttrNor");
+        CanvasFactory.setRectTransformAnchor(norObj, new Vector2(0f, 0f), new Vector2(1f / 6, 1f), Vector2.zero, Vector2.zero);
+        GameObject atkObj = CanvasFactory.create_PointStatus_Unit(
+            _pointTable, "attrAtk", "Sprite/PointTable/pointTableAtk", "Sprite/AttrIcon/AttrAtk");
+        CanvasFactory.setRectTransformAnchor(atkObj, new Vector2(1f / 6, 0f), new Vector2(2f / 6, 1f), Vector2.zero, Vector2.zero);
+        GameObject defObj = CanvasFactory.create_PointStatus_Unit(
+            _pointTable, "attrDef", "Sprite/PointTable/pointTableDef", "Sprite/AttrIcon/AttrDef");
+        CanvasFactory.setRectTransformAnchor(defObj, new Vector2(2f / 6, 0f), new Vector2(3f / 6, 1f), Vector2.zero, Vector2.zero);
+        GameObject movObj = CanvasFactory.create_PointStatus_Unit(
+            _pointTable, "attrMov", "Sprite/PointTable/pointTableMov", "Sprite/AttrIcon/AttrMov");
+        CanvasFactory.setRectTransformAnchor(movObj, new Vector2(3f / 6, 0f), new Vector2(4f / 6, 1f), Vector2.zero, Vector2.zero);
+        GameObject spcObj = CanvasFactory.create_PointStatus_Unit(
+            _pointTable, "attrSpc", "Sprite/PointTable/pointTableSpc", "Sprite/AttrIcon/AttrSpc");
+        CanvasFactory.setRectTransformAnchor(spcObj, new Vector2(4f / 6, 0f), new Vector2(5f / 6, 1f), Vector2.zero, Vector2.zero);
+        GameObject healObj = CanvasFactory.create_PointStatus_Unit(
+            _pointTable, "attrHeal", "Sprite/PointTable/pointTableHeal", "Sprite/AttrIcon/AttrHeal");
+        CanvasFactory.setRectTransformAnchor(healObj, new Vector2(5f / 6, 0f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero);
+
+        _attrIcons = new GameObject[] { norObj, atkObj, defObj, movObj, spcObj, healObj };
+        _attrNums = new GameObject[] {
+                norObj.transform.Find("num/txt").gameObject,
+                atkObj.transform.Find("num/txt").gameObject,
+                defObj.transform.Find("num/txt").gameObject,
+                movObj.transform.Find("num/txt").gameObject,
+                spcObj.transform.Find("num/txt").gameObject,
+                healObj.transform.Find("num/txt").gameObject,
+            }; 
     }
 }

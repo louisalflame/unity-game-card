@@ -18,15 +18,18 @@ public class DiceBoxInterface {
 
     public DiceBoxInterface(InterfaceController inter) {
         _interface = inter;
-        _mode = new DiceBoxNormalMode(this);
-
-        Dictionary<string, GameObject> dict = CanvasFactory.create_BattleScene_DiceBox(_interface.getImageLeftStatus());
-        _diceBox = dict["DiceBox"];
-        _dicesGround = dict["DicesGround"];
-        _dicesTeam = dict["DicesTeam"];
-        _dicesPerson = dict["DicesPerson"]; 
+        _mode = new DiceBoxNormalMode(this); 
 
         _dices = new List<GameObject>();
+    }
+
+    public void create() { 
+         create_BattleScene_DiceBox(_interface.getImageLeftStatus());
+         _diceBox.SetActive(false);
+    }
+    public void initial() {
+        _diceBox.GetComponent<RectTransform>().anchoredPosition = new Vector2(-400f, 0f);
+        _diceBox.SetActive(true);
     }
 
     public void clear() {
@@ -37,20 +40,13 @@ public class DiceBoxInterface {
 
     public void checkDiceBox(int type) {
         clear();
-
         _mode = _mode.getNextMode( _mode.getID(), type );
-        _mode.setModePosition();
-        _mode.showDiceBox( _dices );
+        
+        //_mode.setModePosition();
+        //_mode.showDiceBox( _dices );
     }
+    public AnimateWork[] getModeAnimates() { return _mode.getModeAnimates(); }
 
-    public void shiftButtonPosition(float groundX, float teamX, float personX) {
-        _dicesGround.GetComponent<RectTransform>().anchoredPosition =
-            new Vector2(groundX, _dicesGround.GetComponent<RectTransform>().anchoredPosition.y);
-        _dicesTeam.GetComponent<RectTransform>().anchoredPosition =
-            new Vector2(teamX, _dicesTeam.GetComponent<RectTransform>().anchoredPosition.y);
-        _dicesPerson.GetComponent<RectTransform>().anchoredPosition =
-            new Vector2(personX, _dicesPerson.GetComponent<RectTransform>().anchoredPosition.y);
-    } 
     public void shiftTextPosition(float txtX) {
         _dicesGround.transform.Find("txt").GetComponent<RectTransform>().anchoredPosition =
             new Vector2(txtX, _dicesGround.transform.Find("txt").GetComponent<RectTransform>().anchoredPosition.y);
@@ -58,6 +54,24 @@ public class DiceBoxInterface {
             new Vector2(txtX, _dicesTeam.transform.Find("txt").GetComponent<RectTransform>().anchoredPosition.y);
         _dicesPerson.transform.Find("txt").GetComponent<RectTransform>().anchoredPosition =
             new Vector2(txtX, _dicesPerson.transform.Find("txt").GetComponent<RectTransform>().anchoredPosition.y);
+    }
+
+    // DiceBox  *************
+    public void create_BattleScene_DiceBox(GameObject parent) {
+        _diceBox = CanvasFactory.createEmptyRect(parent, "DiceBox");
+        CanvasFactory.setRectTransformPosition(_diceBox, new Vector2(0f, 0.88f), new Vector2(0f, 0.88f), new Vector2(-100f, 0f), Vector2.zero );
+
+        _dicesPerson = CanvasFactory.create_DiceBox_Unit(_diceBox, "DicesPerson", StringCoder.getDiceBoxString(3), "個人");
+        _dicesPerson.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/Button/dicesPerson");
+        CanvasFactory.setRectTransformPosition(_dicesPerson, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(200f, 0f), new Vector2(200f, 50f));
+
+        _dicesTeam = CanvasFactory.create_DiceBox_Unit(_diceBox, "DicesTeam", StringCoder.getDiceBoxString(2), "隊伍");
+        _dicesTeam.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/Button/dicesTeam");
+        CanvasFactory.setRectTransformPosition(_dicesTeam, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(100f, 0f), new Vector2(200f, 50f));
+
+        _dicesGround = CanvasFactory.create_DiceBox_Unit(_diceBox, "DicesGround", StringCoder.getDiceBoxString(1), "場地");
+        _dicesGround.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/Button/dicesGround");
+        CanvasFactory.setRectTransformPosition(_dicesGround, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, 0f), new Vector2(200f, 50f));         
     }
 }
 
@@ -71,7 +85,7 @@ public abstract class DiceBoxMode {
         else return this;  
     }
     public abstract int getID();
-    public abstract void setModePosition();
+    public abstract AnimateWork[] getModeAnimates();
     public abstract void showDiceBox( List<GameObject> dices );
 }
 
@@ -79,9 +93,12 @@ public class DiceBoxNormalMode : DiceBoxMode {
     public const int id = 0;
     public DiceBoxNormalMode(DiceBoxInterface dicebox) { _diceBox = dicebox; }
     public override int getID() { return id; }
-    public override void setModePosition() {
-        _diceBox.shiftButtonPosition(0f, 100f, 200f);
-        _diceBox.shiftTextPosition(0f);
+    public override AnimateWork[] getModeAnimates(){
+        return new AnimateWork[] {
+            new AnimateMoveTo(_diceBox._dicesGround.GetComponent<RectTransform>(), new Vector2(0f, 0f), 10),
+            new AnimateMoveTo(_diceBox._dicesTeam.GetComponent<RectTransform>(), new Vector2(100f, 0f), 10),
+            new AnimateMoveTo(_diceBox._dicesPerson.GetComponent<RectTransform>(), new Vector2(200f, 0f), 10),
+        };      
     }
     public override void showDiceBox(List<GameObject> diceObjs) { }
 }
@@ -89,9 +106,12 @@ public class DiceBoxGroundMode : DiceBoxMode {
     public const int id = 1;
     public DiceBoxGroundMode(DiceBoxInterface dicebox) { _diceBox = dicebox; }
     public override int getID() { return id; }
-    public override void setModePosition() {
-        _diceBox.shiftButtonPosition(70f, 100f, 130f);
-        _diceBox.shiftTextPosition(-60f);
+    public override AnimateWork[] getModeAnimates() {
+        return new AnimateWork[] {
+            new AnimateMoveTo(_diceBox._dicesGround.GetComponent<RectTransform>(), new Vector2(70f, 0f), 10),
+            new AnimateMoveTo(_diceBox._dicesTeam.GetComponent<RectTransform>(), new Vector2(100f, 0f), 10),
+            new AnimateMoveTo(_diceBox._dicesPerson.GetComponent<RectTransform>(), new Vector2(130f, 0f), 10),
+        };      
     }
     public override void showDiceBox(List<GameObject> diceObjs) {
         List<Dice> dices = _diceBox._interface._battle._playerManager._groundDices._dicesUnused.GetRange(
@@ -108,9 +128,12 @@ public class DiceBoxTeamMode : DiceBoxMode {
     public const int id = 2;
     public DiceBoxTeamMode(DiceBoxInterface dicebox) { _diceBox = dicebox; }
     public override int getID() { return id; }
-    public override void setModePosition() {
-        _diceBox.shiftButtonPosition(-60f, 100f, 130f);
-        _diceBox.shiftTextPosition(-60f);
+    public override AnimateWork[] getModeAnimates() {
+        return new AnimateWork[] {
+            new AnimateMoveTo(_diceBox._dicesGround.GetComponent<RectTransform>(), new Vector2(-60f, 0f), 10),
+            new AnimateMoveTo(_diceBox._dicesTeam.GetComponent<RectTransform>(), new Vector2(100f, 0f), 10),
+            new AnimateMoveTo(_diceBox._dicesPerson.GetComponent<RectTransform>(), new Vector2(130f, 0f), 10),
+        };      
     }
     public override void showDiceBox(List<GameObject> diceObjs) {
         List<Dice> dices = _diceBox._interface._battle._playerManager._teamDices._dicesUnused.GetRange(
@@ -127,9 +150,12 @@ public class DiceBoxPersonMode : DiceBoxMode {
     public const int id = 3;
     public DiceBoxPersonMode(DiceBoxInterface dicebox) { _diceBox = dicebox; }
     public override int getID() { return id; }
-    public override void setModePosition() {
-        _diceBox.shiftButtonPosition(-60f, -30f, 130f);
-        _diceBox.shiftTextPosition(-60f);
+    public override AnimateWork[] getModeAnimates(){
+        return new AnimateWork[] {
+            new AnimateMoveTo(_diceBox._dicesGround.GetComponent<RectTransform>(), new Vector2(-60f, 0f), 10),
+            new AnimateMoveTo(_diceBox._dicesTeam.GetComponent<RectTransform>(), new Vector2(-30f, 0f), 10),
+            new AnimateMoveTo(_diceBox._dicesPerson.GetComponent<RectTransform>(), new Vector2(130f, 0f), 10),
+        };      
     }
     public override void showDiceBox(List<GameObject> diceObjs) {
         List<Dice> dices = _diceBox._interface._battle._playerManager._personDices._dicesUnused.GetRange(

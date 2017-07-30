@@ -107,6 +107,9 @@ public class CanvasFactory {
     public static void setTextColor(GameObject txtObj, Color c) {
         if (txtObj.GetComponent<Text>() != null) txtObj.GetComponent<Text>().color = c;
     }
+    public static void setTextAnchor(GameObject txtObj, TextAnchor anchor) {
+        if (txtObj.GetComponent<Text>() != null) txtObj.GetComponent<Text>().alignment = anchor;
+    }
     
     public static GameObject setRectTransformAnchor(GameObject obj, Vector2 anchorMin, Vector2 anchorMax, Vector2 offsetMin, Vector2 offsetMax) {
         RectTransform rect = obj.GetComponent<RectTransform>();
@@ -193,6 +196,11 @@ public class CanvasFactory {
             obj.GetComponent<Image>().sprite = Resources.Load<Sprite>(path);
         }
     }
+    public static void setImageNatureSize(GameObject obj) {
+        if (obj.GetComponent<Image>() != null) {
+            obj.GetComponent<Image>().SetNativeSize();
+        }
+    }
 
     public static void setAspectRatioFitter(GameObject obj, AspectRatioFitter.AspectMode mode, float ratio)  {
         AspectRatioFitter fitter = obj.AddComponent<AspectRatioFitter>();
@@ -224,45 +232,8 @@ public class CanvasFactory {
     //==================================================
     // BattleScene 
     //==================================================
-      
-    // Menu Point Status *************
-    public static Dictionary<string, GameObject[]> create_BattleScene_PlayerPointStatus(GameObject parent) {
-        GameObject rectObj = createEmptyRect(parent, "PlayerPointStatus");
-        float width = Mathf.Min(parent.transform.GetComponent<RectTransform>().rect.width, 280f);
-        setRectTransformPosition(rectObj, new Vector2(0.05f, 0.55f), new Vector2(0.05f, 0.55f), Vector2.zero, new Vector2(width, width/3));
-        setRectPivot(rectObj, new Vector2(0f, 1f));
 
-        AspectRatioFitter fitter = rectObj.AddComponent<AspectRatioFitter>();
-        fitter.aspectMode = AspectRatioFitter.AspectMode.WidthControlsHeight;
-        fitter.aspectRatio = 3f;
-
-        GameObject norObj = create_PointStatus_Unit(rectObj, "attrNor", "Sprite/PointTable/pointTableNor", "Sprite/AttrIcon/AttrNor");
-        setRectTransformAnchor(norObj, new Vector2(0f, 0f), new Vector2(1f/6, 1f), Vector2.zero, Vector2.zero);
-        GameObject atkObj = create_PointStatus_Unit(rectObj, "attrAtk", "Sprite/PointTable/pointTableAtk", "Sprite/AttrIcon/AttrAtk");
-        setRectTransformAnchor(atkObj, new Vector2(1f/6, 0f), new Vector2(2f/6, 1f), Vector2.zero, Vector2.zero);
-        GameObject defObj = create_PointStatus_Unit(rectObj, "attrDef", "Sprite/PointTable/pointTableDef", "Sprite/AttrIcon/AttrDef");
-        setRectTransformAnchor(defObj, new Vector2(2f/6, 0f), new Vector2(3f/6, 1f), Vector2.zero, Vector2.zero);
-        GameObject movObj = create_PointStatus_Unit(rectObj, "attrMov", "Sprite/PointTable/pointTableMov", "Sprite/AttrIcon/AttrMov");
-        setRectTransformAnchor(movObj, new Vector2(3f/6, 0f), new Vector2(4f/6, 1f), Vector2.zero, Vector2.zero);
-        GameObject spcObj = create_PointStatus_Unit(rectObj, "attrSpc", "Sprite/PointTable/pointTableSpc", "Sprite/AttrIcon/AttrSpc");
-        setRectTransformAnchor(spcObj, new Vector2(4f/6, 0f), new Vector2(5f/6, 1f), Vector2.zero, Vector2.zero);
-        GameObject healObj = create_PointStatus_Unit(rectObj, "attrHeal", "Sprite/PointTable/pointTableHeal", "Sprite/AttrIcon/AttrHeal");
-        setRectTransformAnchor(healObj, new Vector2(5f/6, 0f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero);
-
-        Dictionary<string, GameObject[]> dict = new Dictionary<string, GameObject[]>() { 
-            { "PointTable", new GameObject[] { rectObj } },
-            { "PointAttrs", new GameObject[] { norObj, atkObj, defObj, movObj, spcObj, healObj } },
-            { "PointTexts", new GameObject[] {
-                norObj.transform.Find("num/txt").gameObject,
-                atkObj.transform.Find("num/txt").gameObject,
-                defObj.transform.Find("num/txt").gameObject,
-                movObj.transform.Find("num/txt").gameObject,
-                spcObj.transform.Find("num/txt").gameObject,
-                healObj.transform.Find("num/txt").gameObject,
-            } }
-        };  
-        return dict;
-    }
+    // PointStatus  *************
     public static GameObject create_PointStatus_Unit(GameObject parent, string name, string spritePath, string iconPath) {
         GameObject imageObj = createImage(parent, name);
         imageObj.GetComponent<Image>().sprite = Resources.Load<Sprite>(spritePath);
@@ -276,49 +247,13 @@ public class CanvasFactory {
         setRectTransformAnchor(numObj, new Vector2(0.1f, 0.55f), new Vector2(0.9f, 0.95f), Vector2.zero, Vector2.zero);
 
         GameObject txt = createText(numObj, "txt", "0");
-        txt.GetComponent<RectTransform>().localScale = new Vector3(0.1f, 0.1f, 0.1f);
-        txt.GetComponent<Text>().fontSize = 300;
-        txt.GetComponent<Text>().color = Color.white;
+        setTextScaleSize(txt, 0.1f, 300);
+        setTextColor(txt, Color.white); 
 
         return imageObj;
     }
-    // Menu Tower Status *************
-    public static Dictionary<string, GameObject[]> create_BattleScene_PlayerTowerStatus(GameObject parent) {
-        GameObject rectObj = createEmptyRect(parent, "PlayerTowerStatus");
-        float width = Mathf.Min(parent.transform.GetComponent<RectTransform>().rect.width, 280f);
-        setRectTransformPosition(rectObj, new Vector2(0.05f, 0.6f), new Vector2(0.05f, 0.6f), Vector2.zero, new Vector2(width, width/6));
-        setRectPivot(rectObj, new Vector2(0f, 0f));
 
-        AspectRatioFitter fitter = rectObj.AddComponent<AspectRatioFitter>();
-        fitter.aspectMode = AspectRatioFitter.AspectMode.WidthControlsHeight;
-        fitter.aspectRatio = 6f;
-
-        GameObject t1Obj = create_TowerStatus_Unit(rectObj);
-        setRectTransformAnchor(t1Obj, new Vector2(0f, 0f), new Vector2(1f/6, 1f), Vector2.zero, Vector2.zero);
-        GameObject t2Obj = create_TowerStatus_Unit(rectObj);
-        setRectTransformAnchor(t2Obj, new Vector2(1f/6, 0f), new Vector2(2f/6, 1f), Vector2.zero, Vector2.zero);
-        GameObject t3Obj = create_TowerStatus_Unit(rectObj);
-        setRectTransformAnchor(t3Obj, new Vector2(2f/6, 0f), new Vector2(3f/6, 1f), Vector2.zero, Vector2.zero);
-        GameObject t4Obj = create_TowerStatus_Unit(rectObj);
-        setRectTransformAnchor(t4Obj, new Vector2(3f/6, 0f), new Vector2(4f/6, 1f), Vector2.zero, Vector2.zero);
-        GameObject t5Obj = create_TowerStatus_Unit(rectObj);
-        setRectTransformAnchor(t5Obj, new Vector2(4f/6, 0f), new Vector2(5f/6, 1f), Vector2.zero, Vector2.zero);
-        GameObject t6Obj = create_TowerStatus_Unit(rectObj);
-        setRectTransformAnchor(t6Obj, new Vector2(5f/6, 0f), new Vector2(6f/6, 1f), Vector2.zero, Vector2.zero);
-
-        Dictionary<string, GameObject[]> dict = new Dictionary<string, GameObject[]> { 
-            { "TowerTable", new GameObject[] { rectObj } },
-            { "TowerIcons", new GameObject[] {
-                t1Obj.transform.Find("TowerIcon").gameObject,
-                t2Obj.transform.Find("TowerIcon").gameObject,
-                t3Obj.transform.Find("TowerIcon").gameObject,
-                t4Obj.transform.Find("TowerIcon").gameObject,
-                t5Obj.transform.Find("TowerIcon").gameObject,
-                t6Obj.transform.Find("TowerIcon").gameObject,
-            } }
-        }; 
-        return dict;
-    }
+    // TowerStatus  *************
     public static GameObject create_TowerStatus_Unit(GameObject parent) {
         GameObject imageObj = createImage(parent, "TowerImage");
         imageObj.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/PointTable/numBase");
@@ -329,146 +264,8 @@ public class CanvasFactory {
 
         return imageObj;
     }
-    // Enemy Point Status *************
-    public static Dictionary<string, GameObject[]> create_BattleScene_EnemyPointStatus(GameObject parent) {
-        GameObject rectObj = createEmptyRect(parent, "EnemyPointStatus");
-        float width = Mathf.Min(parent.transform.GetComponent<RectTransform>().rect.width, 280f);
-        setRectTransformPosition(rectObj, new Vector2(0.05f, 1f), new Vector2(0.05f, 1f), Vector2.zero, new Vector2(width, width/3));
-        setRectPivot(rectObj, new Vector2(0f, 0f));
 
-        AspectRatioFitter fitter = rectObj.AddComponent<AspectRatioFitter>();
-        fitter.aspectMode = AspectRatioFitter.AspectMode.WidthControlsHeight;
-        fitter.aspectRatio = 3f;
-
-        GameObject norObj = create_PointStatus_Unit(rectObj, "attrNor", "Sprite/PointTable/pointTableNor", "Sprite/AttrIcon/AttrNor");
-        setRectTransformAnchor(norObj, new Vector2(0f, 0f), new Vector2(1f/6, 1f), Vector2.zero, Vector2.zero);
-        GameObject atkObj = create_PointStatus_Unit(rectObj, "attrAtk", "Sprite/PointTable/pointTableAtk", "Sprite/AttrIcon/AttrAtk");
-        setRectTransformAnchor(atkObj, new Vector2(1f/6, 0f), new Vector2(2f/6, 1f), Vector2.zero, Vector2.zero);
-        GameObject defObj = create_PointStatus_Unit(rectObj, "attrDef", "Sprite/PointTable/pointTableDef", "Sprite/AttrIcon/AttrDef");
-        setRectTransformAnchor(defObj, new Vector2(2f/6, 0f), new Vector2(3f/6, 1f), Vector2.zero, Vector2.zero);
-        GameObject movObj = create_PointStatus_Unit(rectObj, "attrMov", "Sprite/PointTable/pointTableMov", "Sprite/AttrIcon/AttrMov");
-        setRectTransformAnchor(movObj, new Vector2(3f/6, 0f), new Vector2(4f/6, 1f), Vector2.zero, Vector2.zero);
-        GameObject spcObj = create_PointStatus_Unit(rectObj, "attrSpc", "Sprite/PointTable/pointTableSpc", "Sprite/AttrIcon/AttrSpc");
-        setRectTransformAnchor(spcObj, new Vector2(4f/6, 0f), new Vector2(5f/6, 1f), Vector2.zero, Vector2.zero);
-        GameObject healObj = create_PointStatus_Unit(rectObj, "attrHeal", "Sprite/PointTable/pointTableHeal", "Sprite/AttrIcon/AttrHeal");
-        setRectTransformAnchor(healObj, new Vector2(5f/6, 0f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero);
-
-        Dictionary<string, GameObject[]> dict = new Dictionary<string, GameObject[]>() { 
-            { "PointTable", new GameObject[] { rectObj } },
-            { "PointAttrs", new GameObject[] { norObj, atkObj, defObj, movObj, spcObj, healObj } },
-            { "PointTexts", new GameObject[] {
-                norObj.transform.Find("num/txt").gameObject,
-                atkObj.transform.Find("num/txt").gameObject,
-                defObj.transform.Find("num/txt").gameObject,
-                movObj.transform.Find("num/txt").gameObject,
-                spcObj.transform.Find("num/txt").gameObject,
-                healObj.transform.Find("num/txt").gameObject,
-            } }
-        };  
-        return dict;
-    }
-    // Enemy Tower Status *************
-    public static Dictionary<string, GameObject[]> create_BattleScene_EnemyTowerStatus(GameObject parent) {
-        GameObject rectObj = createEmptyRect(parent, "EnemyTowerStatus");
-        float width = Mathf.Min(parent.transform.GetComponent<RectTransform>().rect.width, 280f);
-        setRectTransformPosition(rectObj, new Vector2(0.05f, 1f), new Vector2(0.05f, 1f), Vector2.zero, new Vector2(width, width/6));
-        setRectPivot(rectObj, new Vector2(0f, 1f));
-
-        AspectRatioFitter fitter = rectObj.AddComponent<AspectRatioFitter>();
-        fitter.aspectMode = AspectRatioFitter.AspectMode.WidthControlsHeight;
-        fitter.aspectRatio = 6f;
-
-        GameObject t1Obj = create_TowerStatus_Unit(rectObj);
-        setRectTransformAnchor(t1Obj, new Vector2(0f, 0f), new Vector2(1f/6, 1f), Vector2.zero, Vector2.zero);
-        GameObject t2Obj = create_TowerStatus_Unit(rectObj);
-        setRectTransformAnchor(t2Obj, new Vector2(1f/6, 0f), new Vector2(2f/6, 1f), Vector2.zero, Vector2.zero);
-        GameObject t3Obj = create_TowerStatus_Unit(rectObj);
-        setRectTransformAnchor(t3Obj, new Vector2(2f/6, 0f), new Vector2(3f/6, 1f), Vector2.zero, Vector2.zero);
-        GameObject t4Obj = create_TowerStatus_Unit(rectObj);
-        setRectTransformAnchor(t4Obj, new Vector2(3f/6, 0f), new Vector2(4f/6, 1f), Vector2.zero, Vector2.zero);
-        GameObject t5Obj = create_TowerStatus_Unit(rectObj);
-        setRectTransformAnchor(t5Obj, new Vector2(4f/6, 0f), new Vector2(5f/6, 1f), Vector2.zero, Vector2.zero);
-        GameObject t6Obj = create_TowerStatus_Unit(rectObj);
-        setRectTransformAnchor(t6Obj, new Vector2(5f/6, 0f), new Vector2(6f/6, 1f), Vector2.zero, Vector2.zero);
-
-        Dictionary<string, GameObject[]> dict = new Dictionary<string, GameObject[]> { 
-            { "TowerTable", new GameObject[] { rectObj } },
-            { "TowerIcons", new GameObject[] {
-                t1Obj.transform.Find("TowerIcon").gameObject,
-                t2Obj.transform.Find("TowerIcon").gameObject,
-                t3Obj.transform.Find("TowerIcon").gameObject,
-                t4Obj.transform.Find("TowerIcon").gameObject,
-                t5Obj.transform.Find("TowerIcon").gameObject,
-                t6Obj.transform.Find("TowerIcon").gameObject,
-            } }
-        }; 
-        return dict;
-    }
-
-    // Menu Skill Table *************
-    public static Dictionary<string, GameObject[]> create_BattleScene_PlayerSkillTable(GameObject parent) {
-        GameObject rectObj = createEmptyRect(parent, "PlayerSkill");
-        setRectTransformAnchor(rectObj, new Vector2(0.1f, 0.75f), new Vector2(0.95f, 0.95f), Vector2.zero, Vector2.zero);
-
-        GameObject skill1 = create_SkillBtn_Unit(rectObj);
-        setRectTransformAnchor(skill1, new Vector2(0.01f, 0f), new Vector2(0.24f, 1f), Vector2.zero, Vector2.zero);
-        GameObject skill2 = create_SkillBtn_Unit(rectObj);
-        setRectTransformAnchor(skill2, new Vector2(0.26f, 0f), new Vector2(0.49f, 1f), Vector2.zero, Vector2.zero);
-        GameObject skill3 = create_SkillBtn_Unit(rectObj);
-        setRectTransformAnchor(skill3, new Vector2(0.51f, 0f), new Vector2(0.74f, 1f), Vector2.zero, Vector2.zero);
-        GameObject skill4 = create_SkillBtn_Unit(rectObj);
-        setRectTransformAnchor(skill4, new Vector2(0.76f, 0f), new Vector2(0.99f, 1f), Vector2.zero, Vector2.zero);
-
-        Dictionary<string, GameObject[]> dict = new Dictionary<string, GameObject[]> {
-            { "SkillTable",  new GameObject[] { rectObj } },
-            { "SkillButtons", new GameObject[] { skill1, skill2, skill3, skill4 } }
-        };
-        return dict;
-    }
-    public static GameObject create_SkillBtn_Unit(GameObject parent) {
-        GameObject skillBtn = createButton(parent, "SkillBtn", "skill_LABEL");
-        GameObject txt = CanvasFactory.createText(skillBtn, "txt", "skill_ID");
-
-        skillBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/Button/skillNor");
-
-        EventTrigger trigger = skillBtn.AddComponent<EventTrigger>();
-        addPointerDownImageSprite(  trigger, skillBtn, Resources.Load<Sprite>("Sprite/Button/skillPressed"));
-        addPointerUpImageSprite(    trigger, skillBtn, Resources.Load<Sprite>("Sprite/Button/skillNor"));
-        addPointerEnterImageSprite( trigger, skillBtn, Resources.Load<Sprite>("Sprite/Button/skillOver"));
-        addPointerExitImageSprite(  trigger, skillBtn, Resources.Load<Sprite>("Sprite/Button/skillNor"));
-
-        txt.GetComponent<RectTransform>().localScale = new Vector3(0.1f, 0.1f, 0.1f);
-        txt.GetComponent<Text>().fontSize = 200;
-        txt.GetComponent<Text>().color = Color.black;
-
-        return skillBtn;
-    }
     // DiceBox  *************
-    public static Dictionary<string, GameObject> create_BattleScene_DiceBox(GameObject parent) {
-        GameObject rectObj = createEmptyRect(parent, "DiceBox");
-        setRectTransformPosition(rectObj, new Vector2(0f, 0.88f), new Vector2(0f, 0.88f), new Vector2(-100f, 0f), Vector2.zero );
-
-        GameObject dicesPerson = create_DiceBox_Unit(rectObj, "DicesPerson", StringCoder.getDiceBoxString(3), "個人");
-        dicesPerson.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/Button/dicesPerson");
-        setRectTransformPosition(dicesPerson, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(200f, 0f), new Vector2(200f, 50f));
-
-        GameObject dicesTeam = create_DiceBox_Unit(rectObj, "DicesTeam", StringCoder.getDiceBoxString(2), "隊伍");
-        dicesTeam.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/Button/dicesTeam");
-        setRectTransformPosition(dicesTeam, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(100f, 0f), new Vector2(200f, 50f));
-
-        GameObject dicesGround = create_DiceBox_Unit(rectObj, "DicesGround", StringCoder.getDiceBoxString(1), "場地");
-        dicesGround.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/Button/dicesGround");
-        setRectTransformPosition(dicesGround, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, 0f), new Vector2(200f, 50f));
-
-        Dictionary<string, GameObject> dict = new Dictionary<string, GameObject> { 
-            { "DiceBox", rectObj },
-            { "DicesPerson", dicesPerson },
-            { "DicesTeam", dicesTeam },
-            { "DicesGround", dicesGround }
-        };
-
-        return dict;
-    }
     public static GameObject create_DiceBox_Unit(GameObject parent, string name, string buttonID, string label ){
         GameObject imageObj = createButton(parent, name, buttonID);
         setRectPivot(imageObj, new Vector2(0f, 1f)); 
@@ -492,114 +289,8 @@ public class CanvasFactory {
 
         return imageObj;
     }
-    // Player Team character Status  *************
-    public static GameObject create_BattleScene_TeamStatus(GameObject parent) {
-        GameObject rectObj = createEmptyRect(parent, "TeamStatus");
-        setRectTransformAnchor(rectObj, new Vector2(0f, 0.4f), new Vector2(1f, 0.79f), Vector2.zero, Vector2.zero );
 
-        GameObject char1Obj = createEmptyRect(rectObj, "CharStatus1");
-        setRectTransformAnchor(char1Obj, new Vector2(0f, 0.75f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero);
-        GameObject char2Obj = createEmptyRect(rectObj, "CharStatus2");
-        setRectTransformAnchor(char2Obj, new Vector2(0f, 0.5f), new Vector2(1f, 0.75f), Vector2.zero, Vector2.zero);
-        GameObject char3Obj = createEmptyRect(rectObj, "CharStatus3");
-        setRectTransformAnchor(char3Obj, new Vector2(0f, 0.25f), new Vector2(1f, 0.5f), Vector2.zero, Vector2.zero);
-        GameObject char4Obj = createEmptyRect(rectObj, "CharStatus4");
-        setRectTransformAnchor(char4Obj, new Vector2(0f, 0f), new Vector2(1f, 0.25f), Vector2.zero, Vector2.zero);
-
-        return rectObj;
-    }
-    public static GameObject create_BattleScene_PlayerTeamStatus(GameObject parent) {
-        GameObject rectObj = createEmptyRect(parent, "TeamStatus");
-        setRectTransformAnchor(rectObj, new Vector2(0f, 0.4f), new Vector2(1f, 0.79f), Vector2.zero, Vector2.zero );
-
-        GameObject char1Obj = createEmptyRect(rectObj, "CharStatus1");
-        setRectTransformAnchor(char1Obj, new Vector2(0f, 0.75f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero);
-        GameObject char2Obj = createEmptyRect(rectObj, "CharStatus2");
-        setRectTransformAnchor(char2Obj, new Vector2(0f, 0.5f), new Vector2(1f, 0.75f), Vector2.zero, Vector2.zero);
-        GameObject char3Obj = createEmptyRect(rectObj, "CharStatus3");
-        setRectTransformAnchor(char3Obj, new Vector2(0f, 0.25f), new Vector2(1f, 0.5f), Vector2.zero, Vector2.zero);
-        GameObject char4Obj = createEmptyRect(rectObj, "CharStatus4");
-        setRectTransformAnchor(char4Obj, new Vector2(0f, 0f), new Vector2(1f, 0.25f), Vector2.zero, Vector2.zero);
-
-        return rectObj;
-    }
-    public static GameObject create_PlayerCharStatus_Unit(GameObject parent, string label) {
-        GameObject imageObj = createButton(parent, "CharBar", label);
-        imageObj.GetComponent<Image>().sprite = Resources.Load<Sprite>( "Sprite/CharBar/charBarBack" );
-        setRectTransformPosition(imageObj, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), Vector2.zero, new Vector2(250f, 50f));
-
-        GameObject infoObj = createImage(imageObj, "Info");
-        infoObj.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/CharBar/charBarInfo");
-        setRectTransformPosition(infoObj, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), Vector2.zero, new Vector2(100f, 50f) );
-        setRectPivot(infoObj, new Vector2(0f, 0.5f));
-        create_CharStatus_Unit_Info(infoObj);
-
-        GameObject barObj = createImage(imageObj, "HpBar");
-        barObj.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/CharBar/charBarHp");
-        setRectTransformPosition(barObj, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), Vector2.zero, new Vector2(46f, 50f));
-        setRectPivot(barObj, new Vector2(1f, 0.5f));
-;       Mask barMask = barObj.AddComponent<Mask>();
-        barMask.showMaskGraphic = true;
-
-        GameObject maskImage = createImage(barObj, "HpImage");
-        maskImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/CharBar/barImage");
-        setWholeRect(maskImage);
-
-        GameObject textObj = createText(imageObj, "txtName", "name");
-        setRectTransformAnchor(textObj, new Vector2(0.8f, 0f), new Vector2(0.8f, 0f), Vector2.zero, Vector2.zero);
-        textObj.GetComponent<RectTransform>().localScale = new Vector3(0.1f, 0.1f, 0.1f);
-        textObj.GetComponent<Text>().alignment = TextAnchor.LowerRight;
-        textObj.GetComponent<Text>().fontSize = 150;
-        textObj.GetComponent<Text>().color = Color.white;
-
-        return imageObj;
-    }
-    public static GameObject create_BattleScene_EnemyTeamStatus(GameObject parent) {
-        GameObject rectObj = createEmptyRect(parent, "TeamStatus");
-        setRectTransformAnchor(rectObj, new Vector2(0f, 0.5f), new Vector2(1f, 0.89f), Vector2.zero, Vector2.zero );
-
-        GameObject char1Obj = createEmptyRect(rectObj, "CharStatus1");
-        setRectTransformAnchor(char1Obj, new Vector2(0f, 0f), new Vector2(1f, 0.25f), Vector2.zero, Vector2.zero);
-        GameObject char2Obj = createEmptyRect(rectObj, "CharStatus2");
-        setRectTransformAnchor(char2Obj, new Vector2(0f, 0.25f), new Vector2(1f, 0.5f), Vector2.zero, Vector2.zero);
-        GameObject char3Obj = createEmptyRect(rectObj, "CharStatus3");
-        setRectTransformAnchor(char3Obj, new Vector2(0f, 0.5f), new Vector2(1f, 0.75f), Vector2.zero, Vector2.zero);
-        GameObject char4Obj = createEmptyRect(rectObj, "CharStatus4");
-        setRectTransformAnchor(char4Obj, new Vector2(0f, 0.75f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero);
-
-        return rectObj;
-    }
-    public static GameObject create_EnemyCharStatus_Unit(GameObject parent, string label) {
-        GameObject imageObj = createButton(parent, "CharBar", label);
-        imageObj.GetComponent<Image>().sprite = Resources.Load<Sprite>( "Sprite/CharBar/charBarBackEnemy" );
-        setRectTransformPosition(imageObj, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), Vector2.zero, new Vector2(250f, 50f));
-
-        GameObject infoObj = createImage(imageObj, "Info");
-        infoObj.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/CharBar/charBarInfo");
-        setRectTransformPosition(infoObj, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), Vector2.zero, new Vector2(100f, 50f) );
-        setRectPivot(infoObj, new Vector2(1f, 0.5f));
-        create_CharStatus_Unit_Info(infoObj);
-
-        GameObject barObj = createImage(imageObj, "HpBar");
-        barObj.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/CharBar/charBarHp");
-        setRectTransformPosition(barObj, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), Vector2.zero, new Vector2(46f, 50f));
-        setRectPivot(barObj, new Vector2(0f, 0.5f));
-;       Mask barMask = barObj.AddComponent<Mask>();
-        barMask.showMaskGraphic = true;
-
-        GameObject maskImage = createImage(barObj, "HpImage");
-        maskImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/CharBar/barImage");
-        setWholeRect(maskImage);
-
-        GameObject textObj = createText(imageObj, "txtName", "name");
-        setRectTransformAnchor(textObj, new Vector2(0.1f, 0f), new Vector2(0.1f, 0f), Vector2.zero, Vector2.zero);
-        textObj.GetComponent<RectTransform>().localScale = new Vector3(0.1f, 0.1f, 0.1f);
-        textObj.GetComponent<Text>().alignment = TextAnchor.LowerLeft;
-        textObj.GetComponent<Text>().fontSize = 150;
-        textObj.GetComponent<Text>().color = Color.white;
-
-        return imageObj;
-    }
+    //  Team character Status  *************
     public static void create_CharStatus_Unit_Info(GameObject parent){
         GameObject txtHp = createText(parent, "txtHp", "HP");
         setZeroPosition(txtHp, new Vector2(0.05f, 0.8f));
@@ -622,145 +313,36 @@ public class CanvasFactory {
         txtDEF.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
         txtDEF.GetComponent<Text>().fontSize = 180;
         txtDEF.GetComponent<Text>().color = Color.white;
+    }
+
+    public static GameObject create_CharStatus_Unit_NumHp(GameObject parent) { 
         GameObject numHP = createText(parent, "numHP", "0");
         setZeroPosition(numHP, new Vector2(0.9f, 0.8f));
-        setRectPivot(txtHp, new Vector2(1f, 0.5f));
+        setRectPivot(numHP, new Vector2(1f, 0.5f));
         numHP.GetComponent<RectTransform>().localScale = new Vector3(0.1f, 0.1f, 0.1f);
         numHP.GetComponent<Text>().alignment = TextAnchor.MiddleRight;
         numHP.GetComponent<Text>().fontSize = 180;
         numHP.GetComponent<Text>().color = Color.white;
+        return numHP;
+    }
+    public static GameObject create_CharStatus_Unit_NumATK(GameObject parent) {
         GameObject numATK = createText(parent, "numATK", "0");
         setZeroPosition(numATK, new Vector2(0.9f, 0.5f));
-        setRectPivot(txtHp, new Vector2(1f, 0.5f));
+        setRectPivot(numATK, new Vector2(1f, 0.5f));
         numATK.GetComponent<RectTransform>().localScale = new Vector3(0.1f, 0.1f, 0.1f);
         numATK.GetComponent<Text>().alignment = TextAnchor.MiddleRight;
         numATK.GetComponent<Text>().fontSize = 180;
         numATK.GetComponent<Text>().color = Color.white;
+        return numATK; 
+    }
+    public static GameObject create_CharStatus_Unit_NumDEF(GameObject parent) { 
         GameObject numDEF = createText(parent, "numDEF", "0");
         setZeroPosition(numDEF, new Vector2(0.9f, 0.2f));
-        setRectPivot(txtHp, new Vector2(1f, 0.5f));
+        setRectPivot(numDEF, new Vector2(1f, 0.5f));
         numDEF.GetComponent<RectTransform>().localScale = new Vector3(0.1f, 0.1f, 0.1f);
         numDEF.GetComponent<Text>().alignment = TextAnchor.MiddleRight;
         numDEF.GetComponent<Text>().fontSize = 180;
         numDEF.GetComponent<Text>().color = Color.white;
-    }
-    // character battle place  *************
-    public static GameObject create_BattleScene_PlayerBattlePlace(GameObject parent) {
-        GameObject rectObj = createEmptyRect(parent, "PlayerBattlePlace");
-        setRectTransformAnchor(rectObj, new Vector2(0f, 0.37f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero);
-
-        GameObject maskObj = createImage(rectObj, "Mask");
-        setRectTransformAnchor(maskObj, new Vector2(0f, 0f), new Vector2(2f, 1f), Vector2.zero, Vector2.zero);
-        Mask mask = maskObj.AddComponent<Mask>();
-        mask.showMaskGraphic = false;
-
-        GameObject charObj = createImage(maskObj, "Character");
-        charObj.GetComponent<Image>().sprite = Resources.Load<Sprite>( "Sprite/CharPlace/tmpChar" );
-        setRectTransformPosition(charObj, new Vector2(0.35f, 0f), new Vector2(0.35f, 0f), Vector2.zero, Vector2.zero);
-        setRectPivot(charObj, new Vector2(0.5f, 0f));
-        charObj.GetComponent<Image>().SetNativeSize();
-
-        GameObject bottomObj = createImage(rectObj, "BottomLine");
-        bottomObj.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/CharPlace/bottomLine");
-        setRectTransformAnchor(bottomObj, new Vector2(0f, 0f), new Vector2(1f, 0.05f), Vector2.zero, Vector2.zero );
-
-        GameObject postureObj = createImage(rectObj, "Posture");
-        postureObj.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/CharPlace/posture");
-        setRectTransformPosition(postureObj, new Vector2(1f, 0.1f), new Vector2(1f, 0.1f), Vector2.zero, new Vector2(120f, 30f));
-        setRectPivot(postureObj, new Vector2(1f, 0f));
-
-        return rectObj;
-    }
-    public static GameObject create_BattleScene_EnemyBattlePlace(GameObject parent) {
-        GameObject rectObj = createEmptyRect(parent, "EnemyBattlePlace");
-        setRectTransformAnchor(rectObj, new Vector2(0f, 0.47f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero);
-
-        GameObject maskObj = createImage(rectObj, "Mask");
-        setRectTransformAnchor(maskObj, new Vector2(-1f, 0f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero);
-        Mask mask = maskObj.AddComponent<Mask>();
-        mask.showMaskGraphic = false;
-
-        GameObject charObj = createImage(maskObj, "Character");
-        charObj.GetComponent<Image>().sprite = Resources.Load<Sprite>( "Sprite/CharPlace/tmpChar" );
-        setRectTransformPosition(charObj, new Vector2(0.65f, 0f), new Vector2(0.65f, 0f), Vector2.zero, Vector2.zero);
-        setRectPivot(charObj, new Vector2(0.5f, 0f));
-        charObj.GetComponent<Image>().SetNativeSize();
-
-        GameObject bottomObj = createImage(rectObj, "BottomLine");
-        bottomObj.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/CharPlace/bottomLine");
-        setRectTransformAnchor(bottomObj, new Vector2(0f, 0f), new Vector2(1f, 0.05f), Vector2.zero, Vector2.zero);
-
-        GameObject postureObj = createImage(rectObj, "Posture");
-        postureObj.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/CharPlace/posture");
-        setRectTransformPosition(postureObj, new Vector2(0f, 0.1f), new Vector2(0f, 0.1f), Vector2.zero, new Vector2(120f, 30f));
-        setRectPivot(postureObj, new Vector2(0f, 0f));
-
-        return rectObj;
-    }
-    // Turn Status   *************
-    public static Dictionary<string, GameObject> create_BattleScene_TurnStatus(GameObject parent) {
-        GameObject rectObj = createEmptyRect(parent, "TurnStatus");
-        setRectTransformAnchor(rectObj, new Vector2(0f, 0.45f), new Vector2(1f, 0.85f), Vector2.zero, Vector2.zero);
-
-        GameObject movTurnObj = createImage(rectObj, "MovTurn");
-        movTurnObj.GetComponent<Image>().sprite = Resources.Load<Sprite>( "Sprite/TurnIcon/movTurn" );
-        setRectTransformPosition(movTurnObj, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(240f, 240f));
-
-        GameObject atkTurnObj = createEmptyRect(rectObj, "AtkTurn");
-        setWholeRect(atkTurnObj);
-        GameObject playerAtkObj = createImage(atkTurnObj, "Player");
-        playerAtkObj.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/TurnIcon/playerAtkTurn");
-        setRectTransformPosition(playerAtkObj, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(120f, 240f));
-        setRectPivot(playerAtkObj, new Vector2(1f, 0.5f));
-        GameObject playerAtkTxt = createText(playerAtkObj, "txt", "攻擊\n階段");
-        setZeroPosition(playerAtkTxt, new Vector2(0.65f, 0.45f));
-        playerAtkTxt.GetComponent<RectTransform>().localScale = new Vector3(0.1f, 0.1f, 0.1f);
-        playerAtkTxt.GetComponent<Text>().fontSize = 200;
-        playerAtkTxt.GetComponent<Text>().color = Color.blue;
-        GameObject enemyDefObj = createImage(atkTurnObj, "Enemy");
-        enemyDefObj.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/TurnIcon/enemyDefTurn");
-        setRectTransformPosition(enemyDefObj, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(120f, 240f));
-        setRectPivot(enemyDefObj, new Vector2(0f, 0.5f));
-        GameObject enemyDefTxt = createText(enemyDefObj, "txt", "防禦\n階段");
-        setZeroPosition(enemyDefTxt, new Vector2(0.35f, 0.45f));
-        enemyDefTxt.GetComponent<RectTransform>().localScale = new Vector3(0.1f, 0.1f, 0.1f);
-        enemyDefTxt.GetComponent<Text>().fontSize = 200;
-        enemyDefTxt.GetComponent<Text>().color = Color.blue;
-
-        GameObject defTurnObj = createEmptyRect(rectObj, "DefTurn");
-        setWholeRect(defTurnObj);
-        GameObject playerDefObj = createImage(defTurnObj, "Player");
-        playerDefObj.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/TurnIcon/playerDefTurn");
-        setRectTransformPosition(playerDefObj, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(120f, 240f));
-        setRectPivot(playerDefObj, new Vector2(1f, 0.5f));
-        GameObject playerDefTxt = createText(playerDefObj, "txt", "防禦\n階段");
-        setZeroPosition(playerDefTxt, new Vector2(0.65f, 0.45f));
-        playerDefTxt.GetComponent<RectTransform>().localScale = new Vector3(0.1f, 0.1f, 0.1f);
-        playerDefTxt.GetComponent<Text>().fontSize = 200;
-        playerDefTxt.GetComponent<Text>().color = Color.blue;
-        GameObject enemyAtkObj = createImage(defTurnObj, "Enemy");
-        enemyAtkObj.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/TurnIcon/enemyAtkTurn");
-        setRectTransformPosition(enemyAtkObj, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(120f, 240f));
-        setRectPivot(enemyAtkObj, new Vector2(0f, 0.5f));
-        GameObject enemyAtkTxt = createText(enemyAtkObj, "txt", "攻擊\n階段");
-        setZeroPosition(enemyAtkTxt, new Vector2(0.35f, 0.45f));
-        enemyAtkTxt.GetComponent<RectTransform>().localScale = new Vector3(0.1f, 0.1f, 0.1f);
-        enemyAtkTxt.GetComponent<Text>().fontSize = 200;
-        enemyAtkTxt.GetComponent<Text>().color = Color.blue;
-
-        GameObject txtObj = createText(rectObj, "TurnInfo", "第 1 回合");
-        setZeroPosition(txtObj, new Vector2(0.5f, 0.68f));
-        txtObj.GetComponent<RectTransform>().localScale = new Vector3(0.1f, 0.1f, 0.1f);
-        txtObj.GetComponent<Text>().fontSize = 300;
-        txtObj.GetComponent<Text>().color = Color.blue;
-
-        Dictionary<string, GameObject> dict = new Dictionary<string, GameObject> { 
-            { "TurnStatus", rectObj },
-            { "MovTurn", movTurnObj },
-            { "AtkTurn", atkTurnObj },
-            { "DefTurn", defTurnObj },
-            { "TurnInfo", txtObj }
-        };
-        return dict;
+        return numDEF;
     }
 }
