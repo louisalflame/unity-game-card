@@ -6,11 +6,11 @@ using UnityEngine.UI;
 public class TurnStatus {
     public InterfaceController _interface;
 
-    private GameObject _turnStatus = null;
-    private GameObject _turnInfo = null;
-    private GameObject _movTurn = null;
-    private GameObject _atkTurn = null;
-    private GameObject _defTurn = null;
+    public GameObject _turnStatus { get; private set; }
+    public GameObject _movTurn { get; private set; }
+    public GameObject _atkTurn { get; private set; }
+    public GameObject _defTurn { get; private set; }
+    public GameObject _turnInfo { get; private set; }
 
     private GameObject _playerAtk = null;
     private GameObject _playerDef = null;
@@ -23,10 +23,14 @@ public class TurnStatus {
     public void create() {
         create_BattleScene_TurnStatus(_interface.getImageMiddleBattleField());
     }
+    public void initial() {
+        _turnStatus.SetActive(true);
+        _turnStatus.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 330f);
+        AnimateWork.setAlpha(_turnStatus.transform, 0);
+    }
 
     public void showMoveTurn() {
         _turnInfo.GetComponent<Text>().text = NameCoder.getTurnString(_interface._battle._turnManager._turnNum);
-
         _movTurn.transform.SetSiblingIndex(_turnInfo.transform.GetSiblingIndex() - 1);
     }
     public void showPlayerAtkTurn() {
@@ -35,6 +39,7 @@ public class TurnStatus {
     public void showPlayerDefTurn() {
         _defTurn.transform.SetSiblingIndex(_turnInfo.transform.GetSiblingIndex() - 1);
     }
+    
 
     // Turn Status   *************
     public void create_BattleScene_TurnStatus(GameObject parent) {
@@ -91,5 +96,7 @@ public class TurnStatus {
         CanvasFactory.setZeroPosition(_turnInfo, new Vector2(0.5f, 0.68f));
         CanvasFactory.setTextScaleSize(_turnInfo, 0.1f, 300);
         CanvasFactory.setTextColor(_turnInfo, Color.black);
+
+        _turnStatus.SetActive(false);
     }
 }

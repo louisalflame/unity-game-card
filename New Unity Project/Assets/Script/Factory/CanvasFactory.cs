@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class CanvasFactory { 
+public class CanvasFactory {
 
     public static GameObject createCanvas() {
         GameObject canvasObj = new GameObject("Canvas");
@@ -14,7 +14,7 @@ public class CanvasFactory {
         canvas.planeDistance = 100f;
         CanvasScaler scaler = canvasObj.AddComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        scaler.referenceResolution = new Vector2( 1024, 576 );
+        scaler.referenceResolution = new Vector2(1024, 576);
         scaler.referencePixelsPerUnit = 32;
         scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Shrink;
         canvasObj.AddComponent<GraphicRaycaster>();
@@ -77,7 +77,7 @@ public class CanvasFactory {
         btn.onClick.AddListener(() => { InputController.Inputs.addInput(label); });
         btn.transition = Selectable.Transition.None;
 
-        return buttonObj; 
+        return buttonObj;
     }
 
     public static GameObject createText(GameObject parent, string name, string str) {
@@ -110,7 +110,7 @@ public class CanvasFactory {
     public static void setTextAnchor(GameObject txtObj, TextAnchor anchor) {
         if (txtObj.GetComponent<Text>() != null) txtObj.GetComponent<Text>().alignment = anchor;
     }
-    
+
     public static GameObject setRectTransformAnchor(GameObject obj, Vector2 anchorMin, Vector2 anchorMax, Vector2 offsetMin, Vector2 offsetMax) {
         RectTransform rect = obj.GetComponent<RectTransform>();
         rect.anchorMin = anchorMin;
@@ -133,7 +133,7 @@ public class CanvasFactory {
         rect.anchorMax = anchor;
         rect.anchoredPosition = Vector2.zero;
         rect.sizeDelta = Vector2.zero;
-        return obj; 
+        return obj;
     }
     public static GameObject setWholeRect(GameObject obj) {
         RectTransform rect = obj.GetComponent<RectTransform>();
@@ -151,10 +151,10 @@ public class CanvasFactory {
     public static void setPointerImageNORMAL_DOWN_UP_ENTER_EXIT(GameObject obj, string normal, string down, string up, string enter, string exit) {
         EventTrigger trigger = (obj.GetComponent<EventTrigger>() == null) ? obj.AddComponent<EventTrigger>() : obj.GetComponent<EventTrigger>();
         Sprite _normal = Resources.Load<Sprite>(normal);
-        Sprite _down = Resources.Load<Sprite>(down);    if (_down == null) { _down = _normal; }
-        Sprite _up = Resources.Load<Sprite>(up);        if (_up == null) { _up = _normal; }
-        Sprite _enter = Resources.Load<Sprite>(enter);  if (_enter == null) { _enter = _normal; }
-        Sprite _exit = Resources.Load<Sprite>(exit);    if (_exit == null) { _exit = _normal; }
+        Sprite _down = Resources.Load<Sprite>(down); if (_down == null) { _down = _normal; }
+        Sprite _up = Resources.Load<Sprite>(up); if (_up == null) { _up = _normal; }
+        Sprite _enter = Resources.Load<Sprite>(enter); if (_enter == null) { _enter = _normal; }
+        Sprite _exit = Resources.Load<Sprite>(exit); if (_exit == null) { _exit = _normal; }
 
         setImageSprite(obj, normal);
         addPointerDownImageSprite(trigger, obj, _down);
@@ -187,6 +187,24 @@ public class CanvasFactory {
         EventTrigger.Entry entry = new EventTrigger.Entry();
         entry.eventID = EventTriggerType.PointerExit;
         entry.callback.AddListener((data) => { imageObj.GetComponent<Image>().sprite = sprite; });
+        trigger.triggers.Add(entry);
+        return trigger;
+    }
+    public static EventTrigger addPointerEnterCallback(GameObject imageObj, UnityEngine.Events.UnityAction<BaseEventData> callback) {
+        EventTrigger trigger = (imageObj.GetComponent<EventTrigger>() == null) ?
+            imageObj.AddComponent<EventTrigger>() : imageObj.GetComponent<EventTrigger>();
+        EventTrigger.Entry entry = new EventTrigger.Entry();
+        entry.eventID = EventTriggerType.PointerEnter;
+        entry.callback.AddListener( callback );
+        trigger.triggers.Add(entry);
+        return trigger;
+    }
+    public static EventTrigger addPointerExitCallback(GameObject imageObj, UnityEngine.Events.UnityAction<BaseEventData> callback) {
+        EventTrigger trigger = (imageObj.GetComponent<EventTrigger>() == null) ?
+            imageObj.AddComponent<EventTrigger>() : imageObj.GetComponent<EventTrigger>();
+        EventTrigger.Entry entry = new EventTrigger.Entry();
+        entry.eventID = EventTriggerType.PointerExit;
+        entry.callback.AddListener( callback );
         trigger.triggers.Add(entry);
         return trigger;
     }

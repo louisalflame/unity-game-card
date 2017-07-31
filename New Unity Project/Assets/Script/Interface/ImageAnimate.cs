@@ -26,43 +26,47 @@ public class InterfaceAnimator {
     }
 
     public void prepareShiftIn() {
-
-        _animateList.pushWorker( new AnimateWorker(
+        _animateList.pushWorker(new AnimateWorker(
                 new AnimateMoveTo(_interface._charPlayerPlace._character.GetComponent<RectTransform>(), Vector2.zero, 80),
                 new AnimateMoveTo(_interface._charEnemyPlace._character.GetComponent<RectTransform>(), Vector2.zero, 80)
-            ) );
-        _animateList.pushWorker( new AnimateWorker(
+            ));
+        _animateList.pushWorker(new AnimateWorker(
                 new AnimateMoveTo(_interface._charPlayerPlace._bottomLine.GetComponent<RectTransform>(), Vector2.zero, 30),
                 new AnimateMoveTo(_interface._charPlayerPlace._posture.GetComponent<RectTransform>(), Vector2.zero, 30),
                 new AnimateMoveTo(_interface._charEnemyPlace._bottomLine.GetComponent<RectTransform>(), Vector2.zero, 30),
                 new AnimateMoveTo(_interface._charEnemyPlace._posture.GetComponent<RectTransform>(), Vector2.zero, 30)
             ) );
-        _animateList.pushWorker( new AnimateWorker(
+        _animateList.pushWorker(new AnimateWorker(
                 new AnimateMoveTo(_interface.getImageTopBar().GetComponent<RectTransform>(), Vector2.zero, 30),
                 new AnimateMoveTo(_interface.getImageBottomBar().GetComponent<RectTransform>(), Vector2.zero, 30)
-            ).setEnd( () => {
-                _interface._attrPoints.create();
-                _interface._towerStatus.create();
-                _interface._skillMenu.create(); } 
             ) );
         _animateList.pushWorker(new AnimateWorker(
                 new AnimateMoveTo(_interface.getImageMainMenu().GetComponent<RectTransform>(), Vector2.zero, 50)
             ) );
         _animateList.pushWorker(new AnimateWorker(
-                new AnimateMoveTo(_interface._diceBox._diceBox.GetComponent<RectTransform>(), new Vector2(-100f, 0f), 30)
+                new AnimateMoveTo(_interface.getImageDiceBox().GetComponent<RectTransform>(), new Vector2(-100f, 0f), 30)
             ).addWorks(_interface._teamPlayerStatus.getShiftInAnimates()
             ).addWorks(_interface._teamEnemyStatus.getShiftInAnimates()
             ) );
         _animateList.pushWorker(new AnimateWorker(
                 _interface._teamPlayerStatus.getActiveShiftAnimate(),
                 _interface._teamEnemyStatus.getActiveShiftAnimate()
-            ).setEnd( () => {
+            ) );
+        _animateList.pushWorker(new AnimateWorker(
+                new AnimateFadeIn(_interface._attrPoints._pointTable.transform, 50),
+                new AnimateFadeIn(_interface._towerStatus._towerTable.transform, 50),
+                new AnimateFadeIn(_interface._attrPointsEnemy._pointTable.transform, 50),
+                new AnimateFadeIn(_interface._towerStatusEnemy._towerTable.transform, 50)
+            ) );
+        _animateList.pushWorker(new AnimateWorker(
+                new AnimateMoveTo(_interface.getImageTurnStatus().GetComponent<RectTransform>(), Vector2.zero, 30),
+                new AnimateFadeIn(_interface.getImageTurnInfo().transform, 30 ),
+                new AnimateFadeIn(_interface.getImageMovTurn().transform, 30)
+            ).setStart(() => {
+                _interface.showMoveTurn(); } 
+            ).setEnd(() => {
                 _battle.nextTurn(); }
             ) );
-
-
-
-
 
         // 顯示為移動階段
         //_interface.showMoveTurn();
@@ -152,6 +156,25 @@ public class AnimateWork {
     protected WorkMode _mode = WorkMode.ready;     
     public virtual void work() { }
     public bool isEnd() { return _mode == WorkMode.end; }
+
+    // 常用函數: 設定透明度
+    public static void setAlpha(Transform parent, float alpha ) {
+        for(int i=0; i < parent.childCount; i++) {
+            setAlpha(parent.GetChild(i), alpha);
+        }
+        Image img = parent.GetComponent<Image>();
+        if (img != null) {
+            Color c = img.color;
+            c.a = alpha;
+            img.color = c;
+        }
+        Text txt = parent.GetComponent<Text>();
+        if(txt != null) {
+            Color c = txt.color;
+            c.a = alpha;
+            txt.color = c;
+        }
+    }
 }
 
 public class AnimateMoveFromTo : AnimateWork {
@@ -181,7 +204,8 @@ public class AnimateMoveFromTo : AnimateWork {
             }
         }
     }
-}public class AnimateMoveTo : AnimateWork {
+}
+public class AnimateMoveTo : AnimateWork {
     private RectTransform _rect;
     private Vector2 _start;
     private Vector2 _target;
@@ -202,6 +226,30 @@ public class AnimateMoveFromTo : AnimateWork {
             if (_current < _time) {
                 _current += 1;
                 _rect.anchoredPosition = Vector2.Lerp(_start, _target, _current / _time);
+            } else {
+                _mode = WorkMode.end;
+            }
+        }
+    }
+}
+public class AnimateFadeIn : AnimateWork {
+    private Transform _obj;
+    private float _time;
+    private float _current;
+
+    public AnimateFadeIn(Transform obj, float time) {
+        _obj = obj;
+        _time = time;
+        _current = 0;
+    }
+            
+    public override void work(){
+        if (_mode == WorkMode.ready) {
+            _mode = WorkMode.busy;
+        } else if (_mode == WorkMode.busy) {
+            if (_current < _time) {
+                _current += 1;
+                setAlpha(_obj, _current / _time);
             } else {
                 _mode = WorkMode.end;
             }

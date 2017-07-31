@@ -15,6 +15,10 @@ public class TowerStatusInterface {
     public void create() { 
          create_BattleScene_PlayerTowerStatus(_interface.getImageRightMenu()); 
     }
+    public void initial() {
+        _towerTable.SetActive(true);
+        AnimateWork.setAlpha(_towerTable.transform, 0);
+    }
 
     public void setTowerStatus(AttrTower[] towers) {
         for (int i = 0; i < _towers.Length && i < towers.Length; i++) {
@@ -48,7 +52,16 @@ public class TowerStatusInterface {
         GameObject t6Obj = CanvasFactory.create_TowerStatus_Unit(_towerTable);
         CanvasFactory.setRectTransformAnchor(t6Obj, new Vector2(5f / 6, 0f), new Vector2(6f / 6, 1f), Vector2.zero, Vector2.zero);
 
-        _towers = new GameObject[] { t1Obj, t2Obj, t3Obj, t4Obj, t5Obj, t6Obj };
+        _towers = new GameObject[] {
+            t1Obj.transform.Find("TowerIcon").gameObject,
+            t2Obj.transform.Find("TowerIcon").gameObject,
+            t3Obj.transform.Find("TowerIcon").gameObject,
+            t4Obj.transform.Find("TowerIcon").gameObject,
+            t5Obj.transform.Find("TowerIcon").gameObject,
+            t6Obj.transform.Find("TowerIcon").gameObject
+        };
+
+        _towerTable.SetActive(false);
     }
 }
 
@@ -62,6 +75,10 @@ public class AttrPointsInterface {
     public AttrPointsInterface(InterfaceController inter) { _interface = inter; }
     public void create(){
         create_BattleScene_PlayerPointStatus(_interface.getImageRightMenu()); 
+    }
+    public void initial() {
+        _pointTable.SetActive(true);
+        AnimateWork.setAlpha(_pointTable.transform, 0);
     }
 
     public void setAttrNums(int[] attrNums) {
@@ -113,7 +130,9 @@ public class AttrPointsInterface {
                 movObj.transform.Find("num/txt").gameObject,
                 spcObj.transform.Find("num/txt").gameObject,
                 healObj.transform.Find("num/txt").gameObject,
-            }; 
+            };
+
+        _pointTable.SetActive(false);
     }
 }
 
@@ -127,6 +146,10 @@ public class TowerStatusEnemyInterface {
     public TowerStatusEnemyInterface(InterfaceController inter) { _interface = inter; }
     public void create() {
         create_BattleScene_EnemyTowerStatus(_interface.getImageEnemyTableMask()); 
+    }
+    public void initial() {
+        _towerTable.SetActive(true);
+        AnimateWork.setAlpha(_towerTable.transform, 0);
     }
 
     public void setTowerStatus(AttrTower[] towers) {
@@ -159,7 +182,16 @@ public class TowerStatusEnemyInterface {
         GameObject t6Obj = CanvasFactory.create_TowerStatus_Unit(_towerTable);
         CanvasFactory.setRectTransformAnchor(t6Obj, new Vector2(5f / 6, 0f), new Vector2(6f / 6, 1f), Vector2.zero, Vector2.zero);
 
-        _towers =  new GameObject[] { t1Obj, t2Obj, t3Obj, t4Obj, t5Obj, t6Obj }; 
+        _towers = new GameObject[] {
+            t1Obj.transform.Find("TowerIcon").gameObject,
+            t2Obj.transform.Find("TowerIcon").gameObject,
+            t3Obj.transform.Find("TowerIcon").gameObject,
+            t4Obj.transform.Find("TowerIcon").gameObject,
+            t5Obj.transform.Find("TowerIcon").gameObject,
+            t6Obj.transform.Find("TowerIcon").gameObject
+        };
+
+        _towerTable.SetActive(false);
     }
 }
 // 敵方屬性點狀態顯示
@@ -172,6 +204,10 @@ public class AttrPointsEnemyInterface {
     public AttrPointsEnemyInterface(InterfaceController inter) { _interface = inter; }
     public void create() {
         create_BattleScene_EnemyPointStatus(_interface.getImageEnemyTableMask()); 
+    }
+    public void initial() {
+        _pointTable.SetActive(true);
+        AnimateWork.setAlpha(_pointTable.transform, 0);
     }
 
     public void setAttrNums(int[] attrNums) {
@@ -221,6 +257,8 @@ public class AttrPointsEnemyInterface {
                 movObj.transform.Find("num/txt").gameObject,
                 spcObj.transform.Find("num/txt").gameObject,
                 healObj.transform.Find("num/txt").gameObject,
-            }; 
+            };
+
+        _pointTable.SetActive(false);
     }
 }

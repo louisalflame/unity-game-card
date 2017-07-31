@@ -18,19 +18,6 @@ public class TeamPlayerStatusInterface {
     public void create(){
         create_BattleScene_PlayerTeamStatus(_interface.getImageLeftStatus());
     }
-    public void create_BattleScene_PlayerTeamStatus(GameObject parent) {
-        _teamStatus = CanvasFactory.createEmptyRect(parent, "TeamStatus");
-        CanvasFactory.setRectTransformAnchor(_teamStatus, new Vector2(0f, 0.4f), new Vector2(1f, 0.79f), Vector2.zero, Vector2.zero);
-
-        GameObject char1Obj = CanvasFactory.createEmptyRect(_teamStatus, "CharStatus1");
-        CanvasFactory.setRectTransformAnchor(char1Obj, new Vector2(0f, 0.75f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero);
-        GameObject char2Obj = CanvasFactory.createEmptyRect(_teamStatus, "CharStatus2");
-        CanvasFactory.setRectTransformAnchor(char2Obj, new Vector2(0f, 0.5f), new Vector2(1f, 0.75f), Vector2.zero, Vector2.zero);
-        GameObject char3Obj = CanvasFactory.createEmptyRect(_teamStatus, "CharStatus3");
-        CanvasFactory.setRectTransformAnchor(char3Obj, new Vector2(0f, 0.25f), new Vector2(1f, 0.5f), Vector2.zero, Vector2.zero);
-        GameObject char4Obj = CanvasFactory.createEmptyRect(_teamStatus, "CharStatus4");
-        CanvasFactory.setRectTransformAnchor(char4Obj, new Vector2(0f, 0f), new Vector2(1f, 0.25f), Vector2.zero, Vector2.zero);
-    }
     public void initial() {
         for (int i = 0; i < _charStatuses.Length; i++) {
             _charStatuses[i].initial();
@@ -62,7 +49,11 @@ public class TeamPlayerStatusInterface {
         }
         hideTeamRearrangeButton();
     }
-    public void update() { }
+    public void update() { 
+        for (int i = 0; i < _charStatuses.Length; i++) {
+            _charStatuses[i].update();
+        }
+    }
 
     // 更換角色
     public void changeActiveCharStatus(int select) {
@@ -79,6 +70,7 @@ public class TeamPlayerStatusInterface {
     // 顯示更換角色按鈕
     public void showTeamRearrangeButton() {
         foreach (CharPlayerStatusInterface status in _charStatuses) {
+            status.closeCheckMode();
             if (status._active) { status.hideStatus(); }
             else if (_teamManager.isCharSafe(status._charM)) { 
                 status.showStatus(); 
@@ -90,8 +82,13 @@ public class TeamPlayerStatusInterface {
     public void hideTeamRearrangeButton() {
         foreach (CharPlayerStatusInterface status in _charStatuses) {
             status.hideChangeButton();
-            if (status._active) { status.showStatus(); } 
-            else { status.hideStatus(); }
+            if (status._active) {
+                status.showStatus();
+                status.closeCheckMode();
+            } else {
+                status.hideStatus();
+                status.openCheckMode();
+            }
         }
     } 
 
@@ -100,6 +97,20 @@ public class TeamPlayerStatusInterface {
         for (int i = 0; i < _charStatuses.Length; i++) {
             _charStatuses[i].setCharInfo();
         }
+    }
+    
+    public void create_BattleScene_PlayerTeamStatus(GameObject parent) {
+        _teamStatus = CanvasFactory.createEmptyRect(parent, "TeamStatus");
+        CanvasFactory.setRectTransformAnchor(_teamStatus, new Vector2(0f, 0.4f), new Vector2(1f, 0.79f), Vector2.zero, Vector2.zero);
+
+        GameObject char1Obj = CanvasFactory.createEmptyRect(_teamStatus, "CharStatus1");
+        CanvasFactory.setRectTransformAnchor(char1Obj, new Vector2(0f, 0.75f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero);
+        GameObject char2Obj = CanvasFactory.createEmptyRect(_teamStatus, "CharStatus2");
+        CanvasFactory.setRectTransformAnchor(char2Obj, new Vector2(0f, 0.5f), new Vector2(1f, 0.75f), Vector2.zero, Vector2.zero);
+        GameObject char3Obj = CanvasFactory.createEmptyRect(_teamStatus, "CharStatus3");
+        CanvasFactory.setRectTransformAnchor(char3Obj, new Vector2(0f, 0.25f), new Vector2(1f, 0.5f), Vector2.zero, Vector2.zero);
+        GameObject char4Obj = CanvasFactory.createEmptyRect(_teamStatus, "CharStatus4");
+        CanvasFactory.setRectTransformAnchor(char4Obj, new Vector2(0f, 0f), new Vector2(1f, 0.25f), Vector2.zero, Vector2.zero);
     }
 }
 
@@ -118,19 +129,6 @@ public class TeamEnemyStatusInterface {
     }
     public void create() {
         create_BattleScene_EnemyTeamStatus(_interface.getImageRightStatus());
-    }
-    public void create_BattleScene_EnemyTeamStatus(GameObject parent) {
-        _teamStatus = CanvasFactory.createEmptyRect(parent, "TeamStatus");
-        CanvasFactory.setRectTransformAnchor(_teamStatus, new Vector2(0f, 0.5f), new Vector2(1f, 0.89f), Vector2.zero, Vector2.zero);
-
-        GameObject char1Obj = CanvasFactory.createEmptyRect(_teamStatus, "CharStatus1");
-        CanvasFactory.setRectTransformAnchor(char1Obj, new Vector2(0f, 0f), new Vector2(1f, 0.25f), Vector2.zero, Vector2.zero);
-        GameObject char2Obj = CanvasFactory.createEmptyRect(_teamStatus, "CharStatus2");
-        CanvasFactory.setRectTransformAnchor(char2Obj, new Vector2(0f, 0.25f), new Vector2(1f, 0.5f), Vector2.zero, Vector2.zero);
-        GameObject char3Obj = CanvasFactory.createEmptyRect(_teamStatus, "CharStatus3");
-        CanvasFactory.setRectTransformAnchor(char3Obj, new Vector2(0f, 0.5f), new Vector2(1f, 0.75f), Vector2.zero, Vector2.zero);
-        GameObject char4Obj = CanvasFactory.createEmptyRect(_teamStatus, "CharStatus4");
-        CanvasFactory.setRectTransformAnchor(char4Obj, new Vector2(0f, 0.75f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero); 
     }
     public void initial() {
         for (int i = 0; i < _charStatuses.Length; i++) {
@@ -162,7 +160,11 @@ public class TeamEnemyStatusInterface {
         }
         placeCharStatusPos(); 
     }
-    public void update() { }
+    public void update() { 
+        for (int i = 0; i < _charStatuses.Length; i++) {
+            _charStatuses[i].update();
+        }
+    }
 
     // 更換角色
     public void changeActiveCharStatus(int select) {
@@ -185,6 +187,23 @@ public class TeamEnemyStatusInterface {
     
     // 更新角色狀態
     public void updateCharStatusInfo() {
+        for (int i = 0; i < _charStatuses.Length; i++) {
+            _charStatuses[i].setCharInfo();
+        }
+    }
+    
+    public void create_BattleScene_EnemyTeamStatus(GameObject parent) {
+        _teamStatus = CanvasFactory.createEmptyRect(parent, "TeamStatus");
+        CanvasFactory.setRectTransformAnchor(_teamStatus, new Vector2(0f, 0.5f), new Vector2(1f, 0.89f), Vector2.zero, Vector2.zero);
+
+        GameObject char1Obj = CanvasFactory.createEmptyRect(_teamStatus, "CharStatus1");
+        CanvasFactory.setRectTransformAnchor(char1Obj, new Vector2(0f, 0f), new Vector2(1f, 0.25f), Vector2.zero, Vector2.zero);
+        GameObject char2Obj = CanvasFactory.createEmptyRect(_teamStatus, "CharStatus2");
+        CanvasFactory.setRectTransformAnchor(char2Obj, new Vector2(0f, 0.25f), new Vector2(1f, 0.5f), Vector2.zero, Vector2.zero);
+        GameObject char3Obj = CanvasFactory.createEmptyRect(_teamStatus, "CharStatus3");
+        CanvasFactory.setRectTransformAnchor(char3Obj, new Vector2(0f, 0.5f), new Vector2(1f, 0.75f), Vector2.zero, Vector2.zero);
+        GameObject char4Obj = CanvasFactory.createEmptyRect(_teamStatus, "CharStatus4");
+        CanvasFactory.setRectTransformAnchor(char4Obj, new Vector2(0f, 0.75f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero); 
     }
 }
 
@@ -203,6 +222,9 @@ public class CharStatusInterface{
     public GameObject _def { get; protected set; }
     public GameObject _hpBar { get; protected set; }
 
+    protected float _openingSpeed = 8f;
+    protected float _closingSpeed = 10f;
+
     public void setCharInfo() {
         _name.GetComponent<Text>().text = _charM._name;
         _hp.GetComponent<Text>().text = _charM._hp.ToString();
@@ -216,6 +238,9 @@ public class CharStatusInterface{
 public class CharPlayerStatusInterface : CharStatusInterface {
     GameObject _parent;
     string _label;
+    private enum Mode { none = 1, ready, opening, show, closing }
+    private Mode _mode = Mode.none;
+
     public CharPlayerStatusInterface(InterfaceController inter, GameObject parent, CharManager charM, string label) { 
         _interface = inter;
         _charM = charM;
@@ -224,10 +249,59 @@ public class CharPlayerStatusInterface : CharStatusInterface {
     public void create() {
         create_PlayerCharStatus_Unit(_parent, _label); 
     }
+    public void initial() {
+        _char.GetComponent<RectTransform>().anchoredPosition = new Vector2(-150f, 0f);
+        _char.SetActive(true);
+    }
+    
+    // 顯示戰鬥中/待機/可更換
+    public void showStatus() { 
+        _char.GetComponent<RectTransform>().anchoredPosition = new Vector2( 125f, 0f );
+    }
+    public void hideStatus() {
+        _char.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 0f);
+    }
+    public void showChangeButton() {
+        _char.GetComponent<Button>().interactable = true;
+    }
+    public void hideChangeButton() { 
+        _char.GetComponent<Button>().interactable = false;
+    }
+    public void closeCheckMode() { _mode = Mode.none; }
+    public void openCheckMode() { _mode = Mode.ready; }
+
+    public void update() {
+        switch (_mode) {
+            case Mode.none: break;
+            case Mode.ready: break;
+            case Mode.opening:
+                if (_char.GetComponent<RectTransform>().anchoredPosition != new Vector2(125f, 0f)) {
+                    float movingX = _char.GetComponent<RectTransform>().anchoredPosition.x;
+                    movingX = Mathf.Min( 125f, movingX + _openingSpeed);
+                    _char.GetComponent<RectTransform>().anchoredPosition = new Vector2(movingX, 0f);
+                }else { _mode = Mode.show; }
+                break;
+            case Mode.show: break;
+            case Mode.closing:
+                if (_char.GetComponent<RectTransform>().anchoredPosition != Vector2.zero) {
+                    float movingX = _char.GetComponent<RectTransform>().anchoredPosition.x;
+                    movingX = Mathf.Max( 0f, movingX - _closingSpeed);
+                    _char.GetComponent<RectTransform>().anchoredPosition = new Vector2(movingX, 0f);
+                }else { _mode = Mode.ready; }
+                break;
+        }
+
+    }
+    
     public void create_PlayerCharStatus_Unit(GameObject parent, string label) {
         _char = CanvasFactory.createButton(parent, "CharBar", label);
         CanvasFactory.setImageSprite(_char, "Sprite/CharBar/charBarBack");
         CanvasFactory.setRectTransformPosition(_char, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), Vector2.zero, new Vector2(250f, 50f));
+
+        CanvasFactory.addPointerEnterCallback(_char, (e) => {
+            if (_mode != Mode.none) _mode = Mode.opening; } );
+        CanvasFactory.addPointerExitCallback(_char, (e) => {
+            if (_mode != Mode.none) _mode = Mode.closing; } );
 
         _info = CanvasFactory.createImage(_char, "Info");
         CanvasFactory.setImageSprite(_info, "Sprite/CharBar/charBarInfo");
@@ -255,26 +329,6 @@ public class CharPlayerStatusInterface : CharStatusInterface {
 
         _char.SetActive(false);
     }
-    public void initial() {
-        _char.GetComponent<RectTransform>().anchoredPosition = new Vector2(-150f, 0f);
-        _char.SetActive(true);
-    }
-    
-    // 顯示戰鬥中/待機/可更換
-    public void showStatus() { 
-        _char.GetComponent<RectTransform>().anchoredPosition = new Vector2( 125f, 0f );
-    }
-    public void hideStatus() {
-        _char.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 0f);
-    }
-    public void showChangeButton() {
-        _char.GetComponent<Button>().interactable = true;
-    }
-    public void hideChangeButton() { 
-        _char.GetComponent<Button>().interactable = false;
-    }
-
-    public void update() { }
 }
 
 // 敵方角色狀態顯示
@@ -290,6 +344,21 @@ public class CharEnemyStatusInterface : CharStatusInterface {
         create_EnemyCharStatus_Unit(_parent, _label);
         _char.GetComponent<Button>().interactable = false;
     }
+    public void initial() {
+        _char.GetComponent<RectTransform>().anchoredPosition = new Vector2(150f, 0f);
+        _char.SetActive(true); 
+    }
+    
+    // 顯示戰鬥中/待機/可更換
+    public void showStatus() {
+        _char.GetComponent<RectTransform>().anchoredPosition = new Vector2( -125f, 0f );
+    }
+    public void hideStatus() {
+        _char.GetComponent<RectTransform>().anchoredPosition = new Vector2( 0f, 0f );
+    }
+
+    public void update() { }
+
     public void create_EnemyCharStatus_Unit(GameObject parent, string label) {
         _char = CanvasFactory.createButton(parent, "CharBar", label);
         CanvasFactory.setImageSprite(_char, "Sprite/CharBar/charBarBackEnemy");
@@ -321,18 +390,4 @@ public class CharEnemyStatusInterface : CharStatusInterface {
 
         _char.SetActive(false);
     }
-    public void initial() {
-        _char.GetComponent<RectTransform>().anchoredPosition = new Vector2(150f, 0f);
-        _char.SetActive(true); 
-    }
-    
-    // 顯示戰鬥中/待機/可更換
-    public void showStatus() {
-        _char.GetComponent<RectTransform>().anchoredPosition = new Vector2( -125f, 0f );
-    }
-    public void hideStatus() {
-        _char.GetComponent<RectTransform>().anchoredPosition = new Vector2( 0f, 0f );
-    }
-
-    public void update() { }
 }

@@ -59,14 +59,21 @@ public class InterfaceController {
     public void create() {
         _mainMenu.create();
         _menuButton.create();
+        _skillMenu.create();
 
         _charPlayerPlace.create();
         _charEnemyPlace.create();
 
-        _diceBox.create();
-
         _teamPlayerStatus.create();
         _teamEnemyStatus.create();
+
+        _diceBox.create();
+        _turnStatus.create();
+
+        _attrPoints.create();
+        _towerStatus.create();
+        _attrPointsEnemy.create();
+        _towerStatusEnemy.create();
     }
 
     public void initial() {
@@ -76,8 +83,14 @@ public class InterfaceController {
         _charPlayerPlace.initial();
         _charEnemyPlace.initial();
 
+        _towerStatus.initial();
+        _attrPoints.initial();
+        _attrPointsEnemy.initial();
+        _towerStatusEnemy.initial();
+
         _diceBox.initial();
-        
+        _turnStatus.initial();
+
         setTeamPlayer();
         setTeamEnemy();
         _teamPlayerStatus.initial();
@@ -157,7 +170,13 @@ public class InterfaceController {
     public GameObject getImageActionBase() { return _mainMenu._actionBase; }
     public GameObject getImageLeftStatus() { return _mainMenu._leftStatus; }
     public GameObject getImageRightStatus() { return _mainMenu._rightStatus; }
-    
+    public GameObject getImageDiceBox() { return _diceBox._diceBox;  }
+    public GameObject getImageTurnStatus() { return _turnStatus._turnStatus; }
+    public GameObject getImageTurnInfo() { return _turnStatus._turnInfo; }
+    public GameObject getImageMovTurn() { return _turnStatus._movTurn; }
+    public GameObject getImageAtkTurn() { return _turnStatus._atkTurn; }
+    public GameObject getImageDefTurn() { return _turnStatus._defTurn; }
+
 }
  
 
