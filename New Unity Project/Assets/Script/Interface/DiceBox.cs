@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 // 待使用骰子顯示
 public class DiceBoxInterface {
@@ -33,44 +32,33 @@ public class DiceBoxInterface {
     }
 
     public void clear() {
-        foreach (GameObject d in _dices) {
-            MonoBehaviour.Destroy(d);
-        }
+        foreach (GameObject d in _dices) { MonoBehaviour.Destroy(d); }
+        _dices.Clear();
     } 
 
     public void checkDiceBox(int type) {
-        clear();
         _mode = _mode.getNextMode( _mode.getID(), type );
         
-        //_mode.setModePosition();
         //_mode.showDiceBox( _dices );
     }
     public AnimateWork[] getModeAnimates() { return _mode.getModeAnimates(); }
-
-    public void shiftTextPosition(float txtX) {
-        _dicesGround.transform.Find("txt").GetComponent<RectTransform>().anchoredPosition =
-            new Vector2(txtX, _dicesGround.transform.Find("txt").GetComponent<RectTransform>().anchoredPosition.y);
-        _dicesTeam.transform.Find("txt").GetComponent<RectTransform>().anchoredPosition =
-            new Vector2(txtX, _dicesTeam.transform.Find("txt").GetComponent<RectTransform>().anchoredPosition.y);
-        _dicesPerson.transform.Find("txt").GetComponent<RectTransform>().anchoredPosition =
-            new Vector2(txtX, _dicesPerson.transform.Find("txt").GetComponent<RectTransform>().anchoredPosition.y);
-    }
-
+    public AnimateWork getDiceStackShowAnimate() { return _mode.getDiceStackShowAnimate(); }
+    
     // DiceBox  *************
     public void create_BattleScene_DiceBox(GameObject parent) {
         _diceBox = CanvasFactory.createEmptyRect(parent, "DiceBox");
         CanvasFactory.setRectTransformPosition(_diceBox, new Vector2(0f, 0.88f), new Vector2(0f, 0.88f), new Vector2(-100f, 0f), Vector2.zero );
 
         _dicesPerson = CanvasFactory.create_DiceBox_Unit(_diceBox, "DicesPerson", StringCoder.getDiceBoxString(3), "個人");
-        _dicesPerson.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/Button/dicesPerson");
+        CanvasFactory.setImageSprite(_dicesPerson, "Sprite/Button/dicesPerson");
         CanvasFactory.setRectTransformPosition(_dicesPerson, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(200f, 0f), new Vector2(200f, 50f));
 
         _dicesTeam = CanvasFactory.create_DiceBox_Unit(_diceBox, "DicesTeam", StringCoder.getDiceBoxString(2), "隊伍");
-        _dicesTeam.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/Button/dicesTeam");
+        CanvasFactory.setImageSprite(_dicesTeam, "Sprite/Button/dicesTeam");
         CanvasFactory.setRectTransformPosition(_dicesTeam, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(100f, 0f), new Vector2(200f, 50f));
 
         _dicesGround = CanvasFactory.create_DiceBox_Unit(_diceBox, "DicesGround", StringCoder.getDiceBoxString(1), "場地");
-        _dicesGround.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/Button/dicesGround");
+        CanvasFactory.setImageSprite(_dicesGround, "Sprite/Button/dicesGround");
         CanvasFactory.setRectTransformPosition(_dicesGround, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, 0f), new Vector2(200f, 50f));         
     }
 }
@@ -86,6 +74,7 @@ public abstract class DiceBoxMode {
     }
     public abstract int getID();
     public abstract AnimateWork[] getModeAnimates();
+    public abstract AnimateWork getDiceStackShowAnimate();
     public abstract void showDiceBox( List<GameObject> dices );
 }
 
@@ -98,9 +87,17 @@ public class DiceBoxNormalMode : DiceBoxMode {
             new AnimateMoveTo(_diceBox._dicesGround.GetComponent<RectTransform>(), new Vector2(0f, 0f), 10),
             new AnimateMoveTo(_diceBox._dicesTeam.GetComponent<RectTransform>(), new Vector2(100f, 0f), 10),
             new AnimateMoveTo(_diceBox._dicesPerson.GetComponent<RectTransform>(), new Vector2(200f, 0f), 10),
+            new AnimateMoveTo(_diceBox._dicesGround.transform.Find("txt").GetComponent<RectTransform>(), Vector2.zero, 10),
+            new AnimateMoveTo(_diceBox._dicesTeam.transform.Find("txt").GetComponent<RectTransform>(), Vector2.zero, 10),
+            new AnimateMoveTo(_diceBox._dicesPerson.transform.Find("txt").GetComponent<RectTransform>(), Vector2.zero, 10)
         };      
     }
-    public override void showDiceBox(List<GameObject> diceObjs) { }
+    public override AnimateWork getDiceStackShowAnimate() {
+        _diceBox.clear(); 
+        return new AnimateWork();
+    }
+    public override void showDiceBox(List<GameObject> diceObjs) { 
+        _diceBox.clear();}
 }
 public class DiceBoxGroundMode : DiceBoxMode {
     public const int id = 1;
@@ -111,15 +108,29 @@ public class DiceBoxGroundMode : DiceBoxMode {
             new AnimateMoveTo(_diceBox._dicesGround.GetComponent<RectTransform>(), new Vector2(70f, 0f), 10),
             new AnimateMoveTo(_diceBox._dicesTeam.GetComponent<RectTransform>(), new Vector2(100f, 0f), 10),
             new AnimateMoveTo(_diceBox._dicesPerson.GetComponent<RectTransform>(), new Vector2(130f, 0f), 10),
-        };      
+            new AnimateMoveTo(_diceBox._dicesGround.transform.Find("txt").GetComponent<RectTransform>(), new Vector2(-60f, 0f), 10),
+            new AnimateMoveTo(_diceBox._dicesTeam.transform.Find("txt").GetComponent<RectTransform>(), new Vector2(-60f, 0f), 10),
+            new AnimateMoveTo(_diceBox._dicesPerson.transform.Find("txt").GetComponent<RectTransform>(), new Vector2(-60f, 0f), 10)
+        };
     }
-    public override void showDiceBox(List<GameObject> diceObjs) {
-        List<Dice> dices = _diceBox._interface._battle._playerManager._groundDices._dicesUnused.GetRange(
-            0, _diceBox._interface._battle._playerManager._groundDices._useStack);
+    public override AnimateWork getDiceStackShowAnimate() {
+        _diceBox.clear();
+        List<Dice> dices = _diceBox._interface.getDicesGroundUseStack();
         for (int i = 0; i < dices.Count; i++) {
             GameObject imageObj = CanvasFactory.createImage( _diceBox._dicesGround.transform.Find("Layout").gameObject, "icon_"+i);
-            imageObj.GetComponent<Image>().sprite = Resources.Load<Sprite>(dices[i].getIconImage());
-            imageObj.GetComponent<Image>().SetNativeSize();
+            CanvasFactory.setImageSprite(imageObj, dices[i].getIconImage());
+            CanvasFactory.setImageNatureSize(imageObj);
+            AnimateWork.setAlpha(imageObj.transform, 0f);
+            _diceBox._dices.Add(imageObj);
+        }
+        return new AnimateOrderFadeIn(_diceBox._dices, 10);
+    }
+    public override void showDiceBox(List<GameObject> diceObjs) {
+        List<Dice> dices = _diceBox._interface.getDicesGroundUseStack();
+        for (int i = 0; i < dices.Count; i++) {
+            GameObject imageObj = CanvasFactory.createImage( _diceBox._dicesGround.transform.Find("Layout").gameObject, "icon_"+i);
+            CanvasFactory.setImageSprite(imageObj, dices[i].getIconImage());
+            CanvasFactory.setImageNatureSize(imageObj);
             diceObjs.Add(imageObj);
         }
     }
@@ -133,15 +144,29 @@ public class DiceBoxTeamMode : DiceBoxMode {
             new AnimateMoveTo(_diceBox._dicesGround.GetComponent<RectTransform>(), new Vector2(-60f, 0f), 10),
             new AnimateMoveTo(_diceBox._dicesTeam.GetComponent<RectTransform>(), new Vector2(100f, 0f), 10),
             new AnimateMoveTo(_diceBox._dicesPerson.GetComponent<RectTransform>(), new Vector2(130f, 0f), 10),
+            new AnimateMoveTo(_diceBox._dicesGround.transform.Find("txt").GetComponent<RectTransform>(), new Vector2(-60f, 0f), 10),
+            new AnimateMoveTo(_diceBox._dicesTeam.transform.Find("txt").GetComponent<RectTransform>(), new Vector2(-60f, 0f), 10),
+            new AnimateMoveTo(_diceBox._dicesPerson.transform.Find("txt").GetComponent<RectTransform>(), new Vector2(-60f, 0f), 10)
         };      
     }
-    public override void showDiceBox(List<GameObject> diceObjs) {
-        List<Dice> dices = _diceBox._interface._battle._playerManager._teamDices._dicesUnused.GetRange(
-            0, _diceBox._interface._battle._playerManager._teamDices._useStack);
+    public override AnimateWork getDiceStackShowAnimate() {
+        _diceBox.clear();
+        List<Dice> dices = _diceBox._interface.getDicesTeamUseStack();
         for (int i = 0; i < dices.Count; i++) {
             GameObject imageObj = CanvasFactory.createImage( _diceBox._dicesTeam.transform.Find("Layout").gameObject, "icon_"+i);
-            imageObj.GetComponent<Image>().sprite = Resources.Load<Sprite>(dices[i].getIconImage());
-            imageObj.GetComponent<Image>().SetNativeSize();
+            CanvasFactory.setImageSprite(imageObj, dices[i].getIconImage());
+            CanvasFactory.setImageNatureSize(imageObj);
+            AnimateWork.setAlpha(imageObj.transform, 0f);
+            _diceBox._dices.Add(imageObj);
+        }
+        return new AnimateOrderFadeIn(_diceBox._dices, 10);
+    }
+    public override void showDiceBox(List<GameObject> diceObjs) {
+        List<Dice> dices = _diceBox._interface.getDicesTeamUseStack();
+        for (int i = 0; i < dices.Count; i++) {
+            GameObject imageObj = CanvasFactory.createImage(_diceBox._dicesTeam.transform.Find("Layout").gameObject, "icon_" + i);
+            CanvasFactory.setImageSprite(imageObj, dices[i].getIconImage());
+            CanvasFactory.setImageNatureSize(imageObj);
             diceObjs.Add(imageObj);
         }
     }
@@ -155,15 +180,29 @@ public class DiceBoxPersonMode : DiceBoxMode {
             new AnimateMoveTo(_diceBox._dicesGround.GetComponent<RectTransform>(), new Vector2(-60f, 0f), 10),
             new AnimateMoveTo(_diceBox._dicesTeam.GetComponent<RectTransform>(), new Vector2(-30f, 0f), 10),
             new AnimateMoveTo(_diceBox._dicesPerson.GetComponent<RectTransform>(), new Vector2(130f, 0f), 10),
+            new AnimateMoveTo(_diceBox._dicesGround.transform.Find("txt").GetComponent<RectTransform>(), new Vector2(-60f, 0f), 10),
+            new AnimateMoveTo(_diceBox._dicesTeam.transform.Find("txt").GetComponent<RectTransform>(), new Vector2(-60f, 0f), 10),
+            new AnimateMoveTo(_diceBox._dicesPerson.transform.Find("txt").GetComponent<RectTransform>(), new Vector2(-60f, 0f), 10)
         };      
     }
-    public override void showDiceBox(List<GameObject> diceObjs) {
-        List<Dice> dices = _diceBox._interface._battle._playerManager._personDices._dicesUnused.GetRange(
-            0, _diceBox._interface._battle._playerManager._personDices._useStack);
+    public override AnimateWork getDiceStackShowAnimate() {
+        _diceBox.clear();
+        List<Dice> dices = _diceBox._interface.getDicesPersonUseStack();
         for (int i = 0; i < dices.Count; i++) {
             GameObject imageObj = CanvasFactory.createImage( _diceBox._dicesPerson.transform.Find("Layout").gameObject, "icon_"+i);
-            imageObj.GetComponent<Image>().sprite = Resources.Load<Sprite>(dices[i].getIconImage());
-            imageObj.GetComponent<Image>().SetNativeSize();
+            CanvasFactory.setImageSprite(imageObj, dices[i].getIconImage());
+            CanvasFactory.setImageNatureSize(imageObj);
+            AnimateWork.setAlpha(imageObj.transform, 0f);
+            _diceBox._dices.Add(imageObj);
+        }
+        return new AnimateOrderFadeIn(_diceBox._dices, 10);
+    }
+    public override void showDiceBox(List<GameObject> diceObjs) {
+        List<Dice> dices = _diceBox._interface.getDicesPersonUseStack();
+        for (int i = 0; i < dices.Count; i++) {
+            GameObject imageObj = CanvasFactory.createImage(_diceBox._dicesPerson.transform.Find("Layout").gameObject, "icon_" + i);
+            CanvasFactory.setImageSprite(imageObj, dices[i].getIconImage());
+            CanvasFactory.setImageNatureSize(imageObj);
             diceObjs.Add(imageObj);
         }
     }

@@ -1,9 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-
-
+using UnityEngine; 
 
 // 儲存塔狀態顯示
 public class TowerStatusInterface {
@@ -22,7 +19,7 @@ public class TowerStatusInterface {
 
     public void setTowerStatus(AttrTower[] towers) {
         for (int i = 0; i < _towers.Length && i < towers.Length; i++) {
-            _towers[i].GetComponent<Image>().sprite = Resources.Load<Sprite>( towers[i].getImage() );
+            CanvasFactory.setImageSprite(_towers[i], towers[i].getImage());
         }
     }
 
@@ -35,9 +32,7 @@ public class TowerStatusInterface {
         CanvasFactory.setRectTransformPosition(_towerTable, new Vector2(0.05f, 0.65f), new Vector2(0.05f, 0.65f), Vector2.zero, new Vector2(width, width / 6));
         CanvasFactory.setRectPivot(_towerTable, new Vector2(0f, 0f));
 
-        AspectRatioFitter fitter = _towerTable.AddComponent<AspectRatioFitter>();
-        fitter.aspectMode = AspectRatioFitter.AspectMode.WidthControlsHeight;
-        fitter.aspectRatio = 6f;
+        CanvasFactory.setRatioFitterWidthControlsHeight(_towerTable, 6f);
 
         GameObject t1Obj = CanvasFactory.create_TowerStatus_Unit(_towerTable);
         CanvasFactory.setRectTransformAnchor(t1Obj, new Vector2(0f, 0f), new Vector2(1f / 6, 1f), Vector2.zero, Vector2.zero);
@@ -83,11 +78,11 @@ public class AttrPointsInterface {
 
     public void setAttrNums(int[] attrNums) {
         for (int i = 0; i < attrNums.Length && i < _attrNums.Length; i++) {
-            _attrNums[i].GetComponent<Text>().text = attrNums[i].ToString();
+            CanvasFactory.setTextString(_attrNums[i], attrNums[i].ToString());
         }
     }
     public void setAttrNum(int attr, int num) {
-        _attrNums[attr].GetComponent<Text>().text = num.ToString();
+        CanvasFactory.setTextString(_attrNums[attr], num.ToString());
     }
 
     public void update() { }
@@ -99,9 +94,7 @@ public class AttrPointsInterface {
         CanvasFactory.setRectTransformPosition(_pointTable, new Vector2(0.05f, 0.6f), new Vector2(0.05f, 0.6f), Vector2.zero, new Vector2(width, width / 3));
         CanvasFactory.setRectPivot(_pointTable, new Vector2(0f, 1f));
 
-        AspectRatioFitter fitter = _pointTable.AddComponent<AspectRatioFitter>();
-        fitter.aspectMode = AspectRatioFitter.AspectMode.WidthControlsHeight;
-        fitter.aspectRatio = 3f;
+        CanvasFactory.setRatioFitterWidthControlsHeight(_pointTable, 3f);
 
         GameObject norObj = CanvasFactory.create_PointStatus_Unit(
             _pointTable, "attrNor", "Sprite/PointTable/pointTableNor", "Sprite/AttrIcon/AttrNor");
@@ -154,20 +147,24 @@ public class TowerStatusEnemyInterface {
 
     public void setTowerStatus(AttrTower[] towers) {
         for (int i = 0; i < _towers.Length && i < towers.Length; i++) {
-            _towers[i].GetComponent<Image>().sprite = Resources.Load<Sprite>( towers[i].getImage() );
+            CanvasFactory.setImageSprite(_towers[i], towers[i].getImage());
         }
     }
 
+    public void update() { }
+
     // Enemy Tower Status *************
     public void create_BattleScene_EnemyTowerStatus(GameObject parent) {
-        _towerTable = CanvasFactory.createEmptyRect(parent, "EnemyTowerStatus");
+        _towerTable = CanvasFactory.createButton(parent, "EnemyTowerStatus", "");
         float width = Mathf.Min(parent.transform.GetComponent<RectTransform>().rect.width - 20, 280f);
         CanvasFactory.setRectTransformPosition(_towerTable, new Vector2(0.05f, 1f), new Vector2(0.05f, 1f), Vector2.zero, new Vector2(width, width / 6));
         CanvasFactory.setRectPivot(_towerTable, new Vector2(0f, 1f));
 
-        AspectRatioFitter fitter = _towerTable.AddComponent<AspectRatioFitter>();
-        fitter.aspectMode = AspectRatioFitter.AspectMode.WidthControlsHeight;
-        fitter.aspectRatio = 6f;
+        CanvasFactory.setRatioFitterWidthControlsHeight(_towerTable, 6f);
+
+        CanvasFactory.addPointerClickCallback(_towerTable, (e) => {
+            _interface._attrPointsEnemy.toggleLookUp();
+        });
 
         GameObject t1Obj = CanvasFactory.create_TowerStatus_Unit(_towerTable);
         CanvasFactory.setRectTransformAnchor(t1Obj, new Vector2(0f, 0f), new Vector2(1f / 6, 1f), Vector2.zero, Vector2.zero);
@@ -201,6 +198,12 @@ public class AttrPointsEnemyInterface {
     public GameObject[] _attrIcons { get; private set; }
     public GameObject[] _attrNums { get; private set; }
 
+    private enum Mode { ready=1, opening, show, closing }
+    private Mode _mode = Mode.ready;
+    private float _openingSpeed = 8f;
+    private float _closingSpeed = 10f;
+    private float _distance;
+
     public AttrPointsEnemyInterface(InterfaceController inter) { _interface = inter; }
     public void create() {
         create_BattleScene_EnemyPointStatus(_interface.getImageEnemyTableMask()); 
@@ -212,23 +215,49 @@ public class AttrPointsEnemyInterface {
 
     public void setAttrNums(int[] attrNums) {
         for (int i = 0; i < attrNums.Length && i < _attrNums.Length; i++) {
-            _attrNums[i].GetComponent<Text>().text = attrNums[i].ToString();
+            CanvasFactory.setTextString(_attrNums[i], attrNums[i].ToString());
         }
     }
     public void setAttrNum(int attr, int num) {
-        _attrNums[attr].GetComponent<Text>().text = num.ToString();
+        CanvasFactory.setTextString(_attrNums[attr], num.ToString());
+    }
+
+    public void toggleLookUp() {
+        if (_mode == Mode.ready || _mode == Mode.closing) _mode = Mode.opening;
+        else if (_mode == Mode.opening || _mode == Mode.show) _mode = Mode.closing;
+    }
+    public void update() {
+        switch (_mode) {
+            case Mode.ready: break;
+            case Mode.opening:
+                if (_pointTable.GetComponent<RectTransform>().anchoredPosition.y > _distance) {
+                    float movingY = _pointTable.GetComponent<RectTransform>().anchoredPosition.y;
+                    movingY = Mathf.Max(_distance, movingY - _openingSpeed);
+                    _pointTable.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, movingY);
+                }else { _mode = Mode.show; }
+                break;
+            case Mode.show: break;
+            case Mode.closing:
+                if (_pointTable.GetComponent<RectTransform>().anchoredPosition.y < 0f) {
+                    float movingY = _pointTable.GetComponent<RectTransform>().anchoredPosition.y;
+                    movingY = Mathf.Min(0f, movingY + _closingSpeed);
+                    _pointTable.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, movingY);
+                }else { _mode = Mode.ready; }
+                break;
+        }
     }
 
     // Enemy Point Status *************
     public void create_BattleScene_EnemyPointStatus(GameObject parent) {
-        _pointTable = CanvasFactory.createEmptyRect(parent, "EnemyPointStatus");
+        _pointTable = CanvasFactory.createButton(parent, "EnemyPointStatus", "");
         float width = Mathf.Min(parent.transform.GetComponent<RectTransform>().rect.width - 20, 280f);
         CanvasFactory.setRectTransformPosition(_pointTable, new Vector2(0.05f, 1f), new Vector2(0.05f, 1f), Vector2.zero, new Vector2(width, width / 3));
         CanvasFactory.setRectPivot(_pointTable, new Vector2(0f, 0f));
 
-        AspectRatioFitter fitter = _pointTable.AddComponent<AspectRatioFitter>();
-        fitter.aspectMode = AspectRatioFitter.AspectMode.WidthControlsHeight;
-        fitter.aspectRatio = 3f;
+        CanvasFactory.setRatioFitterWidthControlsHeight(_pointTable, 3f);
+        _distance = _pointTable.GetComponent<RectTransform>().rect.height * -1.5f;
+
+        CanvasFactory.addPointerClickCallback(_pointTable, (e) => { toggleLookUp(); });
 
         GameObject norObj = CanvasFactory.create_PointStatus_Unit(
             _pointTable, "attrNor", "Sprite/PointTable/pointTableNor", "Sprite/AttrIcon/AttrNor");

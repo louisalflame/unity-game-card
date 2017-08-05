@@ -12,10 +12,10 @@ public class TurnStatus {
     public GameObject _defTurn { get; private set; }
     public GameObject _turnInfo { get; private set; }
 
-    private GameObject _playerAtk = null;
-    private GameObject _playerDef = null;
-    private GameObject _enemyAtk = null;
-    private GameObject _enemyDef = null;
+    public GameObject _playerAtk { get; private set; }
+    public GameObject _playerDef { get; private set; }
+    public GameObject _enemyAtk { get; private set; }
+    public GameObject _enemyDef { get; private set; }
     
     public TurnStatus(InterfaceController inter) {
         _interface = inter;
@@ -25,19 +25,28 @@ public class TurnStatus {
     }
     public void initial() {
         _turnStatus.SetActive(true);
-        _turnStatus.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 330f);
         AnimateWork.setAlpha(_turnStatus.transform, 0);
     }
 
     public void showMoveTurn() {
         _turnInfo.GetComponent<Text>().text = NameCoder.getTurnString(_interface._battle._turnManager._turnNum);
         _movTurn.transform.SetSiblingIndex(_turnInfo.transform.GetSiblingIndex() - 1);
+        AnimateWork.setAlpha(_movTurn.transform, 0f);
+        AnimateWork.setAlpha(_turnInfo.transform, 0f);
+        _movTurn.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 330f);
+        _turnInfo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 330f);
     }
     public void showPlayerAtkTurn() {
         _atkTurn.transform.SetSiblingIndex(_turnInfo.transform.GetSiblingIndex() - 1);
+        AnimateWork.setAlpha(_atkTurn.transform, 0f);
+        _playerAtk.GetComponent<RectTransform>().anchoredPosition = new Vector2(-200f, 0f);
+        _enemyDef.GetComponent<RectTransform>().anchoredPosition = new Vector2(200f, 0f);
     }
     public void showPlayerDefTurn() {
         _defTurn.transform.SetSiblingIndex(_turnInfo.transform.GetSiblingIndex() - 1);
+        AnimateWork.setAlpha(_defTurn.transform, 0f);
+        _playerDef.GetComponent<RectTransform>().anchoredPosition = new Vector2(-200f, 0f);
+        _enemyAtk.GetComponent<RectTransform>().anchoredPosition = new Vector2(200f, 0f);
     }
     
 

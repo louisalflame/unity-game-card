@@ -22,7 +22,9 @@ public class MainLayoutInterface {
     public GameObject _enemyTableMask { get; private set; }
 
     public GameObject _leftStatus { get; private set; }
-    public GameObject _rightStatus { get; private set; }    
+    public GameObject _rightStatus { get; private set; }
+
+    public GameObject _decisionField { get; private set; }
 
     public MainLayoutInterface(InterfaceController inter) { _interface = inter; }
 
@@ -58,6 +60,9 @@ public class MainLayoutInterface {
         if (_leftStatus == null) { _leftStatus = createLeftStatus(_interface._canvas); }
         _rightStatus = _interface._canvas.transform.Find("RightStatus").gameObject;
         if (_rightStatus == null) { _rightStatus = createRightStatus(_interface._canvas); }
+
+        _decisionField = _interface._canvas.transform.Find("DecisionField").gameObject;
+        if (_decisionField == null) { _decisionField = createDecisionField(_interface._canvas); }
         
         _topBar.SetActive(false);
         _bottomBar.SetActive(false);
@@ -74,7 +79,7 @@ public class MainLayoutInterface {
 
     private GameObject createMainBattleField(GameObject parent) {
         GameObject rectObj = CanvasFactory.createEmptyRect(parent, "BattleField");
-        CanvasFactory.setWholeRect(rectObj);
+        CanvasFactory.setWholeRect(rectObj); 
         return rectObj;
     }
     private GameObject createMiddleBattleField(GameObject parent) {
@@ -160,6 +165,11 @@ public class MainLayoutInterface {
         layout.childForceExpandHeight = false;
         layout.childForceExpandWidth = false;
 
+        return rectObj;
+    }
+    private GameObject createDecisionField(GameObject parent) { 
+        GameObject rectObj = CanvasFactory.createEmptyRect(parent, "DecisionField");
+        CanvasFactory.setWholeRect(rectObj);
         return rectObj;
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine; 
  
 public class TeamPlayerStatusInterface {
     public InterfaceController _interface { get; private set; }
@@ -180,8 +179,14 @@ public class TeamEnemyStatusInterface {
     
     public void placeCharStatusPos() {
         foreach (CharEnemyStatusInterface status in _charStatuses) { 
-            if (status._active) { status.showStatus(); } 
-            else { status.hideStatus(); }
+            if (status._active) { 
+                status.showStatus();
+                status.closeCheckMode();
+            } 
+            else { 
+                status.hideStatus();
+                status.openCheckMode();
+            }
         }
     }
     
@@ -221,17 +226,28 @@ public class CharStatusInterface{
     public GameObject _atk { get; protected set; }
     public GameObject _def { get; protected set; }
     public GameObject _hpBar { get; protected set; }
+    public GameObject _hpBarBase { get; protected set; }
 
     protected float _openingSpeed = 8f;
     protected float _closingSpeed = 10f;
 
     public void setCharInfo() {
-        _name.GetComponent<Text>().text = _charM._name;
-        _hp.GetComponent<Text>().text = _charM._hp.ToString();
-        _atk.GetComponent<Text>().text = _charM._atk.ToString();
-        _def.GetComponent<Text>().text = _charM._def.ToString();
+        CanvasFactory.setTextString(_name, _charM._name);
+        CanvasFactory.setTextString(_hp, _charM._hp.ToString());
+        CanvasFactory.setTextString(_atk, _charM._atk.ToString());
+        CanvasFactory.setTextString(_def, _charM._def.ToString());
+        setHpBar((float)_charM._hp / (float)_charM._character._hp);
     }
     public void setActive(bool active) { _active = active; }
+
+    protected static Color _empty = new Color32(255, 0, 0, 255);
+    protected static Color _middle = new Color32(255, 255, 0, 255);
+    protected static Color _full = new Color32(0, 255, 0, 255);
+    public void setHpBar(float n) {
+        if (n > 0.5f) { CanvasFactory.setImageMaterialColor(_hpBar, "_Color", Color.Lerp(_middle, _full, 2 * n - 1)); }
+        else { CanvasFactory.setImageMaterialColor(_hpBar, "_Color", Color.Lerp(_empty, _middle, 2 * n )); }
+        CanvasFactory.setImageMaterialFloat(_hpBar, "_Progress", n);
+    }
 }
 
 // 我方角色狀態顯示
@@ -262,10 +278,10 @@ public class CharPlayerStatusInterface : CharStatusInterface {
         _char.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 0f);
     }
     public void showChangeButton() {
-        _char.GetComponent<Button>().interactable = true;
+        CanvasFactory.setButtonInteractable(_char, true);
     }
-    public void hideChangeButton() { 
-        _char.GetComponent<Button>().interactable = false;
+    public void hideChangeButton() {
+        CanvasFactory.setButtonInteractable(_char, false);
     }
     public void closeCheckMode() { _mode = Mode.none; }
     public void openCheckMode() { _mode = Mode.ready; }
@@ -275,7 +291,7 @@ public class CharPlayerStatusInterface : CharStatusInterface {
             case Mode.none: break;
             case Mode.ready: break;
             case Mode.opening:
-                if (_char.GetComponent<RectTransform>().anchoredPosition != new Vector2(125f, 0f)) {
+                if (_char.GetComponent<RectTransform>().anchoredPosition.x < 125f) {
                     float movingX = _char.GetComponent<RectTransform>().anchoredPosition.x;
                     movingX = Mathf.Min( 125f, movingX + _openingSpeed);
                     _char.GetComponent<RectTransform>().anchoredPosition = new Vector2(movingX, 0f);
@@ -283,14 +299,13 @@ public class CharPlayerStatusInterface : CharStatusInterface {
                 break;
             case Mode.show: break;
             case Mode.closing:
-                if (_char.GetComponent<RectTransform>().anchoredPosition != Vector2.zero) {
+                if (_char.GetComponent<RectTransform>().anchoredPosition.x > 0f) {
                     float movingX = _char.GetComponent<RectTransform>().anchoredPosition.x;
                     movingX = Mathf.Max( 0f, movingX - _closingSpeed);
                     _char.GetComponent<RectTransform>().anchoredPosition = new Vector2(movingX, 0f);
                 }else { _mode = Mode.ready; }
                 break;
         }
-
     }
     
     public void create_PlayerCharStatus_Unit(GameObject parent, string label) {
@@ -312,15 +327,16 @@ public class CharPlayerStatusInterface : CharStatusInterface {
         _atk = CanvasFactory.create_CharStatus_Unit_NumATK(_info);
         _def = CanvasFactory.create_CharStatus_Unit_NumDEF(_info);
 
-        _hpBar = CanvasFactory.createImage(_char, "HpBar");
+        _hpBarBase = CanvasFactory.createImage(_char, "HpBarBase");
+        CanvasFactory.setImageSprite(_hpBarBase, "Sprite/CharBar/charBarHpBase");
+        CanvasFactory.setRectTransformPosition(_hpBarBase, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), Vector2.zero, new Vector2(46f, 50f));
+        CanvasFactory.setRectPivot(_hpBarBase, new Vector2(1f, 0.5f));
+
+        _hpBar = CanvasFactory.createImage(_hpBarBase, "HpBar");
         CanvasFactory.setImageSprite(_hpBar, "Sprite/CharBar/charBarHp");
-        CanvasFactory.setRectTransformPosition(_hpBar, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), Vector2.zero, new Vector2(46f, 50f));
-        CanvasFactory.setRectPivot(_hpBar, new Vector2(1f, 0.5f));
-
-        //GameObject maskImage = CanvasFactory.createImage(barObj, "HpImage");
-        //maskImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/CharBar/barImage");
-        //CanvasFactory.setWholeRect(maskImage);
-
+        CanvasFactory.setImageMaterial(_hpBar, "Shader/MaterialMask");
+        CanvasFactory.setWholeRect(_hpBar);
+        
         _name = CanvasFactory.createText(_char, "txtName", "name");
         CanvasFactory.setRectTransformAnchor(_name, new Vector2(0.8f, 0f), new Vector2(0.8f, 0f), Vector2.zero, Vector2.zero);
         CanvasFactory.setTextScaleSize(_name, 0.1f, 150);
@@ -335,6 +351,9 @@ public class CharPlayerStatusInterface : CharStatusInterface {
 public class CharEnemyStatusInterface : CharStatusInterface {
     GameObject _parent;
     string _label;
+    private enum Mode { none = 1, ready, opening, show, closing }
+    private Mode _mode = Mode.none;
+
     public CharEnemyStatusInterface(InterfaceController inter, GameObject parent, CharManager charM, string label) {
         _interface = inter;
         _charM = charM;
@@ -342,7 +361,6 @@ public class CharEnemyStatusInterface : CharStatusInterface {
     }
     public void create() {
         create_EnemyCharStatus_Unit(_parent, _label);
-        _char.GetComponent<Button>().interactable = false;
     }
     public void initial() {
         _char.GetComponent<RectTransform>().anchoredPosition = new Vector2(150f, 0f);
@@ -356,13 +374,41 @@ public class CharEnemyStatusInterface : CharStatusInterface {
     public void hideStatus() {
         _char.GetComponent<RectTransform>().anchoredPosition = new Vector2( 0f, 0f );
     }
+    public void closeCheckMode() { _mode = Mode.none; }
+    public void openCheckMode() { _mode = Mode.ready; }
 
-    public void update() { }
+    public void update() {
+        switch (_mode) {
+            case Mode.none: break;
+            case Mode.ready: break;
+            case Mode.opening:
+                if (_char.GetComponent<RectTransform>().anchoredPosition.x > -125f) {
+                    float movingX = _char.GetComponent<RectTransform>().anchoredPosition.x;
+                    movingX = Mathf.Max( -125f, movingX - _openingSpeed);
+                    _char.GetComponent<RectTransform>().anchoredPosition = new Vector2(movingX, 0f);
+                }else { _mode = Mode.show; }
+                break;
+            case Mode.show: break;
+            case Mode.closing:
+                if (_char.GetComponent<RectTransform>().anchoredPosition.x < 0f) {
+                    float movingX = _char.GetComponent<RectTransform>().anchoredPosition.x;
+                    movingX = Mathf.Min( 0f, movingX + _closingSpeed);
+                    _char.GetComponent<RectTransform>().anchoredPosition = new Vector2(movingX, 0f);
+                }else { _mode = Mode.ready; }
+                break;
+        } 
+    }
 
     public void create_EnemyCharStatus_Unit(GameObject parent, string label) {
         _char = CanvasFactory.createButton(parent, "CharBar", label);
         CanvasFactory.setImageSprite(_char, "Sprite/CharBar/charBarBackEnemy");
         CanvasFactory.setRectTransformPosition(_char, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), Vector2.zero, new Vector2(250f, 50f));
+
+        CanvasFactory.setButtonInteractable(_char, false);
+        CanvasFactory.addPointerEnterCallback(_char, (e) => {
+            if (_mode != Mode.none) _mode = Mode.opening; } );
+        CanvasFactory.addPointerExitCallback(_char, (e) => {
+            if (_mode != Mode.none) _mode = Mode.closing; } );
 
         _info = CanvasFactory.createImage(_char, "Info");
         CanvasFactory.setImageSprite(_info, "Sprite/CharBar/charBarInfo");
@@ -373,14 +419,15 @@ public class CharEnemyStatusInterface : CharStatusInterface {
         _atk = CanvasFactory.create_CharStatus_Unit_NumATK(_info);
         _def = CanvasFactory.create_CharStatus_Unit_NumDEF(_info);
 
-        _hpBar = CanvasFactory.createImage(_char, "HpBar");
-        CanvasFactory.setImageSprite(_hpBar, "Sprite/CharBar/charBarHp");
-        CanvasFactory.setRectTransformPosition(_hpBar, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), Vector2.zero, new Vector2(46f, 50f));
-        CanvasFactory.setRectPivot(_hpBar, new Vector2(0f, 0.5f));
+        _hpBarBase = CanvasFactory.createImage(_char, "HpBarBase");
+        CanvasFactory.setImageSprite(_hpBarBase, "Sprite/CharBar/charBarHpBase");
+        CanvasFactory.setRectTransformPosition(_hpBarBase, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), Vector2.zero, new Vector2(46f, 50f));
+        CanvasFactory.setRectPivot(_hpBarBase, new Vector2(0f, 0.5f));
 
-        //GameObject maskImage = CanvasFactory.createImage(barObj, "HpImage");
-        //maskImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/CharBar/barImage");
-        //CanvasFactory.setWholeRect(maskImage);
+        _hpBar = CanvasFactory.createImage(_hpBarBase, "HpBar");
+        CanvasFactory.setImageSprite(_hpBar, "Sprite/CharBar/charBarHp");
+        CanvasFactory.setImageMaterial(_hpBar, "Shader/MaterialMask");
+        CanvasFactory.setWholeRect(_hpBar);
 
         _name = CanvasFactory.createText(_char, "txtName", "name");
         CanvasFactory.setRectTransformAnchor(_name, new Vector2(0.1f, 0f), new Vector2(0.1f, 0f), Vector2.zero, Vector2.zero);

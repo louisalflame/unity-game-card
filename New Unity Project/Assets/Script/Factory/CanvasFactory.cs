@@ -5,6 +5,9 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class CanvasFactory {
+    public static float convertToWorldPosition(GameObject canvas, float f) {
+        return f / canvas.GetComponent<CanvasScaler>().referencePixelsPerUnit;
+    }
 
     public static GameObject createCanvas() {
         GameObject canvasObj = new GameObject("Canvas");
@@ -74,10 +77,15 @@ public class CanvasFactory {
         image.raycastTarget = true;
         Button btn = buttonObj.AddComponent<Button>();
         btn.interactable = true;
-        btn.onClick.AddListener(() => { InputController.Inputs.addInput(label); });
         btn.transition = Selectable.Transition.None;
+        if (label.Length > 0) {
+            btn.onClick.AddListener( () => { InputController.Inputs.addInput(label); } );
+        }
 
         return buttonObj;
+    }
+    public static void setButtonInteractable(GameObject obj, bool able) {
+        if (obj.GetComponent<Button>() != null) obj.GetComponent<Button>().interactable = able;
     }
 
     public static GameObject createText(GameObject parent, string name, string str) {
@@ -109,6 +117,9 @@ public class CanvasFactory {
     }
     public static void setTextAnchor(GameObject txtObj, TextAnchor anchor) {
         if (txtObj.GetComponent<Text>() != null) txtObj.GetComponent<Text>().alignment = anchor;
+    }
+    public static void setTextString(GameObject txtObj, string str) {
+        if (txtObj.GetComponent<Text>() != null) txtObj.GetComponent<Text>().text = str;
     }
 
     public static GameObject setRectTransformAnchor(GameObject obj, Vector2 anchorMin, Vector2 anchorMax, Vector2 offsetMin, Vector2 offsetMax) {
@@ -208,6 +219,15 @@ public class CanvasFactory {
         trigger.triggers.Add(entry);
         return trigger;
     }
+    public static EventTrigger addPointerClickCallback(GameObject imageObj, UnityEngine.Events.UnityAction<BaseEventData> callback) {
+        EventTrigger trigger = (imageObj.GetComponent<EventTrigger>() == null) ?
+            imageObj.AddComponent<EventTrigger>() : imageObj.GetComponent<EventTrigger>();
+        EventTrigger.Entry entry = new EventTrigger.Entry();
+        entry.eventID = EventTriggerType.PointerClick;
+        entry.callback.AddListener( callback );
+        trigger.triggers.Add(entry);
+        return trigger;
+    }
 
     public static void setImageSprite(GameObject obj, string path) {
         if (obj.GetComponent<Image>() != null) {
@@ -219,10 +239,30 @@ public class CanvasFactory {
             obj.GetComponent<Image>().SetNativeSize();
         }
     }
+    public static void setImageMaterial(GameObject obj, string path) {
+        if (obj.GetComponent<Image>() != null) {
+            obj.GetComponent<Image>().material = GameObject.Instantiate<Material>(Resources.Load<Material>(path));
+        }
+    }
+    public static void setImageMaterialColor(GameObject obj, string name, Color c) { 
+        if (obj.GetComponent<Image>() != null) {
+            obj.GetComponent<Image>().material.SetColor(name, c);
+        }
+    }
+    public static void setImageMaterialFloat(GameObject obj, string name, float f) {
+        if (obj.GetComponent<Image>() != null) {
+            obj.GetComponent<Image>().material.SetFloat(name, f);
+        }
+    }
 
     public static void setAspectRatioFitter(GameObject obj, AspectRatioFitter.AspectMode mode, float ratio)  {
         AspectRatioFitter fitter = obj.AddComponent<AspectRatioFitter>();
         fitter.aspectMode = mode;
+        fitter.aspectRatio = ratio;
+    }
+    public static void setRatioFitterWidthControlsHeight(GameObject obj, float ratio)  {
+        AspectRatioFitter fitter = obj.AddComponent<AspectRatioFitter>();
+        fitter.aspectMode = AspectRatioFitter.AspectMode.WidthControlsHeight;
         fitter.aspectRatio = ratio;
     }
 

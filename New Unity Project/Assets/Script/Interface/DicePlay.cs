@@ -91,7 +91,7 @@ public class DicePlayInterface {
     //檢查骰子是否停止
     public bool isAllDicesStop() {
         foreach (GameObject d in _dices3D) {
-            if (d.GetComponent<Rigidbody>().velocity.magnitude > 0) return false;
+            if (d.GetComponent<Rigidbody>().velocity.magnitude > 0.01f) return false;
         }
         return true;
     }
@@ -113,7 +113,7 @@ public class DicePlayInterface {
             //先解除骰子的重力
             _dices3D[i].GetComponent<Rigidbody>().useGravity = false;
             //設定排序位置
-            _targets.Add(Position.getDiceCollectPosition(i, _dices3D.Count));
+            _targets.Add( countCollectPosition(i, _dices3D.Count) );
             //設定轉向 UP:5 FORWARD:2 RIGHT:3 DOWN:6 BACK:1 LEFT:4
             if ( Vector3.Dot(_dices3D[i].transform.up, _plane.transform.up) >= 0.9f ) { 
                 _angles.Add( new Vector3(-90, 0, 0));
@@ -139,6 +139,14 @@ public class DicePlayInterface {
             }
         }  
     }
+    // 計算歸位位置
+    public Vector3 countCollectPosition(int i, int all) {
+        float pivotX = _interface.getImageAttrDecisionBack().transform.position.x;
+        float pivotY = _interface.getImageAttrDecisionBack().transform.position.y;
+        float offset = CanvasFactory.convertToWorldPosition( _interface._canvas, _interface._attrDecision.countItemOffset(i, all) );
+        return new Vector3(pivotX + offset, pivotY, 0);
+    }
+
     //update中將骰子歸位
     public void collectDices() {
         Vector3 up = _plane.transform.up;

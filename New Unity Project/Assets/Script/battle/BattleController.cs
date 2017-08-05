@@ -24,7 +24,7 @@ public class BattleController {
 
     // 介面總管理
     public InterfaceController _interface { get; private set; }
-    public InterfaceAnimator _animator { get; private set; }
+
     // 玩家可輸入開關
     public bool _inputValid { get; private set; }
 
@@ -36,7 +36,6 @@ public class BattleController {
         _attrDecisionManager = new AttrDecisionManager(this);
         _enemyAI = new EnemyAI(this, _enemyManager);
         _interface = new InterfaceController(this);
-        _animator = new InterfaceAnimator(this, _interface);
         _inputValid = true;
         
         // 回合從起始階段開始，最後執行
@@ -47,7 +46,6 @@ public class BattleController {
     // update管理 ============================================================================
     public void update() {
         _interface.update();
-        _animator.update();
         _turnManager.update();
     }
     //========================================================================================
@@ -62,15 +60,13 @@ public class BattleController {
         _interface.create();
         _interface.initial();
 
-        _animator.prepareShiftIn();
+        _interface.animate_PrepareShiftIn();
     }
     public void newStartTurn() {
         // 建立新的一回合攻防戰鬥
         _battleManager = new BattleManager(this);
 
-        // 顯示擲骰按鈕
-        _interface.showThrowButton();
-
+        _interface.animate_StartMovTurn();
         // 重製行動攻防按鈕
         _interface.resetActionButtons(_playerManager.ActiveChar);
     }
@@ -80,13 +76,12 @@ public class BattleController {
     public void newDecisionTurn() {
         // 顯示骰面 玩家可選擇行動點數或建築點數
         _attrDecisionManager.setDicesResult();
-        _interface.showAttrDecision();
-        _interface.removeDices3D();
+
+        // 顯示骰面選擇欄位
+        _interface.animate_CollectFaceDecision();
+
         // 回收已使用骰子
         _playerManager.recycleDices();
-
-        // 顯示移動階段動作選擇按鈕
-        _interface.showMoveActionButton();
     }
     public void endDecisionTurm() {
         // 收集已選擇之行動和建築點數
@@ -127,7 +122,9 @@ public class BattleController {
 
     public void newPlayerAttackTurn() {
         // 顯示為玩家攻擊階段
-        _interface.showPlayerAtkTurn();
+        //_interface.showPlayerAtkTurn();
+        _interface.animate_StartPlayerAtkTurn();
+
         // 以先攻者開始設定攻防參數
         _battleManager.resetBattleUnit();
         _battleManager.setPlayerAttacking();
@@ -146,7 +143,9 @@ public class BattleController {
     public void endEnemyDefenseTurn() { }
     public void newEnemyAttackTurn() {
         // 顯示為玩家防禦階段
-        _interface.showPlayerDefTurn();
+        //_interface.showPlayerDefTurn();
+        _interface.animate_StartPlayerDefTurn();
+
         //以先攻者開始設定攻防參數
         _battleManager.resetBattleUnit();
         _battleManager.setEnemyAttacking();
@@ -225,15 +224,15 @@ public class BattleController {
         _interface.startWaitDicesAnimate(); 
     }
     public void checkDiceBox(int type) {
-        _animator.checkDiceBox(type);
+        _interface._animator.checkDiceBox(type);
     }
     public void decisionAttr(int id) {
         _attrDecisionManager.decisionAttr(id);
-        _interface.showAttrDecision();
+        _interface.changeAttrDecision();
     }
     public void decisionBase(int id) {
         _attrDecisionManager.decisionBase(id);
-        _interface.showAttrDecision();
+        _interface.changeAttrDecision();
     }
 
     public void setMoveAction(MoveAction action) {

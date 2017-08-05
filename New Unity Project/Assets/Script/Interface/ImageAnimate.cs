@@ -9,15 +9,12 @@ public delegate void AnimateCallBack();
  
 // 界面動畫管理
 public class InterfaceAnimator { 
-    public BattleController _battle;
     public InterfaceController _interface;
 
     private AnimateWorkList _animateList;
 
-    public InterfaceAnimator(BattleController battle, InterfaceController inter) {
-        _battle = battle;
+    public InterfaceAnimator(InterfaceController inter) {
         _interface = inter;
-
         _animateList = new AnimateWorkList();
     }
 
@@ -26,57 +23,94 @@ public class InterfaceAnimator {
     }
 
     public void prepareShiftIn() {
-        _animateList.pushWorker(new AnimateWorker(
+        Queue<AnimateWorker> shiftInList = _animateList.pushWorker(new AnimateWorker(
                 new AnimateMoveTo(_interface._charPlayerPlace._character.GetComponent<RectTransform>(), Vector2.zero, 80),
                 new AnimateMoveTo(_interface._charEnemyPlace._character.GetComponent<RectTransform>(), Vector2.zero, 80)
-            ));
-        _animateList.pushWorker(new AnimateWorker(
+            ) );
+        shiftInList.Enqueue(new AnimateWorker(
                 new AnimateMoveTo(_interface._charPlayerPlace._bottomLine.GetComponent<RectTransform>(), Vector2.zero, 30),
                 new AnimateMoveTo(_interface._charPlayerPlace._posture.GetComponent<RectTransform>(), Vector2.zero, 30),
                 new AnimateMoveTo(_interface._charEnemyPlace._bottomLine.GetComponent<RectTransform>(), Vector2.zero, 30),
                 new AnimateMoveTo(_interface._charEnemyPlace._posture.GetComponent<RectTransform>(), Vector2.zero, 30)
             ) );
-        _animateList.pushWorker(new AnimateWorker(
+        shiftInList.Enqueue(new AnimateWorker(
                 new AnimateMoveTo(_interface.getImageTopBar().GetComponent<RectTransform>(), Vector2.zero, 30),
                 new AnimateMoveTo(_interface.getImageBottomBar().GetComponent<RectTransform>(), Vector2.zero, 30)
             ) );
-        _animateList.pushWorker(new AnimateWorker(
+        shiftInList.Enqueue(new AnimateWorker(
                 new AnimateMoveTo(_interface.getImageMainMenu().GetComponent<RectTransform>(), Vector2.zero, 50)
             ) );
-        _animateList.pushWorker(new AnimateWorker(
+        shiftInList.Enqueue(new AnimateWorker(
                 new AnimateMoveTo(_interface.getImageDiceBox().GetComponent<RectTransform>(), new Vector2(-100f, 0f), 30)
             ).addWorks(_interface._teamPlayerStatus.getShiftInAnimates()
             ).addWorks(_interface._teamEnemyStatus.getShiftInAnimates()
             ) );
-        _animateList.pushWorker(new AnimateWorker(
+        shiftInList.Enqueue(new AnimateWorker(
                 _interface._teamPlayerStatus.getActiveShiftAnimate(),
                 _interface._teamEnemyStatus.getActiveShiftAnimate()
             ) );
-        _animateList.pushWorker(new AnimateWorker(
+        shiftInList.Enqueue(new AnimateWorker(
                 new AnimateFadeIn(_interface._attrPoints._pointTable.transform, 50),
                 new AnimateFadeIn(_interface._towerStatus._towerTable.transform, 50),
                 new AnimateFadeIn(_interface._attrPointsEnemy._pointTable.transform, 50),
                 new AnimateFadeIn(_interface._towerStatusEnemy._towerTable.transform, 50)
-            ) );
-        _animateList.pushWorker(new AnimateWorker(
-                new AnimateMoveTo(_interface.getImageTurnStatus().GetComponent<RectTransform>(), Vector2.zero, 30),
-                new AnimateFadeIn(_interface.getImageTurnInfo().transform, 30 ),
-                new AnimateFadeIn(_interface.getImageMovTurn().transform, 30)
-            ).setStart(() => {
-                _interface.showMoveTurn(); } 
             ).setEnd(() => {
-                _battle.nextTurn(); }
+                // 起始動畫完成，開始第一回合
+                _interface._battle.nextTurn(); }
+            ) ); 
+    }
+    public void StartMovTurn() {         
+        _animateList.addNewWorker( new AnimateWorker(
+                new AnimateMoveTo(_interface.getImageMovTurn().GetComponent<RectTransform>(), Vector2.zero, 30),
+                new AnimateMoveTo(_interface.getImageTurnInfo().GetComponent<RectTransform>(), Vector2.zero, 30),
+                new AnimateFadeIn(_interface.getImageMovTurn().transform, 30),
+                new AnimateFadeIn(_interface.getImageTurnInfo().transform, 30 )
+            ).setStart(() => {
+                // 準備顯示移動階段資訊
+                _interface.showMoveTurn(); }
+            ).setEnd(() => { 
+                // 顯示擲骰按鈕
+                _interface.showThrowButton(); }
             ) );
-
-        // 顯示為移動階段
-        //_interface.showMoveTurn();
-
+    }
+    public void CollectFaceDecision() {
+        Queue<AnimateWorker> CollectFaceList = _animateList.addNewWorker(new AnimateWorker(
+                new AnimateFadeIn(_interface.getImageAttrDecisionBack().GetComponent<RectTransform>(), 20 ),
+                new AnimateFadeIn(_interface.getImageBaseDecisionBack().GetComponent<RectTransform>(), 20 )
+            ).setStart( () => { 
+                _interface.changeAttrDecision(); }
+            ).setEnd(() => {
+                // 選擇欄位建立後 將3D骰子移除
+                _interface.removeDices3D();
+                // 顯示移動階段動作選擇按鈕
+                _interface.showMoveActionButton(); }
+            ) );
+    }
+    public void StartPlayerAtkTurn() {         
+        _animateList.addNewWorker( new AnimateWorker(
+                new AnimateMoveTo(_interface.getImagePlayerAtkTurn().GetComponent<RectTransform>(), Vector2.zero,30),
+                new AnimateMoveTo(_interface.getImageEnemyDefTurn().GetComponent<RectTransform>(), Vector2.zero, 30),
+                new AnimateFadeIn(_interface.getImageAtkTurn().transform, 30 )
+            ).setStart(() => {
+                // 準備顯示移動階段資訊
+                _interface.showPlayerAtkTurn(); }
+            ) );
+    }
+    public void StartPlayerDefTurn() {         
+        _animateList.addNewWorker( new AnimateWorker(
+                new AnimateMoveTo(_interface.getImagePlayerDefTurn().GetComponent<RectTransform>(), Vector2.zero,30),
+                new AnimateMoveTo(_interface.getImageEnemyAtkTurn().GetComponent<RectTransform>(), Vector2.zero, 30),
+                new AnimateFadeIn(_interface.getImageDefTurn().transform, 30 )
+            ).setStart(() => {
+                // 準備顯示移動階段資訊
+                _interface.showPlayerDefTurn(); }
+            ) );
     }
 
     public void checkDiceBox(int type) {
         _interface._diceBox.checkDiceBox(type);
-        AnimateWork[] animates = _interface._diceBox.getModeAnimates();
-        _animateList.addNewWorker(new AnimateWorker(animates));
+        _animateList.addNewWorker( new AnimateWorker( _interface._diceBox.getModeAnimates() ) 
+            ).Enqueue( new AnimateWorker( _interface._diceBox.getDiceStackShowAnimate() ) );
     }
 }
 
@@ -153,8 +187,8 @@ public class AnimateWorker {
 
 public class AnimateWork {
     protected enum WorkMode { ready = 1, busy, end };
-    protected WorkMode _mode = WorkMode.ready;     
-    public virtual void work() { }
+    protected WorkMode _mode = WorkMode.ready;
+    public virtual void work() { _mode = WorkMode.end; }
     public bool isEnd() { return _mode == WorkMode.end; }
 
     // 常用函數: 設定透明度
@@ -252,6 +286,35 @@ public class AnimateFadeIn : AnimateWork {
                 setAlpha(_obj, _current / _time);
             } else {
                 _mode = WorkMode.end;
+            }
+        }
+    }
+}
+
+public class AnimateOrderFadeIn : AnimateWork {
+    private List<GameObject> _items;
+    private float _timeUnit;
+    private float _current;
+
+    public AnimateOrderFadeIn(List<GameObject> items, float timeUnit) {
+        _items = items;
+        _timeUnit = timeUnit;
+        _current = 0;
+    }
+    public override void work() {
+        if (_mode == WorkMode.ready) {
+            _mode = WorkMode.busy;
+        } else if (_mode == WorkMode.busy) {
+            if (_current < _timeUnit * _items.Count-1) {
+                _current += 1;
+                int order = Mathf.FloorToInt( _current / _timeUnit );
+                float f = (_current - order * _timeUnit) / _timeUnit;
+                setAlpha(_items[order].transform, f);
+            } else {
+                _mode = WorkMode.end;
+                for (int i = 0; i < _items.Count; i++) {
+                    setAlpha(_items[i].transform, 1f);
+                }
             }
         }
     }

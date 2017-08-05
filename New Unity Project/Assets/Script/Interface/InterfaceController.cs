@@ -7,6 +7,7 @@ using System.Collections.Generic;
 public class InterfaceController {
 
     public BattleController _battle;
+    public InterfaceAnimator _animator { get; private set; }
 
     public GameObject _canvas { get; private set; }
     public MenuButtonInterface _menuButton { get; private set; }
@@ -33,8 +34,13 @@ public class InterfaceController {
     public InterfaceController(BattleController battle) {
         _battle = battle;
 
+        //建立動畫管理
+        _animator = new InterfaceAnimator(this);
+
+        // 先把基本畫布建立，才能繪製各原件
         createCanvasLayout();
 
+        // 需要先繪製基本版型
         _mainMenu = new MainLayoutInterface(this);
         _menuButton = new MenuButtonInterface(this);
 
@@ -69,6 +75,7 @@ public class InterfaceController {
 
         _diceBox.create();
         _turnStatus.create();
+        _attrDecision.create();
 
         _attrPoints.create();
         _towerStatus.create();
@@ -90,6 +97,7 @@ public class InterfaceController {
 
         _diceBox.initial();
         _turnStatus.initial();
+        _attrDecision.initial();
 
         setTeamPlayer();
         setTeamEnemy();
@@ -98,6 +106,8 @@ public class InterfaceController {
     }
 
     public void update() {
+        _animator.update();
+
         _menuButton.update();
         _teamPlayerStatus.update();
         _teamEnemyStatus.update();
@@ -107,6 +117,8 @@ public class InterfaceController {
         _attrDecision.update();
         _towerStatus.update();
         _attrPoints.update();
+        _towerStatusEnemy.update();
+        _attrPointsEnemy.update();
         _skillMenu.update();
     }
 
@@ -140,7 +152,7 @@ public class InterfaceController {
     public void checkDiceBox(int type) { _diceBox.checkDiceBox(type); }
     public void showDicePlay() { _dicePlay.showDicePlay(); }
 
-    public void showAttrDecision() { _attrDecision.showFaces(); }
+    public void changeAttrDecision() { _attrDecision.showFaces(); }
 
     public void startWaitDicesAnimate() { _dicePlay.setUpdateMode((int)DicePlayInterface.UpdateMode.waitStop); }
     public void removeDices3D() { _dicePlay.removeDices(); }
@@ -150,6 +162,17 @@ public class InterfaceController {
     public void setAttrNums(int[] attrNums) { _attrPoints.setAttrNums(attrNums); }
     public void setTowerStatusEnemy(AttrTower[] towers) { _towerStatusEnemy.setTowerStatus(towers); }
     public void setAttrNumsEnemy(int[] attrNums) { _attrPointsEnemy.setAttrNums(attrNums); }
+
+    // 
+    public List<Dice> getDicesGroundUseStack() {
+        return _battle._playerManager._groundDices._dicesUnused.GetRange(0, _battle._playerManager._groundDices._useStack);
+    }
+    public List<Dice> getDicesTeamUseStack() {
+        return _battle._playerManager._teamDices._dicesUnused.GetRange(0, _battle._playerManager._teamDices._useStack);
+    }
+    public List<Dice> getDicesPersonUseStack() {
+        return _battle._playerManager._personDices._dicesUnused.GetRange(0, _battle._playerManager._personDices._useStack);
+    }
 
     // 基本Layout物件
     public void createCanvasLayout() {
@@ -176,7 +199,19 @@ public class InterfaceController {
     public GameObject getImageMovTurn() { return _turnStatus._movTurn; }
     public GameObject getImageAtkTurn() { return _turnStatus._atkTurn; }
     public GameObject getImageDefTurn() { return _turnStatus._defTurn; }
+    public GameObject getImagePlayerAtkTurn() { return _turnStatus._playerAtk; }
+    public GameObject getImagePlayerDefTurn() { return _turnStatus._playerDef; }
+    public GameObject getImageEnemyAtkTurn() { return _turnStatus._enemyAtk; }
+    public GameObject getImageEnemyDefTurn() { return _turnStatus._enemyDef; }
+    public GameObject getImageAttrDecisionBack() { return _attrDecision._attrBack; }
+    public GameObject getImageBaseDecisionBack() { return _attrDecision._baseBack; }
 
+    // 各段落動畫
+    public void animate_PrepareShiftIn() { _animator.prepareShiftIn(); }
+    public void animate_StartMovTurn() { _animator.StartMovTurn(); }
+    public void animate_CollectFaceDecision() { _animator.CollectFaceDecision(); }
+    public void animate_StartPlayerAtkTurn() { _animator.StartPlayerAtkTurn(); }
+    public void animate_StartPlayerDefTurn() { _animator.StartPlayerDefTurn(); }
 }
  
 

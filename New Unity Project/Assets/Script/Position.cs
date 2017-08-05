@@ -49,7 +49,7 @@ public class Position {
     public static readonly float[] planeRotation = new float[] { -40, 0, 0 };
     public static readonly float[] planeScale = new float[] { 100, 100, 100 };
     // 骰子大小
-    public static readonly float[] diceScale = new float[] { 1.8f, 1.8f, 1.8f };
+    public static readonly float[] diceScale = new float[] { 2f, 2f, 2f };
     // 擲骰起始點
     public static Vector3 getThrowDicePosition(int i) {
         return new Vector3(-4 + ((i % 3) * 2f + (i / 3) * 2f), 10 + ((i / 3) * 2f), -18 + ((i / 3) * 2f));
