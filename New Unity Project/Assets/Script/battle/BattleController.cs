@@ -122,7 +122,6 @@ public class BattleController {
 
     public void newPlayerAttackTurn() {
         // 顯示為玩家攻擊階段
-        //_interface.showPlayerAtkTurn();
         _interface.animate_StartPlayerAtkTurn();
 
         // 以先攻者開始設定攻防參數
@@ -143,7 +142,6 @@ public class BattleController {
     public void endEnemyDefenseTurn() { }
     public void newEnemyAttackTurn() {
         // 顯示為玩家防禦階段
-        //_interface.showPlayerDefTurn();
         _interface.animate_StartPlayerDefTurn();
 
         //以先攻者開始設定攻防參數

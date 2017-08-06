@@ -39,14 +39,14 @@ public class TurnStatus {
     public void showPlayerAtkTurn() {
         _atkTurn.transform.SetSiblingIndex(_turnInfo.transform.GetSiblingIndex() - 1);
         AnimateWork.setAlpha(_atkTurn.transform, 0f);
-        _playerAtk.GetComponent<RectTransform>().anchoredPosition = new Vector2(-200f, 0f);
-        _enemyDef.GetComponent<RectTransform>().anchoredPosition = new Vector2(200f, 0f);
+        _playerAtk.GetComponent<RectTransform>().anchoredPosition = new Vector2(-150f, 0f);
+        _enemyDef.GetComponent<RectTransform>().anchoredPosition = new Vector2(150f, 0f);
     }
     public void showPlayerDefTurn() {
         _defTurn.transform.SetSiblingIndex(_turnInfo.transform.GetSiblingIndex() - 1);
         AnimateWork.setAlpha(_defTurn.transform, 0f);
-        _playerDef.GetComponent<RectTransform>().anchoredPosition = new Vector2(-200f, 0f);
-        _enemyAtk.GetComponent<RectTransform>().anchoredPosition = new Vector2(200f, 0f);
+        _playerDef.GetComponent<RectTransform>().anchoredPosition = new Vector2(-150f, 0f);
+        _enemyAtk.GetComponent<RectTransform>().anchoredPosition = new Vector2(150f, 0f);
     }
     
 
