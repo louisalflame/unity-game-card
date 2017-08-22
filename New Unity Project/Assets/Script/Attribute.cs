@@ -9,13 +9,6 @@ public class Attribute  {
     public const int Special     = 4;
     public const int Health      = 5;
     public const int NONE        = -1;
-
-    public const int NormalDouble   = 10;
-    public const int AttackDouble   = 11;
-    public const int DeffenseDouble = 12;
-    public const int MoveDouble     = 13;
-    public const int SpecialDouble  = 14;
-    public const int HealthDouble   = 15;
 }
 
 public class ConstNum {

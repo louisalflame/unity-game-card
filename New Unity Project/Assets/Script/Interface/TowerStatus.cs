@@ -7,6 +7,7 @@ public class TowerStatusInterface {
     public InterfaceController _interface;
     public GameObject _towerTable { get; private set; }
     public GameObject[] _towers { get; private set; }
+    private AttrTower _buildTower;
 
     public TowerStatusInterface(InterfaceController inter) { _interface = inter; }
     public void create() { 
@@ -21,6 +22,43 @@ public class TowerStatusInterface {
         for (int i = 0; i < _towers.Length && i < towers.Length; i++) {
             CanvasFactory.setImageSprite(_towers[i], towers[i].getImage());
         }
+    }
+    public void changeTowerStatus(AttrTower tower) {
+        _buildTower = tower;
+        Debug.Log("build : "+_buildTower._attr +","+_buildTower._positionID);
+    }
+
+    public bool isBuildTower() { return _buildTower._positionID > -1; }
+    public GameObject getBuildTower() {
+        if (isBuildTower()) return _towers[_buildTower._positionID];
+        else return null;
+    }
+    public GameObject createBuildTowerFadeObject() {
+        GameObject fade = CanvasFactory.createImage( _towerTable, "AnimateFade" );
+        CanvasFactory.setImageSprite( fade, _buildTower.getImage() );
+        CanvasFactory.setRectTo(fade, _towers[_buildTower._positionID]);
+        AnimateWork.setAlpha(fade.transform, 0.3f);
+        return fade;
+    }
+    public AnimateWork getBuildTowerAnimateWorkers() {
+        GameObject towerAnimate = createBuildTowerFadeObject();
+
+        AnimateWork fadeIn = new AnimateFadeIn(towerAnimate.transform, 30);
+        fadeIn.setCombineWork(
+                new AnimateScaleTo(towerAnimate.transform, new Vector3(1, 1, 1), 30) 
+            ).setStart( () => {
+                towerAnimate.transform.localScale = new Vector3(3, 3, 1); }
+        );
+        fadeIn.setEnd( () => {
+                CanvasFactory.setImageSprite(_towers[_buildTower._positionID], _buildTower.getImage()); }
+            ).setNextWork(
+                new AnimateFadeOut(towerAnimate.transform, 40)
+            ).setEnd( () => {
+                GameObject.Destroy(towerAnimate); }
+            ).setCombineWork(
+                new AnimateScaleTo(towerAnimate.transform, new Vector3(5, 5, 1), 40) 
+        );
+        return fadeIn;
     }
 
     public void update() { }
@@ -66,6 +104,8 @@ public class AttrPointsInterface {
     public GameObject _pointTable { get; private set; }
     public GameObject[] _attrIcons { get; private set; }
     public GameObject[] _attrNums { get; private set; }
+    private int[] _nums = new int[6] { 0, 0, 0, 0, 0, 0 };
+    private int[] _addNums = new int[6] { 0, 0, 0, 0, 0, 0 };
 
     public AttrPointsInterface(InterfaceController inter) { _interface = inter; }
     public void create(){
@@ -77,15 +117,44 @@ public class AttrPointsInterface {
     }
 
     public void setAttrNums(int[] attrNums) {
-        for (int i = 0; i < attrNums.Length && i < _attrNums.Length; i++) {
-            CanvasFactory.setTextString(_attrNums[i], attrNums[i].ToString());
+        for (int i = 0; i < attrNums.Length && i < _nums.Length; i++) {
+            _nums[i] = attrNums[i];
+        }
+        for (int i = 0; i < _nums.Length && i < _attrNums.Length; i++) {
+            CanvasFactory.setTextString(_attrNums[i], _nums[i].ToString());
         }
     }
     public void setAttrNum(int attr, int num) {
-        CanvasFactory.setTextString(_attrNums[attr], num.ToString());
+        _nums[attr] = num;
+        CanvasFactory.setTextString(_attrNums[attr], _nums[attr].ToString());
     }
 
-    public void update() { }
+    public void addAttrNum(int attr, int num) {
+        _addNums[attr] += num;
+    }
+
+    private int interval = 5;
+    private int count = 0;
+    public void update() {
+        count += 1;
+        if (count > interval) {
+            count = 0;
+            if (isWaitAddNums()) { addOneNum(); }
+        }
+    }
+    public bool isWaitAddNums() {
+        for (int i = 0; i < _addNums.Length; i++) { if (_addNums[i] > 0) return true; }
+        return false;
+    }
+    public void addOneNum() {
+        for (int attr = 0; attr < _addNums.Length; attr++) {
+            if (_addNums[attr] > 0) {
+                _addNums[attr] -= 1;
+                _nums[attr] += 1;
+                CanvasFactory.setTextString(_attrNums[attr], _nums[attr].ToString());
+            }
+        }
+    }
       
     // Menu Point Status *************
     public void create_BattleScene_PlayerPointStatus(GameObject parent) {
@@ -115,7 +184,14 @@ public class AttrPointsInterface {
             _pointTable, "attrHeal", "Sprite/PointTable/pointTableHeal", "Sprite/AttrIcon/AttrHeal");
         CanvasFactory.setRectTransformAnchor(healObj, new Vector2(5f / 6, 0f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero);
 
-        _attrIcons = new GameObject[] { norObj, atkObj, defObj, movObj, spcObj, healObj };
+        _attrIcons = new GameObject[] {
+                norObj.transform.Find("attrIcon").gameObject,
+                atkObj.transform.Find("attrIcon").gameObject,
+                defObj.transform.Find("attrIcon").gameObject,
+                movObj.transform.Find("attrIcon").gameObject,
+                spcObj.transform.Find("attrIcon").gameObject,
+                healObj.transform.Find("attrIcon").gameObject,
+            };
         _attrNums = new GameObject[] {
                 norObj.transform.Find("num/txt").gameObject,
                 atkObj.transform.Find("num/txt").gameObject,
@@ -135,6 +211,7 @@ public class TowerStatusEnemyInterface {
     public InterfaceController _interface;
     public GameObject _towerTable { get; private set; }
     public GameObject[] _towers { get; private set; }
+    private AttrTower _buildTower;
 
     public TowerStatusEnemyInterface(InterfaceController inter) { _interface = inter; }
     public void create() {
@@ -149,6 +226,36 @@ public class TowerStatusEnemyInterface {
         for (int i = 0; i < _towers.Length && i < towers.Length; i++) {
             CanvasFactory.setImageSprite(_towers[i], towers[i].getImage());
         }
+    }
+    public void changeTowerStatus(AttrTower tower) {
+        _buildTower = tower;
+    }
+
+    public bool isBuildTower() { return _buildTower._positionID > -1; }
+    public GameObject createBuildTowerFadeObject() {
+        GameObject fade = CanvasFactory.createImage(_towerTable, "AnimateFade");
+        CanvasFactory.setImageSprite( fade, _buildTower.getImage() );
+        CanvasFactory.setRectTo(fade, _towers[_buildTower._positionID]); 
+        AnimateWork.setAlpha(fade.transform, 0.3f);
+        return fade;
+    }
+    public AnimateWork getBuildTowerAnimateWorkers() {
+        GameObject towerAnimate = createBuildTowerFadeObject(); 
+        
+        AnimateWork fadeIn = new AnimateFadeIn(towerAnimate.transform, 30);
+        fadeIn.setCombineWork(
+                new AnimateScaleTo(towerAnimate.transform, new Vector3(1, 1, 1), 30) 
+            ).setStart( () => {
+                towerAnimate.transform.localScale = new Vector3(3, 3, 1); }
+            );
+        fadeIn.setEnd( () => {
+                CanvasFactory.setImageSprite(_towers[_buildTower._positionID], _buildTower.getImage()); }
+            ).setNextWork(
+                new AnimateFadeOut(towerAnimate.transform, 40)
+            ).setEnd( () => {
+                GameObject.Destroy(towerAnimate); }
+            ).setCombineWork(new AnimateScaleTo(towerAnimate.transform, new Vector3(5, 5, 1), 40) );
+        return fadeIn;
     }
 
     public void update() { }

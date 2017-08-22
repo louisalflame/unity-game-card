@@ -154,6 +154,14 @@ public class CanvasFactory {
         rect.offsetMax = Vector2.zero;
         return obj;
     }
+    public static GameObject setRectTo(GameObject obj, GameObject target) {
+        RectTransform rect = obj.GetComponent<RectTransform>();
+        RectTransform rectTarget = target.GetComponent<RectTransform>();
+        rect.pivot = rectTarget.pivot;
+        rect.position = rectTarget.position;
+        rect.sizeDelta = new Vector2(rectTarget.rect.width, rectTarget.rect.height);
+        return obj;
+    }
     public static GameObject setRectPivot(GameObject obj, Vector2 pivot) {
         obj.GetComponent<RectTransform>().pivot = pivot;
         return obj;
@@ -232,6 +240,10 @@ public class CanvasFactory {
     public static void setImageSprite(GameObject obj, string path) {
         if (obj.GetComponent<Image>() != null) {
             obj.GetComponent<Image>().sprite = Resources.Load<Sprite>(path);
+        }
+    }public static void setImageSpriteTo(GameObject obj, GameObject target) {
+        if (obj.GetComponent<Image>() != null && target.GetComponent<Image>() != null) {
+            obj.GetComponent<Image>().sprite = target.GetComponent<Image>().sprite;
         }
     }
     public static void setImageNatureSize(GameObject obj) {

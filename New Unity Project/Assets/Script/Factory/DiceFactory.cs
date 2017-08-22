@@ -43,7 +43,7 @@ public abstract class Dice {
         else if (n == 4) return _lFace;
         else if (n == 5) return _uFace;
         else if (n == 6) return _dFace;
-        else { Debug.Log("ERROR:Wrong face number"); return _dFace; }
+        else { Debug.Log("ERROR:Wrong face number: "+n); return _dFace; }
     }
     public virtual string getFaceImage(int n) { return getFace(n).getImage(); }
 }

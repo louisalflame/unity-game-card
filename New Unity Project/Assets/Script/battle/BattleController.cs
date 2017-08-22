@@ -75,7 +75,7 @@ public class BattleController {
     }
     public void newDecisionTurn() {
         // 顯示骰面 玩家可選擇行動點數或建築點數
-        _attrDecisionManager.setDicesResult();
+        _attrDecisionManager.setDicesResult( _interface.getDiceThrowResult() );
 
         // 顯示骰面選擇欄位
         _interface.animate_CollectFaceDecision();
@@ -85,26 +85,27 @@ public class BattleController {
     }
     public void endDecisionTurm() {
         // 收集已選擇之行動和建築點數
-        _playerManager._towerManager.collectBasePoint(_attrDecisionManager.getFacesBase());
-        _playerManager._towerManager.collectAttrPoint(_attrDecisionManager.getFacesAttr());
-
-        // 更新容量塔和儲存點數
-        _interface.setTowerStatus(_playerManager._towerManager._towers);
-        _interface.setAttrNums(_playerManager._towerManager._attrNums);
-        // 隱藏移動階段行動選擇按鈕
-        _interface.hideFaceDecision();
-        _interface.hideMoveActionButton();
-        _interface.hideNextButton();
+        AttrTower tower = _playerManager._towerManager.collectBasePoint(_attrDecisionManager.getFacesBase());
+        int[] addNums = _playerManager._towerManager.collectAttrPoint(_attrDecisionManager.getFacesAttr());
 
         // [AI] 敵方隊伍擲骰獲得隨機點數
         List<DiceFace> diceFaces = _enemyAI.getRandomDiceFaces();
         _enemyAI.selectRandomPoints(diceFaces);
+        AttrTower enemyTower = _enemyAI.getBuildTower();
+        int[] enemyAddNums = _enemyAI.getAddNums();
         _enemyManager.recycleDices();
-        // 更新顯示敵方容量塔和儲存點數
-        _interface.setTowerStatusEnemy(_enemyManager._towerManager._towers);
-        _interface.setAttrNumsEnemy(_enemyManager._towerManager._attrNums);
+
         // [AI] 敵方隊伍選擇移動階段動作
         _enemyAI.selectMoveAction();
+
+        // 更新顯示容量塔和儲存點數
+        _interface.changeTowerStatus(tower);
+        // 更新顯示敵方容量塔和儲存點數
+        _interface.changeTowerStatusEnemy(enemyTower);
+        _interface.setAttrNumsEnemy(_enemyManager._towerManager._attrNums);
+
+        // 隱藏移動階段行動選擇按鈕
+        _interface.animate_AggregateAttrTower();
 
         // TODO 移動階段技能發動
         // 依行動選擇判定先後攻

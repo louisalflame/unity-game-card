@@ -5,10 +5,15 @@ using UnityEngine;
 public class EnemyAI {
     public BattleController _battle;
     public TeamManager _team { get; private set; }
+    private List<DiceFace> _toAttr;
+    private List<DiceFace> _toBase;
      
     public EnemyAI( BattleController battle, TeamManager team){
         _battle = battle;
         _team = team;
+
+        _toAttr = new List<DiceFace>();
+        _toBase = new List<DiceFace>();
     }
 
     // 隨機擲骰獲得骰面
@@ -20,25 +25,28 @@ public class EnemyAI {
 
         List<DiceFace> diceFaces = new List<DiceFace>();
         foreach (Dice d in dices) {
-            int rand = Random.Range(0, 5); 
+            int rand = Random.Range(1, 7); 
             diceFaces.Add( d.getFace(rand) );
         }
         return diceFaces;
     }
     // 從骰面隨機選擇點數
     public void selectRandomPoints(List<DiceFace> diceFaces) {
-        List<DiceFace> attrFaces = new List<DiceFace>();
-        List<DiceFace> baseFaces = new List<DiceFace>();
+        _toAttr.Clear();
+        _toBase.Clear();
 
         // 隨機選一面當建築點數
         int rand = Random.Range(0, diceFaces.Count);
         for (int i = 0; i < diceFaces.Count; i++) {
-            if (i == rand) { baseFaces.Add(diceFaces[i]); }
-            else { attrFaces.Add(diceFaces[i]); }
+            if (i == rand) { _toBase.Add(diceFaces[i]); }
+            else { _toAttr.Add(diceFaces[i]); }
         }
-
-        _team._towerManager.collectAttrPoint(attrFaces);
-        _team._towerManager.collectBasePoint(baseFaces);
+    }
+    public AttrTower getBuildTower() {
+        return _team._towerManager.collectBasePoint(_toBase);
+    }
+    public int[] getAddNums() {
+        return _team._towerManager.collectAttrPoint(_toAttr);
     }
 
     // 選擇移階行動

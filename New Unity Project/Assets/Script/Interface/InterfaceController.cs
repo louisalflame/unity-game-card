@@ -151,19 +151,22 @@ public class InterfaceController {
     
     public void checkDiceBox(int type) { _diceBox.checkDiceBox(type); }
     public void showDicePlay() { _dicePlay.showDicePlay(); }
+    public List<DiceFace> getDiceThrowResult() { return _dicePlay._result; }
 
     public void changeAttrDecision() { _attrDecision.showFaces(); }
 
     public void startWaitDicesAnimate() { _dicePlay.setUpdateMode((int)DicePlayInterface.UpdateMode.waitStop); }
     public void removeDices3D() { _dicePlay.removeDices(); }
-    public void hideFaceDecision() { _attrDecision.hideFaceDecision(); }
 
+    public void changeTowerStatus(AttrTower tower) { _towerStatus.changeTowerStatus(tower); }
     public void setTowerStatus(AttrTower[] towers) { _towerStatus.setTowerStatus(towers); }
     public void setAttrNums(int[] attrNums) { _attrPoints.setAttrNums(attrNums); }
+    public void addAttrNum(int attr, int num) { _attrPoints.addAttrNum(attr, num); }
+    public void changeTowerStatusEnemy(AttrTower tower) { _towerStatusEnemy.changeTowerStatus(tower); }
     public void setTowerStatusEnemy(AttrTower[] towers) { _towerStatusEnemy.setTowerStatus(towers); }
     public void setAttrNumsEnemy(int[] attrNums) { _attrPointsEnemy.setAttrNums(attrNums); }
 
-    // 
+    // 取得下階段可使用骰子
     public List<Dice> getDicesGroundUseStack() {
         return _battle._playerManager._groundDices._dicesUnused.GetRange(0, _battle._playerManager._groundDices._useStack);
     }
@@ -183,6 +186,7 @@ public class InterfaceController {
     public GameObject getImageLeftBattleField() { return _mainMenu._leftBattleField; }
     public GameObject getImageMiddleBattleField() { return _mainMenu._middleBattleField; }
     public GameObject getImageRightBattleField() { return _mainMenu._rightBattleField; }
+    public GameObject getImageDecisionField() { return _mainMenu._decisionField; }
     public GameObject getImageTopBar() { return _mainMenu._topBar; }
     public GameObject getImageBottomBar() { return _mainMenu._bottomBar; }
     public GameObject getImageMainMenu() { return _mainMenu._mainMenu; }
@@ -210,6 +214,7 @@ public class InterfaceController {
     public void animate_PrepareShiftIn() { _animator.prepareShiftIn(); }
     public void animate_StartMovTurn() { _animator.StartMovTurn(); }
     public void animate_CollectFaceDecision() { _animator.CollectFaceDecision(); }
+    public void animate_AggregateAttrTower() { _animator.AggregateAttrTower(); }
     public void animate_StartPlayerAtkTurn() { _animator.StartPlayerAtkTurn(); }
     public void animate_StartPlayerDefTurn() { _animator.StartPlayerDefTurn(); }
 }

@@ -91,7 +91,7 @@ public class DicePlayInterface {
     //檢查骰子是否停止
     public bool isAllDicesStop() {
         foreach (GameObject d in _dices3D) {
-            if (d.GetComponent<Rigidbody>().velocity.magnitude > 0.01f) return false;
+            if (d.GetComponent<Rigidbody>().velocity.magnitude > 0.1f) return false;
         }
         return true;
     }

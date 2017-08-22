@@ -18,10 +18,15 @@ public class TowerManager {
     }
 
 
-    public void collectAttrPoint(List<DiceFace> faces) {
-        foreach (DiceFace face in faces) {
-            _attrNums[face._attr] += face._num;
+    public int[] collectAttrPoint(List<DiceFace> faces) {
+        int[] addNums = new int[6] { 0, 0, 0, 0, 0, 0 };
+        for (int i = 0; i < faces.Count; i++) {
+            addNums[faces[i]._attr] += faces[i]._num;
         }
+        for (int i = 0; i < _attrNums.Length; i++) {
+            _attrNums[i] += addNums[i];
+        }
+        return addNums;
     }
     public void countAttrMax() {
         _attrMax = new int[6] { 5, 5, 5, 5, 5, 5 };
@@ -30,17 +35,18 @@ public class TowerManager {
         }
     }
 
-    public void collectBasePoint(List<DiceFace> bases) {
+    public AttrTower collectBasePoint(List<DiceFace> bases) {
         // 以玩家選擇的屬性建造點數排列優先順序:  點數高且權重高的點數優先
         List<AttrBaseCounter> counters = findAttrPriority(bases);
         // 以塔的等級排列優先順序: 等級高的塔優先檢查點數是否足夠升級
         List<List<AttrTower>> towerGroups = findTowerPriority();
         // 以塔的優先順序比對屬性的優先順序決定升級哪座塔
-        upgradeMostLevelValidTower(counters, towerGroups);
+        AttrTower tower = upgradeMostLevelValidTower(counters, towerGroups);
         // 升級/興建完後，更新屬性塔的容量
         countAttrMax();
+        return tower;
     }
-    public void upgradeMostLevelValidTower(List<AttrBaseCounter> counters, List<List<AttrTower>> towerGroups) {        
+    public AttrTower  upgradeMostLevelValidTower(List<AttrBaseCounter> counters, List<List<AttrTower>> towerGroups) {        
         //先按照塔等級的順序，越高等級的塔越優先
         foreach (List<AttrTower> levelTowers in towerGroups) {
             //同等級的塔，以點數加權大者優先
@@ -48,20 +54,21 @@ public class TowerManager {
                 //如果此屬性沒有建造點數，跳過
                 if (counter._base <= 0) continue;
                 //尋找此等級的塔是否有點數可足夠升級的屬性
-                foreach (AttrTower t in levelTowers) {  
+                foreach (AttrTower tower in levelTowers) {  
                     // 如果此屬性和塔相同且足夠升級 => 開始升級
-                    if(t._attr == counter._attr && t.isValidUpgrade(counter) ) {
-                        t.upgrade(counter); 
-                        return; 
+                    if(tower._attr == counter._attr && tower.isValidUpgrade(counter) ) {
+                        tower.upgrade(counter);
+                        return tower; 
                     }
                     //如果此塔沒有等級(還未興建)且屬性足夠 => 開始興建
-                    else if (t._level == 0 && t.isValidBuild(counter)) {
-                        t.build(counter);
-                        return;
+                    else if (tower._level == 0 && tower.isValidBuild(counter)) {
+                        tower.build(counter);
+                        return tower;
                     }
                 }
             }
         }
+        return new AttrTower(-1);
     }
     public List<AttrBaseCounter> findAttrPriority(List<DiceFace> bases) {
         //先整理所有升級用點數和其屬性
@@ -93,6 +100,7 @@ public class TowerManager {
         //先複製陣列，讓塔sort by lv，升級順序降冪以高lv優先
         Array.Copy(_towers, 0, tempTowers, 0, _towers.Length);
         Array.Sort(tempTowers, (x,y)=>y._level.CompareTo(x._level) );
+        // 將儲存塔以等級分類成一群群
         List<List<AttrTower>> towerGroups = new List<List<AttrTower>>();
         List<AttrTower> levelGroup = new List<AttrTower>();
         foreach (AttrTower t in tempTowers) { 
